@@ -135,6 +135,8 @@ Route::group(['prefix' => 'v1'], function (){
 
         Route::get('webhook-payment',[Rest\WebHookController::class,'webhook']);
 
+        Route::get('review',[Rest\ReviewController::class,'paginate']);
+
     });
 
     Route::group(['prefix' => 'payments', 'middleware' => ['sanctum.check'], 'as' => 'payment.'], function (){
