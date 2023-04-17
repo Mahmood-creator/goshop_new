@@ -135,7 +135,7 @@ Route::group(['prefix' => 'v1'], function (){
 
         Route::get('webhook-payment',[Rest\WebHookController::class,'webhook']);
 
-        Route::get('review',[Rest\ReviewController::class,'paginate']);
+        Route::get('review/{product_id}',[Rest\ReviewController::class,'paginate']);
 
     });
 

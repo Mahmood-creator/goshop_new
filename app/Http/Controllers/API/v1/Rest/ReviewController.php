@@ -24,12 +24,12 @@ class ReviewController extends RestBaseController
         $this->model = $model;
     }
 
-    public function paginate(IndexRequest $request): AnonymousResourceCollection
+    public function paginate(int $product_id,IndexRequest $request): AnonymousResourceCollection
     {
         $collection = $request->validated();
         $reviews = $this->model->with(['reviewable', 'user'])
-            ->where('reviewable',Product::class)
-            ->where('reviewable_id',$collection['product_id'])
+            ->where('reviewable_type',Product::class)
+            ->where('reviewable_id',$product_id)
             ->orderBy('id', 'desc')
             ->paginate($collection['perPage']);
 
