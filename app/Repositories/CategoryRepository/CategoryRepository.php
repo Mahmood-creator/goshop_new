@@ -35,6 +35,11 @@ class CategoryRepository extends CoreRepository implements CategoryRepoInterface
         return Category::class;
     }
 
+    public function mostSoldProductCategories()
+    {
+
+    }
+
     /**
      * Get Parent, only categories where parent_id == 0
      */

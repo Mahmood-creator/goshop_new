@@ -97,7 +97,7 @@ class ProductRepository extends \App\Repositories\CoreRepository implements \App
                 'stocks.countable',
                 'translation' => fn($q) => $q->where('locale', $this->lang)
                     ->select('id', 'product_id', 'locale', 'title'),
-                'category' => fn($q) => $q->select('id', 'uuid', 'weight'),
+                'category' => fn($q) => $q->select('id', 'uuid'),
                 'category.translation' => fn($q) => $q->where('locale', $this->lang)
                     ->select('id', 'category_id', 'locale', 'title'),
                 'brand' => fn($q) => $q->select('id', 'uuid', 'title'),
@@ -172,7 +172,7 @@ class ProductRepository extends \App\Repositories\CoreRepository implements \App
                 'stocks.discount',
                 'stocks.countable',
                 'shop.translation' => fn($q) => $q->where('locale', $this->lang),
-                'category' => fn($q) => $q->select('id', 'uuid', 'weight'),
+                'category' => fn($q) => $q->select('id', 'uuid'),
                 'category.translation' => fn($q) => $q->where('locale', $this->lang)
                     ->select('id', 'category_id', 'locale', 'title'),
                 'brand' => fn($q) => $q->select('id', 'uuid', 'title'),

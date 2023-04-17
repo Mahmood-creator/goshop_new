@@ -18,7 +18,6 @@ trait ApiResponse
     public function successResponse(string $message = '', $data = null): JsonResponse
     {
         return new JsonResponse([
-            'timestamp' => now(),
             'status' => true,
             'message' => $message,
             'data' => $data
@@ -36,7 +35,6 @@ trait ApiResponse
     public function errorResponse(string $statusCode, string $message = '', int $httpCode = Response::HTTP_INTERNAL_SERVER_ERROR): JsonResponse
     {
         return new JsonResponse([
-            'timestamp' => now(),
             'status' => false,
             'statusCode' => $statusCode,
             'message' => $message
@@ -46,7 +44,6 @@ trait ApiResponse
     public function requestErrorResponse(string $statusCode, string $message = '', array $params = [], int $httpCode = Response::HTTP_INTERNAL_SERVER_ERROR): JsonResponse
     {
         return new JsonResponse([
-            'timestamp' => now(),
             'status' => false,
             'statusCode' => $statusCode,
             'message' => $message,

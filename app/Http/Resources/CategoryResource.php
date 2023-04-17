@@ -27,7 +27,6 @@ class CategoryResource extends JsonResource
             'img' => $this->when(isset($this->img), (string) $this->img),
             'active' => $this->when($this->active, (bool) $this->active),
             'product_type_id' => $this->when($this->product_type_id,$this->productType($this->product_type_id)),
-            'weight' => $this->when($this->weight,$this->weight),
             'created_at' => $this->when($this->created_at, optional($this->created_at)->format('Y-m-d H:i:s')),
             'updated_at' =>  $this->when($this->updated_at, optional($this->updated_at)->format('Y-m-d H:i:s')),
             'products_count' =>  $this->when($this->products_count, (int) $this->products_count),

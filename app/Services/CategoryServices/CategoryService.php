@@ -113,7 +113,6 @@ class CategoryService extends CoreService implements CategoryServiceInterface
             'parent_id' => $collection['parent_id'] ?? 0,
             'type' => $collection['type'] ?? 1,
             'active' => $collection['active'] ?? 0,
-            'weight' => $collection['weight'] ?? 1,
             'product_type_id' => $collection['product_type_id'] ?? null
         ];
     }

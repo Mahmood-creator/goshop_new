@@ -44,8 +44,6 @@ class CategoryCreateRequest extends FormRequest
             'title.*'  => ['required', 'string', 'min:2', 'max:255'],
             'description'  => ['array'],
             'description.*'  => ['string', 'min:2'],
-            'weight' => ['required','numeric'],
-            'product_type_id' => ['required','integer']
         ];
     }
 
