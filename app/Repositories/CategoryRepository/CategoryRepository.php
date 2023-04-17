@@ -35,8 +35,22 @@ class CategoryRepository extends CoreRepository implements CategoryRepoInterface
         return Category::class;
     }
 
-    public function mostSoldProductCategories()
+    public function mostSoldProductCategories(array $array)
     {
+        $stockIds = OrderProduct::with('stock.countable:id')
+            ->whereHas('detail.order',function ($q){
+                $q->where('status',Order::DELIVERED);
+            })
+            ->select('stock_id',DB::raw('COUNT(quantity) AS `COUNT`'))
+            ->groupBy('stock_id')
+            ->orderBy('count', 'DESC')
+            ->pluck('stock_id');
+
+        return Category::with(['translation' => function ($q){
+            $q->where('locale','aze');
+        }])->whereHas('products.stocks',function ($q) use ($stockIds){
+            $q->whereIn('id',$stockIds);
+        })->select('id')->paginate($array['perPage'] ?? 15);
 
     }
 
@@ -173,9 +187,9 @@ class CategoryRepository extends CoreRepository implements CategoryRepoInterface
             ExportJob::dispatchAfterResponse("export/$name.xlsx", $data, CategoriesReportExport::class);
 
             return [
-                'path'      => 'public/export',
+                'path' => 'public/export',
                 'file_name' => "export/$name.xlsx",
-                'link'      => URL::to("storage/export/$name.xlsx"),
+                'link' => URL::to("storage/export/$name.xlsx"),
             ];
         }
 
@@ -193,7 +207,7 @@ class CategoryRepository extends CoreRepository implements CategoryRepoInterface
                 'categories.parent_id',
                 'cat_t.title as translation_title'])
             ->addSelect([
-                'items_sold'   => OrderProduct::whereHas('stock', function (Builder $stock) {
+                'items_sold' => OrderProduct::whereHas('stock', function (Builder $stock) {
                     $stock->where('countable_type', Product::class)
                         ->whereHas('countable', function (Builder $product) {
                             $product->whereColumn('category_id', 'categories.id')
@@ -215,7 +229,7 @@ class CategoryRepository extends CoreRepository implements CategoryRepoInterface
                             });
                     })
                     ->selectRaw('IFNULL(sum(quantity), 0)  as sum_quantity'),
-                'net_sales'    => OrderDetail::query()
+                'net_sales' => OrderDetail::query()
                     ->whereStatus(OrderDetail::DELIVERED)
                     ->whereHas('products.stock',
                         function ($stock) {
@@ -323,8 +337,8 @@ class CategoryRepository extends CoreRepository implements CategoryRepoInterface
 
     public function reportChart($dateFrom, $dateTo)
     {
-        $itemsSold   = moneyFormatter($this->itemsSoldQuery($dateFrom, $dateTo)->sum('quantity'));
-        $netSales    = moneyFormatter($this->netSalesQuery($dateFrom, $dateTo)->netSalesSum()->value('net_sales_sum'));
+        $itemsSold = moneyFormatter($this->itemsSoldQuery($dateFrom, $dateTo)->sum('quantity'));
+        $netSales = moneyFormatter($this->netSalesQuery($dateFrom, $dateTo)->netSalesSum()->value('net_sales_sum'));
         $ordersCount = moneyFormatter($this->ordersCountQuery($dateFrom, $dateTo)->count());
         switch (request('chart', 'commission_earned')) {
             case 'orders_count':
@@ -493,14 +507,14 @@ class CategoryRepository extends CoreRepository implements CategoryRepoInterface
 
     public function reportCompare($dateFrom, $dateTo): array
     {
-        $itemsSold       = moneyFormatter($this->itemsSoldQuery($dateFrom, $dateTo, request('ids'))->sum('quantity'));
-        $netSales        = moneyFormatter($this->netSalesQuery($dateFrom, $dateTo)
+        $itemsSold = moneyFormatter($this->itemsSoldQuery($dateFrom, $dateTo, request('ids'))->sum('quantity'));
+        $netSales = moneyFormatter($this->netSalesQuery($dateFrom, $dateTo)
             ->netSalesSum()
             ->value('net_sales_sum'));
-        $ordersCount     = moneyFormatter($this->ordersCountQuery($dateFrom, $dateTo, request('ids'))->count());
+        $ordersCount = moneyFormatter($this->ordersCountQuery($dateFrom, $dateTo, request('ids'))->count());
         $defaultCurrency = defaultCurrency();
-        $charts          = [];
-        $getChartData    = function ($dateFrom, $dateTo, $id = null) {
+        $charts = [];
+        $getChartData = function ($dateFrom, $dateTo, $id = null) {
             switch (request('chart', 'commission_earned')) {
                 case 'orders_count':
                     return $this->ordersCount($dateFrom, $dateTo, $id);
@@ -515,7 +529,7 @@ class CategoryRepository extends CoreRepository implements CategoryRepoInterface
         foreach (request('ids') as $id) {
             $charts[] = [
                 'translation' => $this->getCategoryById($id),
-                'chart'       => $getChartData($dateFrom, $dateTo, $id),
+                'chart' => $getChartData($dateFrom, $dateTo, $id),
             ];
         }
 

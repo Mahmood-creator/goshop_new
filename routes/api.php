@@ -82,6 +82,7 @@ Route::group(['prefix' => 'v1'], function (){
         Route::get('products/brands/{id}', [Rest\ProductController::class, 'getByBrandId']);
 
         /* Categories */
+        Route::get('categories/most-sold',[Rest\CategoryController::class,'mostSoldCategory']);
         Route::get('categories/paginate', [Rest\CategoryController::class, 'paginate']);
         Route::get('categories/search', [Rest\CategoryController::class, 'categoriesSearch']);
         Route::get('categories/{uuid}', [Rest\CategoryController::class, 'show']);
@@ -136,6 +137,7 @@ Route::group(['prefix' => 'v1'], function (){
         Route::get('webhook-payment',[Rest\WebHookController::class,'webhook']);
 
         Route::get('review/{product_id}',[Rest\ReviewController::class,'paginate']);
+
 
     });
 

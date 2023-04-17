@@ -6,6 +6,7 @@ use App\Helpers\ResponseError;
 use App\Http\Resources\CategoryResource;
 use App\Repositories\Interfaces\CategoryRepoInterface;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Symfony\Component\HttpFoundation\Response;
 
 class CategoryController extends RestBaseController
@@ -24,11 +25,24 @@ class CategoryController extends RestBaseController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return AnonymousResourceCollection
      */
 
     public function paginate(Request $request) {
         $categories = $this->categoryRepo->parentCategories($request->perPage ?? 15, true,  $request->all());
+        return CategoryResource::collection($categories);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @param Request $request
+     * @return AnonymousResourceCollection
+     */
+
+    public function mostSoldCategory(Request $request): AnonymousResourceCollection
+    {
+        $categories = $this->categoryRepo->mostSoldProductCategories($request->all());
         return CategoryResource::collection($categories);
     }
 
@@ -55,7 +69,7 @@ class CategoryController extends RestBaseController
      * Search Model by tag name.
      *
      * @param Request $request
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return AnonymousResourceCollection
      */
     public function categoriesSearch(Request $request)
     {
