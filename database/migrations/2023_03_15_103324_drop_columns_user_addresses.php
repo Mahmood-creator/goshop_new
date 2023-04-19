@@ -20,8 +20,6 @@ class DropColumnsUserAddresses extends Migration
             $table->dropColumn('birth_date');
             $table->dropColumn('gender');
             $table->dropColumn('email');
-            $table->dropColumn('passport_number');
-            $table->dropColumn('passport_secret');
             $table->dropColumn('user_delivery_id');
             $table->dropColumn('number');
         });
@@ -40,8 +38,6 @@ class DropColumnsUserAddresses extends Migration
             $table->date('birth_date')->nullable();
             $table->string('gender')->nullable();
             $table->string('email')->nullable();
-            $table->string('passport_number')->nullable();
-            $table->string('passport_secret')->nullable();
             $table->string('number')->nullable();
             $table->integer('user_delivery_id')->nullable();
             $table->string('address')->nullable();

@@ -15,8 +15,6 @@ class AddNewColumnsToUsers extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('address')->nullable();
-            $table->string('passport_number')->nullable();
-            $table->string('passport_secret')->nullable();
             $table->string('user_delivery_id')->nullable();
         });
     }
@@ -30,8 +28,6 @@ class AddNewColumnsToUsers extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('address');
-            $table->dropColumn('passport_number');
-            $table->dropColumn('passport_secret');
             $table->dropColumn('user_delivery_id');
         });
     }
