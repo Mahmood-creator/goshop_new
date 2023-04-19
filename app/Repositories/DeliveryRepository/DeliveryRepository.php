@@ -68,7 +68,7 @@ class DeliveryRepository extends CoreRepository
         return $this->model()->with([
             'translation' => function ($q) {
                 $q->where(['locale' => $this->lang]);
-            },'countries.translation'
+            }
             ])
             ->where('active',1)
             ->find($id);
@@ -81,7 +81,6 @@ class DeliveryRepository extends CoreRepository
         })
             ->with([
                 'translation' => fn($q) => $q->where('locale', $this->lang),
-                'countries.translation'  => fn($q) => $q->where('locale', $this->lang),
             ])
             ->where('active',1)
             ->paginate($array['perPage']);

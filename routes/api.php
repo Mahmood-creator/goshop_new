@@ -122,10 +122,6 @@ Route::group(['prefix' => 'v1'], function (){
 
         Route::get('filter', [Rest\FilterController::class, 'filter']);
 
-        Route::get('countries', [Rest\CountryController::class, 'index']);
-
-        Route::get('countries/{id}', [Rest\CountryController::class, 'show']);
-
         Route::get('delivery',[Rest\DeliveryController::class,'paginate']);
 
         Route::get('delivery/{id}',[Rest\DeliveryController::class,'show']);

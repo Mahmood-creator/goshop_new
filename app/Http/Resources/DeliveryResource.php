@@ -28,7 +28,7 @@ class DeliveryResource extends JsonResource
             // Relation
             'translation' => TranslationResource::make($this->whenLoaded('translation')),
             'translations' => TranslationResource::collection($this->whenLoaded('translations')),
-            'countries' => CountryResource::collection($this->whenLoaded('countries'))
+//            'countries' => CountryResource::collection($this->whenLoaded('countries'))
         ];
     }
 }
