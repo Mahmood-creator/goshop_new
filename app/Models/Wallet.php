@@ -7,6 +7,41 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * App\Models\Wallet
+ *
+ * @property int $id
+ * @property string $uuid
+ * @property int $user_id
+ * @property int $currency_id
+ * @property float $price
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\Currency $currency
+ * @property-read mixed $symbol
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\WalletHistory> $histories
+ * @property-read int|null $histories_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Transaction> $transactions
+ * @property-read int|null $transactions_count
+ * @property-read \App\Models\User $user
+ * @method static \Database\Factories\WalletFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|Wallet newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Wallet newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Wallet onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Wallet query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Wallet whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Wallet whereCurrencyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Wallet whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Wallet whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Wallet wherePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Wallet whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Wallet whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Wallet whereUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Wallet withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Wallet withoutTrashed()
+ * @mixin \Eloquent
+ */
 class Wallet extends Model
 {
     use HasFactory, SoftDeletes, Payable;

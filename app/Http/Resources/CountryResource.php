@@ -2,13 +2,12 @@
 
 namespace App\Http\Resources;
 
-use App\Traits\SetCurrency;
+use App\Models\Country;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CountryResource extends JsonResource
 {
-    use SetCurrency;
     /**
      * Transform the resource into an array.
      *
@@ -17,9 +16,11 @@ class CountryResource extends JsonResource
      */
     public function toArray($request)
     {
+        /** @var Country|JsonResource $this */
         return [
             'id' => $this->id,
-            'price' => $this->pivot->price * $this->currency(),
+            'name' => $this->name,
+
             'translation' => TranslationResource::make($this->whenLoaded('translation')),
             'translations' => TranslationResource::collection($this->whenLoaded('translations')),
         ];

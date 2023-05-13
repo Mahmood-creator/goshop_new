@@ -17,28 +17,21 @@ class UserAddressResource extends JsonResource
      */
     public function toArray($request)
     {
+        /** @var UserAddress|JsonResource $this */
         return [
             'id' => (int) $this->id,
             'title' => (string) $this->title,
             'country_id' => $this->country_id,
-            'province' => $this->province,
-            'name' => $this->name,
-            'surname' => $this->surname,
-            'email' => $this->email,
-            'apartment' => $this->apartment,
-            'company_name' => $this->company_name,
-            'postcode' => $this->postcode,
-            'number' => $this->number,
-            'city' => $this->city,
             'note' => $this->note,
-            'address' => (string) $this->title,
             'location' => [
                 'latitude' => $this->location['latitude'],
                 'longitude' => $this->location['longitude'],
             ],
             'default' => (boolean) $this->default,
             'active' => (boolean) $this->active,
-            'country' => $this->country,
+            'country' => CountryResource::make($this->whenLoaded('country')),
+            'region' => RegionResource::make($this->whenLoaded('region')),
+            'city' => CityResource::make($this->whenLoaded('city')),
             'created_at' => $this->when($this->created_at, optional($this->created_at)->format('Y-m-d H:i:s')),
             'updated_at' => $this->when($this->updated_at, optional($this->updated_at)->format('Y-m-d H:i:s')),
             'deleted_at' => $this->when($this->deleted_at, optional($this->deleted_at)->format('Y-m-d H:i:s')),

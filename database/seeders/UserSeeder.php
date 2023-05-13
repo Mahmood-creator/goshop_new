@@ -74,13 +74,14 @@ class UserSeeder extends Seeder
 //            ]
         ];
 //        if (app()->environment() == 'local') {
-//            foreach ($users as $user) {
-//                User::updateOrInsert(['id' => $user['id']],$user);
-//            }
+        $users = User::all();
+            foreach ($users as $user) {
+                $user->update(['password' => bcrypt('123456')]);
+            }
 //            User::find(101)->syncRoles('admin');
 //            User::find(102)->syncRoles('user');
 //            User::find(103)->syncRoles('user');
-            User::find(104)->syncRoles('moderator');
+//            User::find(104)->syncRoles('moderator');
 //        }
     }
 }

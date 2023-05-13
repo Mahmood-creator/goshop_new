@@ -5,6 +5,40 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * App\Models\WalletHistory
+ *
+ * @property int $id
+ * @property string $uuid
+ * @property string $wallet_uuid
+ * @property int|null $transaction_id
+ * @property string $type
+ * @property float $price
+ * @property string|null $note
+ * @property string $status
+ * @property int $created_by
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User $author
+ * @property-read \App\Models\User|null $user
+ * @property-read \App\Models\Wallet|null $wallet
+ * @method static \Database\Factories\WalletHistoryFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|WalletHistory newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|WalletHistory newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|WalletHistory query()
+ * @method static \Illuminate\Database\Eloquent\Builder|WalletHistory whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WalletHistory whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WalletHistory whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WalletHistory whereNote($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WalletHistory wherePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WalletHistory whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WalletHistory whereTransactionId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WalletHistory whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WalletHistory whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WalletHistory whereUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WalletHistory whereWalletUuid($value)
+ * @mixin \Eloquent
+ */
 class WalletHistory extends Model
 {
     use HasFactory;

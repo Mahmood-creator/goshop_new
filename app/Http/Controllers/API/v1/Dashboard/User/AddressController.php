@@ -4,6 +4,8 @@ namespace App\Http\Controllers\API\v1\Dashboard\User;
 
 use App\Helpers\ResponseError;
 use App\Http\Requests\FilterParamsRequest;
+use App\Http\Requests\User\Address\StoreRequest;
+use App\Http\Requests\User\Address\UpdateRequest;
 use App\Http\Requests\User\AddressStoreRequest;
 use App\Http\Requests\User\AddressUpdateRequest;
 use App\Http\Requests\User\FindexAddressStoreRequest;
@@ -12,6 +14,7 @@ use App\Http\Resources\UserAddressResource;
 use App\Models\UserAddress;
 use App\Services\UserServices\UserAddressService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Symfony\Component\HttpFoundation\Response;
 
 class AddressController extends UserBaseController
@@ -29,21 +32,22 @@ class AddressController extends UserBaseController
     /**
      * Display a listing of the resource.
      *
-     * @return JsonResponse
+     * @param FilterParamsRequest $request
+     * @return AnonymousResourceCollection
      */
     public function index(FilterParamsRequest $request)
     {
         $address = $this->model->where('user_id', auth('sanctum')->id())->paginate($request->perPage ?? 15);
-        return $this->successResponse(__('web.list_of_address'), UserAddressResource::collection($address));
+        return UserAddressResource::collection($address);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param AddressStoreRequest $request
+     * @param StoreRequest $request
      * @return JsonResponse
      */
-    public function store(AddressStoreRequest $request): JsonResponse
+    public function store(StoreRequest $request): JsonResponse
     {
         $collection = $request->validated();
 
@@ -61,57 +65,12 @@ class AddressController extends UserBaseController
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param FindexAddressStoreRequest $request
-     * @return JsonResponse
-     */
-    public function storeFindex(FindexAddressStoreRequest $request): JsonResponse
-    {
-        $collection = $request->validated();
-
-        $userId = auth('sanctum')->user()->id;
-
-        $result = $this->addressService->createFindex($collection, $userId);
-
-        if ($result['status']) {
-            return $this->successResponse(__('web.record_was_successfully_create'), UserAddressResource::make($result['data']));
-        }
-        return $this->errorResponse(
-            $result['code'], $result['message'] ?? trans('errors.' . $result['code'], [], \request()->lang),
-            Response::HTTP_BAD_REQUEST
-        );
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param FindexAddressUpdateRequest $request
-     * @param int $id
-     * @return JsonResponse
-     */
-    public function updateFindex(FindexAddressUpdateRequest $request, int $id): JsonResponse
-    {
-        $collection = $request->validated();
-        $collection['user_id'] = auth('sanctum')->user()->id;
-        $result = $this->addressService->updateFindex($collection, $id);
-
-        if ($result['status']) {
-            return $this->successResponse(__('web.record_was_successfully_create'), UserAddressResource::make($result['data']));
-        }
-        return $this->errorResponse(
-            $result['code'], $result['message'] ?? trans('errors.' . $result['code'], [], \request()->lang),
-            Response::HTTP_BAD_REQUEST
-        );
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param int $id
      * @return JsonResponse
      */
-    public function show(int $id)
+    public function show(int $id): JsonResponse
     {
         $address = $this->model->where(['user_id' => auth('sanctum')->id(), 'id' => $id])->first();
         if ($address) {
@@ -126,11 +85,11 @@ class AddressController extends UserBaseController
     /**
      * Update the specified resource in storage.
      *
-     * @param AddressUpdateRequest $request
+     * @param UpdateRequest $request
      * @param int $id
      * @return JsonResponse
      */
-    public function update(AddressUpdateRequest $request, int $id)
+    public function update(UpdateRequest $request, int $id): JsonResponse
     {
         $collection = $request->validated();
 
@@ -150,9 +109,9 @@ class AddressController extends UserBaseController
      * Remove the specified resource from storage.
      *
      * @param int $id
-     * @return JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection|\Illuminate\Http\Response
+     * @return AnonymousResourceCollection|JsonResponse
      */
-    public function destroy(int $id)
+    public function destroy(int $id): JsonResponse|AnonymousResourceCollection
     {
         $result = $this->addressService->destroy($id);
         if ($result['status']) {

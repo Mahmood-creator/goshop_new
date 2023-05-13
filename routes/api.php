@@ -1,14 +1,15 @@
 <?php
-
-use App\Http\Controllers\API\v1\Auth\LoginController;
-use App\Http\Controllers\API\v1\Auth\RegisterController;
-use App\Http\Controllers\API\v1\Auth\VerifyAuthController;
-use App\Http\Controllers\API\v1\Dashboard\Admin;
-use App\Http\Controllers\API\v1\Dashboard\Seller;
-use App\Http\Controllers\API\v1\Dashboard\User;
-use App\Http\Controllers\API\v1\Dashboard\Deliveryman;
 use App\Http\Controllers\API\v1\Rest;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\v1\Dashboard\User;
+use App\Http\Controllers\API\v1\Dashboard\Admin;
+use App\Http\Controllers\API\v1\Dashboard\Seller;
+use App\Http\Controllers\API\v1\Dashboard\Payment;
+use App\Http\Controllers\API\v1\GalleryController;
+use App\Http\Controllers\API\v1\Auth\LoginController;
+use App\Http\Controllers\API\v1\Dashboard\Deliveryman;
+use App\Http\Controllers\API\v1\Auth\RegisterController;
+use App\Http\Controllers\API\v1\Auth\VerifyAuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -134,22 +135,29 @@ Route::group(['prefix' => 'v1'], function (){
 
         Route::get('review/{product_id}',[Rest\ReviewController::class,'paginate']);
 
+        Route::get('countries',[Rest\CountryController::class,'index']);
+        Route::get('countries/{id}',[Rest\CountryController::class,'show']);
 
+        Route::get('regions',[Rest\RegionController::class,'index']);
+        Route::get('regions/{id}',[Rest\RegionController::class,'show']);
+
+        Route::get('cities',[Rest\CityController::class,'index']);
+        Route::get('cities/{id}',[Rest\CityController::class,'show']);
     });
 
     Route::group(['prefix' => 'payments', 'middleware' => ['sanctum.check'], 'as' => 'payment.'], function (){
 
         /* Transactions */
-        Route::post('{type}/{id}/transactions', [\App\Http\Controllers\API\v1\Dashboard\Payment\TransactionController::class, 'store']);
-        Route::put('{type}/{id}/transactions', [\App\Http\Controllers\API\v1\Dashboard\Payment\TransactionController::class, 'updateStatus']);
+        Route::post('{type}/{id}/transactions', [Payment\TransactionController::class, 'store']);
+        Route::put('{type}/{id}/transactions', [Payment\TransactionController::class, 'updateStatus']);
     });
 
     Route::group(['prefix' => 'dashboard'], function () {
         /* Galleries */
-        Route::get('/galleries/paginate', [\App\Http\Controllers\API\v1\GalleryController::class, 'paginate']);
-        Route::get('/galleries/storage/files', [\App\Http\Controllers\API\v1\GalleryController::class, 'getStorageFiles']);
-        Route::post('/galleries/storage/files/delete', [\App\Http\Controllers\API\v1\GalleryController::class, 'deleteStorageFile']);
-        Route::post('/galleries', [\App\Http\Controllers\API\v1\GalleryController::class, 'store']);
+        Route::get('/galleries/paginate', [GalleryController::class, 'paginate']);
+        Route::get('/galleries/storage/files', [GalleryController::class, 'getStorageFiles']);
+        Route::post('/galleries/storage/files/delete', [GalleryController::class, 'deleteStorageFile']);
+        Route::post('/galleries', [GalleryController::class, 'store']);
 
         // USER BLOCK
         Route::group(['prefix' => 'user', 'middleware' => ['sanctum.check'], 'as' => 'user.'], function () {
@@ -210,6 +218,11 @@ Route::group(['prefix' => 'v1'], function (){
 
         // SELLER BLOCK
         Route::group(['prefix' => 'seller', 'middleware' => ['sanctum.check', 'role:seller|moderator'], 'as' => 'seller.'], function () {
+
+            // Shop Location
+            Route::apiResource('shop-locations',Seller\ShopLocationController::class);
+            Route::delete('shop-locations/delete',[Seller\ShopLocationController::class,'destroy']);
+
             /* Dashboard */
             Route::get('statistics/count', [Seller\DashboardController::class, 'countStatistics']);
             Route::get('statistics/sum', [Seller\DashboardController::class, 'sumStatistics']);
@@ -317,10 +330,19 @@ Route::group(['prefix' => 'v1'], function (){
             Route::get('shops/report/chart', [Seller\ShopController::class, 'reportChart']);
             Route::get('shops/report/compare', [Seller\ShopController::class, 'reportCompare']);
 
+            /* Payment */
+            Route::get('payment/all-payment', [Seller\ShopPaymentController::class, 'allPayment']);
+            Route::apiResource('payment', Seller\ShopPaymentController::class);
+            Route::delete('payment', [Seller\ShopPaymentController::class,'destroy']);
         });
 
         // ADMIN BLOCK
         Route::group(['prefix' => 'admin', 'middleware' => ['sanctum.check', 'role:admin|manager'], 'as' => 'admin.'], function () {
+
+            // Shop Location
+            Route::apiResource('shops/shop-locations',Admin\ShopLocationController::class);
+            Route::delete('shops/shop-locations/delete',[Admin\ShopLocationController::class,'destroy']);
+
             /* Dashboard */
             Route::get('statistics/count', [Admin\DashboardController::class, 'countStatistics']);
             Route::get('statistics/sum', [Admin\DashboardController::class, 'sumStatistics']);
@@ -516,6 +538,8 @@ Route::group(['prefix' => 'v1'], function (){
             Route::get('shops/report/paginate', [Admin\ShopController::class, 'reportPaginate']);
             Route::get('shops/report/chart', [Admin\ShopController::class, 'reportChart']);
             Route::get('shops/report/compare', [Admin\ShopController::class, 'reportCompare']);
+
+
 
         });
 

@@ -3,23 +3,19 @@
 namespace App\Services\TransactionService;
 
 use App\Helpers\ResponseError;
-use App\Models\Currency;
 use App\Models\Order;
 use App\Models\Payment;
+use App\Models\Settings;
+use App\Models\ShopPayment;
 use App\Models\ShopSubscription;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Wallet;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class TransactionService extends \App\Services\CoreService
 {
-    protected string $baseUrl = 'https://cmpi.azerturkbank.az/epg/rest/register.do';
-    protected string $returnUrl = 'https://mupza.az/status-success';
-    protected string $failUrl = 'https://mupza.az/status-fail';
-
     protected function getModelClass()
     {
         return Transaction::class;
@@ -52,7 +48,7 @@ class TransactionService extends \App\Services\CoreService
                 return $payment;
             }
 
-                if (!Cache::has('project.status') || Cache::get('project.status')->active != 1){
+            if (!Cache::has('project.status') || Cache::get('project.status')->active != 1) {
                 return ['status' => false, 'code' => ResponseError::ERROR_403];
             }
             return ['status' => true, 'code' => ResponseError::NO_ERROR, 'data' => $order->load('transaction')];
@@ -119,25 +115,35 @@ class TransactionService extends \App\Services\CoreService
 
     private function checkPayment(int $id, $model)
     {
-        $payment = Payment::where('active', 1)->find($id);
+        $paymentOwner = Settings::where('value', 'seller')->first();
 
-        if ($payment) {
-            if ($payment->tag == Payment::WALLET) {
-                $user = User::find($model->user_id);
+        if ($paymentOwner) {
+            $payment = ShopPayment::find($id);
 
-                if ($user && $user->wallet->price >= $model->price) {
-                    $user->wallet()->update(['price' => $user->wallet->price - $model->price]);
-                    return ['status' => true, 'code' => ResponseError::NO_ERROR, 'wallet' => $user->wallet];
-                } else {
-                    return ['status' => false, 'code' => ResponseError::ERROR_109];
-                }
-            }
-
-            return ['status' => true, 'code' => ResponseError::NO_ERROR];
-
+            $paymentTag = $payment?->payment?->tag;
         } else {
+            $payment = Payment::where('active', 1)->find($id);
+
+            $paymentTag = $payment?->tag;
+        }
+
+        if (!$paymentTag) {
             return ['status' => false, 'code' => ResponseError::ERROR_404];
         }
+
+        if ($paymentTag == Payment::WALLET) {
+            $user = User::find($model->user_id);
+
+            if ($user && $user->wallet->price >= $model->price) {
+                $user->wallet()->update(['price' => $user->wallet->price - $model->price]);
+                return ['status' => true, 'code' => ResponseError::NO_ERROR, 'wallet' => $user->wallet];
+            } else {
+                return ['status' => false, 'code' => ResponseError::ERROR_109];
+            }
+        }
+
+        return ['status' => true, 'code' => ResponseError::NO_ERROR];
+
     }
 
     private function walletHistoryAdd($user, $transaction, $model, $type = 'Order')

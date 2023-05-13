@@ -57,6 +57,7 @@ class ResponseError
     public const ERROR_507 = 'ERROR_507'; // 'Can't delete record that has products.'
     public const ERROR_508 = 'ERROR_508'; // 'Excel format incorrect or data invalid.'
     public const ERROR_509 = 'ERROR_509'; // 'Excel format incorrect or data invalid.'
+    public const ERROR_511 = 'ERROR_511'; // 'Can't delete record that has relation other records.'
 
 
 }

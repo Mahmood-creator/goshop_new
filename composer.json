@@ -9,6 +9,7 @@
         "ext-gd": "*",
         "ext-json": "*",
         "barryvdh/laravel-dompdf": "^2.0",
+        "barryvdh/laravel-ide-helper": "^2.13",
         "doctrine/dbal": "^3.5",
         "fomvasss/laravel-meta-tags": "^3.5",
         "fruitcake/laravel-cors": "^2.0",

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\v1\Dashboard\Admin;
 
 use App\Helpers\ResponseError;
+use App\Http\Requests\User\Address\StoreRequest;
 use App\Http\Requests\User\AddressStoreRequest;
 use App\Http\Resources\UserAddressResource;
 use App\Models\UserAddress;
@@ -34,7 +35,7 @@ class UserAddressController extends AdminBaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function paginate()
+    private function paginate()
     {
         //
     }
@@ -42,11 +43,11 @@ class UserAddressController extends AdminBaseController
     /**
      * Store a newly created resource in storage.
      *
+     * @param StoreRequest $request
      * @param string $uuid
-     * @param AddressStoreRequest $request
      * @return JsonResponse
      */
-    public function store(string $uuid, AddressStoreRequest $request)
+    public function store(StoreRequest $request,string $uuid): JsonResponse
     {
         $user = User::firstWhere('uuid', $uuid);
         if ($user){
@@ -71,7 +72,7 @@ class UserAddressController extends AdminBaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id): \Illuminate\Http\Response
     {
         //
     }
@@ -83,7 +84,7 @@ class UserAddressController extends AdminBaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): \Illuminate\Http\Response
     {
         //
     }
@@ -94,7 +95,7 @@ class UserAddressController extends AdminBaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id): \Illuminate\Http\Response
     {
         //
     }

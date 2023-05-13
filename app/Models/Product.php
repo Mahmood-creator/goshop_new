@@ -15,6 +15,76 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
 
+/**
+ * App\Models\Product
+ *
+ * @property int $id
+ * @property string $uuid
+ * @property int $shop_id
+ * @property int $category_id
+ * @property int|null $unit_id
+ * @property string|null $keywords
+ * @property float|null $tax
+ * @property int|null $min_qty
+ * @property int|null $max_qty
+ * @property int $active
+ * @property string|null $img
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property string|null $bar_code
+ * @property int|null $brand_id
+ * @property-read \App\Models\Brand|null $brand
+ * @property-read \App\Models\Category $category
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Discount> $discount
+ * @property-read int|null $discount_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ExtraGroup> $extras
+ * @property-read int|null $extras_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Gallery> $galleries
+ * @property-read int|null $galleries_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\OrderProduct> $orders
+ * @property-read int|null $orders_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\OrderProduct> $productSales
+ * @property-read int|null $product_sales_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductProperties> $properties
+ * @property-read int|null $properties_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Review> $reviews
+ * @property-read int|null $reviews_count
+ * @property-read \App\Models\Shop $shop
+ * @property-read Model|\Eloquent $stock
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Stock> $stocks
+ * @property-read int|null $stocks_count
+ * @property-read \App\Models\ProductTranslation|null $translation
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductTranslation> $translations
+ * @property-read int|null $translations_count
+ * @property-read \App\Models\Unit|null $unit
+ * @method static \Database\Factories\ProductFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product filter($array)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Product newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Product onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Product query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Product updatedDate($updatedDate)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereBarCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereBrandId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereImg($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereKeywords($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereMaxQty($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereMinQty($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereShopId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereTax($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereUnitId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product whereUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Product withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Product withoutTrashed()
+ * @mixin \Eloquent
+ */
 class Product extends Model
 {
     use HasFactory, SoftDeletes, Countable, Loadable, Reviewable, SetCurrency;

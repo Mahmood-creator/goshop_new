@@ -112,6 +112,7 @@ class ShopService extends CoreService implements ShopServiceInterface
           //  'status' => $collection['status'] ?? 'new',
             'status_note' => $collection['status_note'] ?? null,
             'mark' => $collection['mark'] ?? null,
+            'delivery_zone_type' => $collection['delivery_zone_type'],
         ];
     }
 

@@ -4,12 +4,11 @@ namespace App\Http\Controllers\API\v1\Rest;
 
 use App\Helpers\ResponseError;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Rest\Country\IndexRequest;
 use App\Models\Country;
 use App\Traits\ApiResponse;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Symfony\Component\HttpFoundation\Response;
 
 class CountryController extends Controller
@@ -26,16 +25,13 @@ class CountryController extends Controller
     /**
      * Display a listing of the FAQ.
      *
-     * @param Request $request
+     * @param IndexRequest $request
      * @return LengthAwarePaginator
      */
-    public function index(Request $request): LengthAwarePaginator
+    public function index(IndexRequest $request): LengthAwarePaginator
     {
-        return $this->model->with([
-            'translation' => fn($q) => $q->where('locale', $this->lang ?? 'aze'),
-            'delivery'
-        ])
-            ->paginate($request->perPage ?? 10);
+        $collection = $request->validated();
+        return $this->model->select('id','name')->filter($collection)->paginate($collection['perPage']);
     }
 
     /**
@@ -46,10 +42,7 @@ class CountryController extends Controller
      */
     public function show(int $id): JsonResponse
     {
-        $model = Country::with([
-            'translation' => fn($q) => $q->where('locale', $this->lang ?? 'aze'),
-            'delivery'
-        ])->find($id);
+        $model = Country::select('id','name')->find($id);
         if ($model){
             return $this->successResponse(__('web.model_found'), $model);
         }

@@ -7,7 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\PaymentResource;
 use App\Models\Payment;
 use App\Repositories\PaymentRepository\PaymentRepository;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Symfony\Component\HttpFoundation\Response;
 
 class PaymentController extends RestBaseController
@@ -28,7 +30,7 @@ class PaymentController extends RestBaseController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return AnonymousResourceCollection
      */
     public function index()
     {
@@ -41,7 +43,7 @@ class PaymentController extends RestBaseController
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection|\Illuminate\Http\Response
+     * @return AnonymousResourceCollection|JsonResponse
      */
     public function show(int $id)
     {

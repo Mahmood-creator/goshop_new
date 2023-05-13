@@ -30,10 +30,10 @@ class DatabaseSeeder extends Seeder
 //        $this->call(RoleSeeder::class);
 //        $this->call(SubscriptionSeeder::class);
 //        $this->call(TranslationSeeder::class);
-        $this->call(UserSeeder::class);
+//        $this->call(CitySeeder::class);
 //        $this->call(PaymentSeeder::class);
 //        $this->call(SmsGatewaySeeder::class);
-//        $this->call(UnitSeeder::class);
+        $this->call(UserSeeder::class);
 
 
 //        if (app()->environment() == 'local') {

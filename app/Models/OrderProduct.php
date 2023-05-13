@@ -7,6 +7,38 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+/**
+ * App\Models\OrderProduct
+ *
+ * @property int $id
+ * @property int $order_detail_id
+ * @property int $stock_id
+ * @property float $origin_price
+ * @property float $total_price
+ * @property float $tax
+ * @property float $discount
+ * @property int $quantity
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\OrderDetail $detail
+ * @property-read \App\Models\Stock $stock
+ * @property-read \App\Models\ProductTranslation|null $translation
+ * @method static \Database\Factories\OrderProductFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderProduct newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderProduct newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderProduct query()
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderProduct whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderProduct whereDiscount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderProduct whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderProduct whereOrderDetailId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderProduct whereOriginPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderProduct whereQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderProduct whereStockId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderProduct whereTax($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderProduct whereTotalPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderProduct whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class OrderProduct extends Model
 {
     use HasFactory;

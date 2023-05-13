@@ -4,13 +4,85 @@ namespace App\Models;
 
 use App\Traits\Payable;
 use App\Traits\Reviewable;
+use Database\Factories\OrderFactory;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Support\Carbon;
 
+/**
+ * App\Models\Order
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property float $price
+ * @property int $currency_id
+ * @property int $rate
+ * @property string|null $note
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property string|null $deleted_at
+ * @property float|null $usd_price
+ * @property string|null $status
+ * @property float|null $total_delivery_fee
+ * @property int|null $user_address_id
+ * @property int|null $track_code
+ * @property int|null $declaration_id
+ * @property float|null $tax
+ * @property int $delivery_id
+ * @property int|null $country_id
+ * @property int|null $product_type_id
+ * @property int|null $deliveryman_id
+ * @property-read OrderCoupon|null $coupon
+ * @property-read Currency|null $currency
+ * @property-read Delivery $delivery
+ * @property-read User|null $deliveryMan
+ * @property-read OrderDetail|null $orderDetail
+ * @property-read Collection<int, OrderDetail> $orderDetails
+ * @property-read int|null $order_details_count
+ * @property-read PointHistory|null $point
+ * @property-read Review|null $review
+ * @property-read Collection<int, Review> $reviews
+ * @property-read int|null $reviews_count
+ * @property-read Transaction|null $transaction
+ * @property-read Collection<int, Transaction> $transactions
+ * @property-read int|null $transactions_count
+ * @property-read User $user
+ * @property-read UserAddress|null $userAddress
+ * @method static OrderFactory factory(...$parameters)
+ * @method static Builder|Order filter($array)
+ * @method static Builder|Order newModelQuery()
+ * @method static Builder|Order newQuery()
+ * @method static Builder|Order query()
+ * @method static Builder|Order updatedDate($updatedDate)
+ * @method static Builder|Order whereCountryId($value)
+ * @method static Builder|Order whereCreatedAt($value)
+ * @method static Builder|Order whereCurrencyId($value)
+ * @method static Builder|Order whereDeclarationId($value)
+ * @method static Builder|Order whereDeletedAt($value)
+ * @method static Builder|Order whereDeliveryId($value)
+ * @method static Builder|Order whereDeliverymanId($value)
+ * @method static Builder|Order whereId($value)
+ * @method static Builder|Order whereNote($value)
+ * @method static Builder|Order wherePrice($value)
+ * @method static Builder|Order whereProductTypeId($value)
+ * @method static Builder|Order whereRate($value)
+ * @method static Builder|Order whereStatus($value)
+ * @method static Builder|Order whereTax($value)
+ * @method static Builder|Order whereTotalDeliveryFee($value)
+ * @method static Builder|Order whereTrackCode($value)
+ * @method static Builder|Order whereUpdatedAt($value)
+ * @method static Builder|Order whereUsdPrice($value)
+ * @method static Builder|Order whereUserAddressId($value)
+ * @method static Builder|Order whereUserId($value)
+ * @mixin Eloquent
+ */
 class Order extends Model
 {
     use HasFactory,Payable,Reviewable;

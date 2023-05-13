@@ -46,7 +46,8 @@ class RestProductRepository extends CoreRepository
             })
             ->whereHas('category')
             ->limit(10)
-            ->whereActive(1);
+            ->whereActive(1)
+            ->paginate($perPage);
 
             if ($perPage > 7)
             {

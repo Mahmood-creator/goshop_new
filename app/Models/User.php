@@ -13,6 +13,100 @@ use Illuminate\Support\Facades\Cache;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
+/**
+ * App\Models\User
+ *
+ * @property int $id
+ * @property string $uuid
+ * @property string $firstname
+ * @property string|null $lastname
+ * @property string|null $email
+ * @property string|null $phone
+ * @property \Illuminate\Support\Carbon|null $birthday
+ * @property string $gender
+ * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property \Illuminate\Support\Carbon|null $phone_verified_at
+ * @property string|null $ip_address
+ * @property int $active
+ * @property string|null $img
+ * @property string|null $firebase_token
+ * @property string|null $password
+ * @property string|null $remember_token
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property string|null $address
+ * @property string|null $passport_number
+ * @property string|null $passport_secret
+ * @property string|null $user_delivery_id
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserAddress> $addresses
+ * @property-read int|null $addresses_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Gallery> $galleries
+ * @property-read int|null $galleries_count
+ * @property-read mixed $role
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Invitation> $invitations
+ * @property-read int|null $invitations_count
+ * @property-read \App\Models\Invitation|null $invite
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Banner> $likes
+ * @property-read int|null $likes_count
+ * @property-read \App\Models\Shop|null $moderatorShop
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Shop> $moderatorShops
+ * @property-read int|null $moderator_shops_count
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
+ * @property-read int|null $notifications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\OrderDetail> $orderDetails
+ * @property-read int|null $order_details_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Order> $orders
+ * @property-read int|null $orders_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Permission> $permissions
+ * @property-read int|null $permissions_count
+ * @property-read \App\Models\UserPoint|null $point
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PointHistory> $pointHistory
+ * @property-read int|null $point_history_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Review> $reviews
+ * @property-read int|null $reviews_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Role> $roles
+ * @property-read int|null $roles_count
+ * @property-read \App\Models\Shop|null $shop
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SocialProvider> $socialProviders
+ * @property-read int|null $social_providers_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
+ * @property-read int|null $tokens_count
+ * @property-read \App\Models\Wallet|null $wallet
+ * @method static \Database\Factories\UserFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|User onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|User permission($permissions)
+ * @method static \Illuminate\Database\Eloquent\Builder|User query()
+ * @method static \Illuminate\Database\Eloquent\Builder|User role($roles, $guard = null)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereBirthday($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereEmailVerifiedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereFirebaseToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereFirstname($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereGender($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereImg($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereIpAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereLastname($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User wherePassportNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User wherePassportSecret($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User wherePhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User wherePhoneVerifiedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereRememberToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereUserDeliveryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|User withoutTrashed()
+ * @mixin \Eloquent
+ */
 class User extends Authenticatable
 {
     use HasApiTokens;

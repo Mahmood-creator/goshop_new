@@ -53,7 +53,7 @@ class ShopRepository extends \App\Repositories\CoreRepository implements ShopRep
      * @param array $array
      * @return mixed
      */
-    public function shopsPaginate(int $perPage, array $array = [])
+    public function shopsPaginate(int $perPage, array $array = []): mixed
     {
         return $this->model()->updatedDate($this->updatedDate)
             ->withAvg('reviews', 'rating')

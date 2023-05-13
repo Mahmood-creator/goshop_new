@@ -4,7 +4,10 @@ namespace App\Observers;
 
 use App\Helpers\ResponseError;
 use App\Models\Invitation;
+use App\Models\Payment;
+use App\Models\Settings;
 use App\Models\Shop;
+use App\Models\ShopPayment;
 use App\Models\User;
 use App\Services\ProjectService\ProjectService;
 use Illuminate\Support\Str;
@@ -24,6 +27,8 @@ class ShopObserver
         $shop->uuid = Str::uuid();
 
         $this->projectStatus();
+
+
     }
 
     /**
@@ -34,7 +39,22 @@ class ShopObserver
      */
     public function created(Shop $shop)
     {
+        $setting = Settings::where('value','admin')->where('key','payment_owner')->first();
 
+        if ($setting){
+            $payments = Payment::get();
+            if ($payments){
+                foreach ($payments as $payment) {
+                    ShopPayment::create([
+                        'shop_id' => $shop->id,
+                        'payment_id' => $payment->id,
+                        'status' => 1,
+                        'client_id' => $payment->client_id,
+                        'secret_id' => $payment->secret_id,
+                    ]);
+                }
+            }
+        }
     }
 
     /**

@@ -11,6 +11,7 @@ use App\Models\Shop;
 use App\Repositories\Interfaces\ShopRepoInterface;
 use App\Repositories\ShopRepository\ShopDeliveryRepository;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Symfony\Component\HttpFoundation\Response;
 
 class ShopController extends RestBaseController
@@ -28,9 +29,10 @@ class ShopController extends RestBaseController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @param Request $request
+     * @return AnonymousResourceCollection
      */
-    public function paginate(Request $request)
+    public function paginate(Request $request): AnonymousResourceCollection
     {
         $shops = $this->shopRepository->shopsPaginate($request->perPage ?? 15,
             $request->merge([
@@ -62,7 +64,7 @@ class ShopController extends RestBaseController
     /**
      * Search shop Model from database.
      *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return AnonymousResourceCollection
      */
     public function shopsSearch(Request $request)
     {
@@ -82,7 +84,7 @@ class ShopController extends RestBaseController
     /**
      * Search shop Model from database.
      *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return AnonymousResourceCollection
      */
     public function shopsDeliveryByIDs(Request $request)
     {
@@ -102,7 +104,7 @@ class ShopController extends RestBaseController
     /**
      * Search shop Model from database via IDs.
      *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return AnonymousResourceCollection
      */
     public function shopsByIDs(Request $request)
     {
