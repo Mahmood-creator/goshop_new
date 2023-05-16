@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Api\v1\Rest;
 
-use App\Helpers\ResponseError;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Rest\Region\IndexRequest;
-use App\Http\Resources\RegionResource;
 use App\Models\Region;
 use App\Traits\ApiResponse;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use App\Helpers\ResponseError;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\RegionResource;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Requests\Rest\Region\IndexRequest;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class RegionController extends Controller
 {
@@ -35,7 +35,6 @@ class RegionController extends Controller
         $collection = $request->validated();
         $regions = $this->model->select('id','name')->filter($collection)->paginate($collection['perPage']);
         return RegionResource::collection($regions);
-
     }
 
     /**

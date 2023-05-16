@@ -33,9 +33,10 @@ class ProductController extends RestBaseController
     /**
      * Display a listing of the resource.
      *
+     * @param FilterRequest $request
      * @return AnonymousResourceCollection
      */
-    public function paginate(FilterRequest $request)
+    public function paginate(FilterRequest $request): AnonymousResourceCollection
     {
         $collection = $request->validated();
 
@@ -49,7 +50,7 @@ class ProductController extends RestBaseController
      * @param string $uuid
      * @return JsonResponse
      */
-    public function show(string $uuid)
+    public function show(string $uuid): JsonResponse
     {
         request()->merge([
             'review' => true,

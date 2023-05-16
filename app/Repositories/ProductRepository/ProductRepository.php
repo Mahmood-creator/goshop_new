@@ -32,7 +32,7 @@ class ProductRepository extends \App\Repositories\CoreRepository implements \App
         $this->lang = $this->setLanguage();
     }
 
-    protected function getModelClass()
+    protected function getModelClass(): string
     {
         return Product::class;
     }

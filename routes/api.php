@@ -1,15 +1,16 @@
 <?php
-use App\Http\Controllers\API\v1\Rest;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\v1\Dashboard\User;
-use App\Http\Controllers\API\v1\Dashboard\Admin;
-use App\Http\Controllers\API\v1\Dashboard\Seller;
-use App\Http\Controllers\API\v1\Dashboard\Payment;
-use App\Http\Controllers\API\v1\GalleryController;
+
 use App\Http\Controllers\API\v1\Auth\LoginController;
-use App\Http\Controllers\API\v1\Dashboard\Deliveryman;
 use App\Http\Controllers\API\v1\Auth\RegisterController;
 use App\Http\Controllers\API\v1\Auth\VerifyAuthController;
+use App\Http\Controllers\API\v1\Dashboard\Admin;
+use App\Http\Controllers\API\v1\Dashboard\Deliveryman;
+use App\Http\Controllers\API\v1\Dashboard\Payment;
+use App\Http\Controllers\API\v1\Dashboard\Seller;
+use App\Http\Controllers\API\v1\Dashboard\User;
+use App\Http\Controllers\API\v1\GalleryController;
+use App\Http\Controllers\API\v1\Rest;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,7 +23,7 @@ use App\Http\Controllers\API\v1\Auth\VerifyAuthController;
 |
 */
 
-Route::group(['prefix' => 'v1'], function (){
+Route::group(['prefix' => 'v1'], function () {
     // Methods without AuthCheck
     Route::post('/auth/register', [RegisterController::class, 'register'])->middleware('sessions');
     Route::post('/auth/login', [LoginController::class, 'login'])->middleware('sessions');
@@ -32,8 +33,8 @@ Route::group(['prefix' => 'v1'], function (){
     Route::post('/auth/forgot/password', [LoginController::class, 'forgetPassword'])->middleware('sessions');
     Route::post('/auth/forgot/password/confirm', [LoginController::class, 'forgetPasswordVerify'])->middleware('sessions');
 
-   // Route::get('/login/{provider}', [LoginController::class,'redirectToProvider']);
-    Route::post('/auth/{provider}/callback', [LoginController::class,'handleProviderCallback']);
+    // Route::get('/login/{provider}', [LoginController::class,'redirectToProvider']);
+    Route::post('/auth/{provider}/callback', [LoginController::class, 'handleProviderCallback']);
 
 
     Route::group(['prefix' => 'install'], function () {
@@ -83,7 +84,7 @@ Route::group(['prefix' => 'v1'], function (){
         Route::get('products/brands/{id}', [Rest\ProductController::class, 'getByBrandId']);
 
         /* Categories */
-        Route::get('categories/most-sold',[Rest\CategoryController::class,'mostSoldCategory']);
+        Route::get('categories/most-sold', [Rest\CategoryController::class, 'mostSoldCategory']);
         Route::get('categories/paginate', [Rest\CategoryController::class, 'paginate']);
         Route::get('categories/search', [Rest\CategoryController::class, 'categoriesSearch']);
         Route::get('categories/{uuid}', [Rest\CategoryController::class, 'show']);
@@ -123,29 +124,29 @@ Route::group(['prefix' => 'v1'], function (){
 
         Route::get('filter', [Rest\FilterController::class, 'filter']);
 
-        Route::get('delivery',[Rest\DeliveryController::class,'paginate']);
+        Route::get('delivery', [Rest\DeliveryController::class, 'paginate']);
 
-        Route::get('delivery/{id}',[Rest\DeliveryController::class,'show']);
+        Route::get('delivery/{id}', [Rest\DeliveryController::class, 'show']);
 
-        Route::get('search',[Rest\SearchController::class,'search']);
+        Route::get('search', [Rest\SearchController::class, 'search']);
 
-        Route::get('extra-group',[Rest\ExtraController::class,'extrasGroupList']);
+        Route::get('extra-group', [Rest\ExtraController::class, 'extrasGroupList']);
 
-        Route::get('webhook-payment',[Rest\WebHookController::class,'webhook']);
+        Route::get('webhook-payment', [Rest\WebHookController::class, 'webhook']);
 
-        Route::get('review/{product_id}',[Rest\ReviewController::class,'paginate']);
+        Route::get('review/{product_id}', [Rest\ReviewController::class, 'paginate']);
 
-        Route::get('countries',[Rest\CountryController::class,'index']);
-        Route::get('countries/{id}',[Rest\CountryController::class,'show']);
+        Route::get('countries', [Rest\CountryController::class, 'index']);
+        Route::get('countries/{id}', [Rest\CountryController::class, 'show']);
 
-        Route::get('regions',[Rest\RegionController::class,'index']);
-        Route::get('regions/{id}',[Rest\RegionController::class,'show']);
+        Route::get('regions', [Rest\RegionController::class, 'index']);
+        Route::get('regions/{id}', [Rest\RegionController::class, 'show']);
 
-        Route::get('cities',[Rest\CityController::class,'index']);
-        Route::get('cities/{id}',[Rest\CityController::class,'show']);
+        Route::get('cities', [Rest\CityController::class, 'index']);
+        Route::get('cities/{id}', [Rest\CityController::class, 'show']);
     });
 
-    Route::group(['prefix' => 'payments', 'middleware' => ['sanctum.check'], 'as' => 'payment.'], function (){
+    Route::group(['prefix' => 'payments', 'middleware' => ['sanctum.check'], 'as' => 'payment.'], function () {
 
         /* Transactions */
         Route::post('{type}/{id}/transactions', [Payment\TransactionController::class, 'store']);
@@ -174,7 +175,7 @@ Route::group(['prefix' => 'v1'], function (){
             Route::post('orders/review/{id}', [User\OrderController::class, 'addOrderReview']);
             Route::get('orders/paginate', [User\OrderController::class, 'paginate']);
             Route::post('orders/{id}/status/change', [User\OrderController::class, 'orderStatusChange']);
-            Route::post('orders/create', [User\OrderController::class,'store']);
+            Route::post('orders/create', [User\OrderController::class, 'store']);
             Route::apiResource('orders', User\OrderController::class);
 
             Route::get('/invites/paginate', [User\InviteController::class, 'paginate']);
@@ -220,8 +221,8 @@ Route::group(['prefix' => 'v1'], function (){
         Route::group(['prefix' => 'seller', 'middleware' => ['sanctum.check', 'role:seller|moderator'], 'as' => 'seller.'], function () {
 
             // Shop Location
-            Route::apiResource('shop-locations',Seller\ShopLocationController::class);
-            Route::delete('shop-locations/delete',[Seller\ShopLocationController::class,'destroy']);
+            Route::apiResource('shop-locations', Seller\ShopLocationController::class);
+            Route::delete('shop-locations/delete', [Seller\ShopLocationController::class, 'destroy']);
 
             /* Dashboard */
             Route::get('statistics/count', [Seller\DashboardController::class, 'countStatistics']);
@@ -294,7 +295,7 @@ Route::group(['prefix' => 'v1'], function (){
             Route::post('order/details/{id}/deliveryman', [Seller\OrderController::class, 'orderDetailDeliverymanUpdate']);
             Route::post('order/details/{id}/status', [Seller\OrderController::class, 'orderDetailStatusUpdate']);
             Route::apiResource('orders', Seller\OrderController::class)->except('index');
-            Route::post('orders/{id}/all-status/change', [Seller\OrderController::class,'allOrderStatusChange']);
+            Route::post('orders/{id}/all-status/change', [Seller\OrderController::class, 'allOrderStatusChange']);
 
 
             /* Seller Deliveries */
@@ -333,15 +334,15 @@ Route::group(['prefix' => 'v1'], function (){
             /* Payment */
             Route::get('payment/all-payment', [Seller\ShopPaymentController::class, 'allPayment']);
             Route::apiResource('payment', Seller\ShopPaymentController::class);
-            Route::delete('payment', [Seller\ShopPaymentController::class,'destroy']);
+            Route::delete('payment', [Seller\ShopPaymentController::class, 'destroy']);
         });
 
         // ADMIN BLOCK
         Route::group(['prefix' => 'admin', 'middleware' => ['sanctum.check', 'role:admin|manager'], 'as' => 'admin.'], function () {
 
             // Shop Location
-            Route::apiResource('shops/shop-locations',Admin\ShopLocationController::class);
-            Route::delete('shops/shop-locations/delete',[Admin\ShopLocationController::class,'destroy']);
+            Route::apiResource('shops/shop-locations', Admin\ShopLocationController::class);
+            Route::delete('shops/shop-locations/delete', [Admin\ShopLocationController::class, 'destroy']);
 
             /* Dashboard */
             Route::get('statistics/count', [Admin\DashboardController::class, 'countStatistics']);
@@ -432,7 +433,7 @@ Route::group(['prefix' => 'v1'], function (){
             /* Orders */
             Route::get('orders/paginate', [Admin\OrderController::class, 'paginate']);
             Route::apiResource('orders', Admin\OrderController::class);
-            Route::post('orders/{id}/all-status/change', [Admin\OrderController::class,'allOrderStatusChange']);
+            Route::post('orders/{id}/all-status/change', [Admin\OrderController::class, 'allOrderStatusChange']);
             Route::put('order/{id}/deliveryman', [Admin\OrderController::class, 'orderDeliverymanUpdate']);
 
             /* Order Details */
@@ -538,7 +539,6 @@ Route::group(['prefix' => 'v1'], function (){
             Route::get('shops/report/paginate', [Admin\ShopController::class, 'reportPaginate']);
             Route::get('shops/report/chart', [Admin\ShopController::class, 'reportChart']);
             Route::get('shops/report/compare', [Admin\ShopController::class, 'reportCompare']);
-
 
 
         });
