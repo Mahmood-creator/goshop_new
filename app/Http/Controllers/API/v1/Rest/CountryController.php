@@ -33,8 +33,8 @@ class CountryController extends Controller
     public function index(IndexRequest $request): AnonymousResourceCollection
     {
         $collection = $request->validated();
-        $country = $this->model->select('id','name')->filter($collection)->paginate($collection['perPage']);
-        return CountryResource::collection($country);
+        $countries = $this->model->select('id','name')->filter($collection)->paginate($collection['perPage']);
+        return CountryResource::collection($countries);
     }
 
     /**

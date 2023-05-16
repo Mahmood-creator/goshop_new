@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Api\v1\Rest;
 
+use App\Http\Resources\CityResource;
 use App\Models\City;
 use App\Traits\ApiResponse;
 use App\Helpers\ResponseError;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Rest\City\IndexRequest;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
@@ -25,12 +27,14 @@ class CityController extends Controller
      * Display a listing of the FAQ.
      *
      * @param IndexRequest $request
-     * @return LengthAwarePaginator
+     * @return AnonymousResourceCollection
      */
-    public function index(IndexRequest $request): LengthAwarePaginator
+    public function index(IndexRequest $request): AnonymousResourceCollection
     {
         $collection = $request->validated();
-        return $this->model->select('id','name')->filter($collection)->paginate($collection['perPage']);
+        $cities = $this->model->select('id','name')->filter($collection)->paginate($collection['perPage']);
+        return CityResource::collection($cities);
+
     }
 
     /**
