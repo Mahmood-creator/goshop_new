@@ -13,6 +13,7 @@ use App\Repositories\OrderRepository\OrderDetailRepository;
 use App\Repositories\ProductRepository\RestProductRepository;
 use App\Repositories\ShopRepository\ShopRepository;
 use App\Services\ProductService\ProductReviewService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Symfony\Component\HttpFoundation\Response;
@@ -46,7 +47,7 @@ class ProductController extends RestBaseController
      * Display the specified resource.
      *
      * @param string $uuid
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function show(string $uuid)
     {
@@ -76,7 +77,7 @@ class ProductController extends RestBaseController
         );
     }
 
-    public function productsByBrand(FilterParamsRequest $request, int $id)
+    public function productsByBrand(FilterParamsRequest $request, int $id): AnonymousResourceCollection
     {
         $products = $this->productRepository->productsPaginate($request->perPage ?? 15, true, ['brand_id' => $id, 'rest' => true]);
         return ProductResource::collection($products);
@@ -102,13 +103,13 @@ class ProductController extends RestBaseController
      * @param Request $request
      * @return AnonymousResourceCollection
      */
-    public function productsSearch(Request $request)
+    public function productsSearch(Request $request): AnonymousResourceCollection
     {
         $products = $this->productRepository->productsSearch($request->search ?? '', true);
         return ProductResource::collection($products);
     }
 
-    public function mostSoldProducts(FilterParamsRequest $request)
+    public function mostSoldProducts(FilterParamsRequest $request): AnonymousResourceCollection
     {
         $products = $this->restProductRepository->productsMostSold($request->perPage ?? 4, $request->all());
         return ProductResource::collection($products);
@@ -119,9 +120,9 @@ class ProductController extends RestBaseController
      *
      * @param string $uuid
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function addProductReview(string $uuid, Request $request)
+    public function addProductReview(string $uuid, Request $request): JsonResponse
     {
         $result = (new ProductReviewService())->addReview($uuid, $request);
         if ($result['status']) {
@@ -133,12 +134,16 @@ class ProductController extends RestBaseController
         );
     }
 
-    public function discountProducts(Request $request)
+    public function discountProducts(Request $request): AnonymousResourceCollection
     {
         $products = $this->restProductRepository->productsDiscount($request->perPage ?? 15, $request->all());
         return ProductResource::collection($products);
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse|AnonymousResourceCollection
+     */
     public function productsCalculate(Request $request)
     {
         $result = (new OrderDetailRepository())->orderProductsCalculate($request->all());
@@ -151,7 +156,7 @@ class ProductController extends RestBaseController
      * @param Request $request
      * @return AnonymousResourceCollection
      */
-    public function productsByIDs(Request $request)
+    public function productsByIDs(Request $request): AnonymousResourceCollection
     {
         $products = $this->productRepository->productsByIDs($request->products);
         return ProductResource::collection($products);

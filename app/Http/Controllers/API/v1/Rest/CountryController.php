@@ -5,10 +5,12 @@ namespace App\Http\Controllers\API\v1\Rest;
 use App\Helpers\ResponseError;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Rest\Country\IndexRequest;
+use App\Http\Resources\CountryResource;
 use App\Models\Country;
 use App\Traits\ApiResponse;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Symfony\Component\HttpFoundation\Response;
 
 class CountryController extends Controller
@@ -26,12 +28,13 @@ class CountryController extends Controller
      * Display a listing of the FAQ.
      *
      * @param IndexRequest $request
-     * @return LengthAwarePaginator
+     * @return AnonymousResourceCollection
      */
-    public function index(IndexRequest $request): LengthAwarePaginator
+    public function index(IndexRequest $request): AnonymousResourceCollection
     {
         $collection = $request->validated();
-        return $this->model->select('id','name')->filter($collection)->paginate($collection['perPage']);
+        $country = $this->model->select('id','name')->filter($collection)->paginate($collection['perPage']);
+        return CountryResource::collection($country);
     }
 
     /**

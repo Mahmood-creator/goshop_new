@@ -2,8 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Eloquent;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Carbon;
+use Database\Factories\UnitFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * App\Models\Unit
@@ -11,21 +18,21 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int $active
  * @property string $position
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\UnitTranslation|null $translation
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UnitTranslation> $translations
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read UnitTranslation|null $translation
+ * @property-read Collection<int, UnitTranslation> $translations
  * @property-read int|null $translations_count
- * @method static \Database\Factories\UnitFactory factory(...$parameters)
- * @method static \Illuminate\Database\Eloquent\Builder|Unit newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Unit newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Unit query()
- * @method static \Illuminate\Database\Eloquent\Builder|Unit whereActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Unit whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Unit whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Unit wherePosition($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Unit whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @method static UnitFactory factory(...$parameters)
+ * @method static Builder|Unit newModelQuery()
+ * @method static Builder|Unit newQuery()
+ * @method static Builder|Unit query()
+ * @method static Builder|Unit whereActive($value)
+ * @method static Builder|Unit whereCreatedAt($value)
+ * @method static Builder|Unit whereId($value)
+ * @method static Builder|Unit wherePosition($value)
+ * @method static Builder|Unit whereUpdatedAt($value)
+ * @mixin Eloquent
  */
 class Unit extends Model
 {
@@ -33,11 +40,13 @@ class Unit extends Model
     protected $guarded = [];
 
     // Translations
-    public function translations() {
+    public function translations(): HasMany
+    {
         return $this->hasMany(UnitTranslation::class);
     }
 
-    public function translation() {
+    public function translation(): HasOne
+    {
         return $this->hasOne(UnitTranslation::class);
     }
 

@@ -4,16 +4,18 @@ namespace App\Services\ProductService;
 
 use App\Helpers\ResponseError;
 use App\Models\Product;
+use App\Services\CoreService;
 
-class ProductReviewService extends \App\Services\CoreService
+class ProductReviewService extends CoreService
 {
 
-    protected function getModelClass()
+    protected function getModelClass(): string
     {
         return Product::class;
     }
 
-    public function addReview($uuid, $collection){
+    public function addReview($uuid, $collection): array
+    {
         $product = $this->model()->firstWhere('uuid', $uuid);
         if ($product){
             $product->addReview($collection);
