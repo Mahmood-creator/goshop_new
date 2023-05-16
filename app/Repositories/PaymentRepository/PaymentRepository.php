@@ -3,13 +3,13 @@
 namespace App\Repositories\PaymentRepository;
 
 use App\Models\Payment;
+use App\Repositories\CoreRepository;
 
-class PaymentRepository extends \App\Repositories\CoreRepository
+class PaymentRepository extends CoreRepository
 {
-    private $lang;
+    protected mixed $lang;
 
     /**
-     * @param $lang
      */
     public function __construct()
     {
@@ -17,7 +17,7 @@ class PaymentRepository extends \App\Repositories\CoreRepository
         $this->lang = $this->setLanguage();
     }
 
-    protected function getModelClass()
+    protected function getModelClass(): string
     {
         return Payment::class;
     }

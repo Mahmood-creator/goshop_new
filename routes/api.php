@@ -540,6 +540,7 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('shops/report/chart', [Admin\ShopController::class, 'reportChart']);
             Route::get('shops/report/compare', [Admin\ShopController::class, 'reportCompare']);
 
+            Route::put('countries/status-change/{id}', [Admin\CountryController::class, 'changeStatus']);
 
         });
 

@@ -20,6 +20,7 @@ class CountryResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'status' => $this->status,
 
             'translation' => TranslationResource::make($this->whenLoaded('translation')),
             'translations' => TranslationResource::collection($this->whenLoaded('translations')),

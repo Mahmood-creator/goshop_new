@@ -3,18 +3,16 @@
 namespace App\Http\Controllers\API\v1\Dashboard\Seller;
 
 use App\Helpers\ResponseError;
-use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
+use App\Http\Resources\ShopLocationResource;
 use App\Http\Requests\Seller\DeleteAllRequest;
+use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\Seller\ShopLocation\IndexRequest;
 use App\Http\Requests\Seller\ShopLocation\StoreRequest;
 use App\Http\Requests\Seller\ShopLocation\UpdateRequest;
-use App\Http\Resources\ShopLocationResource;
-use App\Repositories\ShopLocationRepository\ShopLocationRepository;
 use App\Services\ShopLocationService\ShopLocationService;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Symfony\Component\HttpFoundation\Response;
+use App\Repositories\ShopLocationRepository\ShopLocationRepository;
 
 class ShopLocationController extends SellerBaseController
 {

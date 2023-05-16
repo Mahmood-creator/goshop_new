@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property string|null $name
+ * @property boolean|true $status
  * @property-read CountryTranslation|null $translation
  * @property-read Collection<int, CountryTranslation> $translations
  * @property-read int|null $translations_count
@@ -34,7 +35,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Country extends Model
 {
     use HasFactory;
-
+    protected $fillable = ['name','status'];
     // Translations
     public function translations(): HasMany
     {

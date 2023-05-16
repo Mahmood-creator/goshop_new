@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Region;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class RegionResource extends JsonResource
@@ -10,8 +11,8 @@ class RegionResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
+     * @param  Request  $request
+     * @return array
      */
     public function toArray($request)
     {
@@ -20,6 +21,7 @@ class RegionResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'status' => $this->status,
 
             'country' => CountryResource::make($this->whenLoaded('country')),
         ];

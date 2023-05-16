@@ -21,6 +21,7 @@ class CityResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'status' => $this->status,
 
             'region' => RegionResource::make($this->whenLoaded('region')),
         ];

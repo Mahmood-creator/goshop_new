@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Eloquent;
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * App\Models\Region
@@ -11,22 +14,24 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int $country_id
  * @property string|null $name
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|Region filter($filter)
- * @method static \Illuminate\Database\Eloquent\Builder|Region newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Region newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Region query()
- * @method static \Illuminate\Database\Eloquent\Builder|Region whereCountryId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Region whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Region whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Region whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Region whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @property boolean|true $status
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @method static Builder|Region filter($filter)
+ * @method static Builder|Region newModelQuery()
+ * @method static Builder|Region newQuery()
+ * @method static Builder|Region query()
+ * @method static Builder|Region whereCountryId($value)
+ * @method static Builder|Region whereCreatedAt($value)
+ * @method static Builder|Region whereId($value)
+ * @method static Builder|Region whereName($value)
+ * @method static Builder|Region whereUpdatedAt($value)
+ * @mixin Eloquent
  */
 class Region extends Model
 {
     use HasFactory;
+    protected $fillable = ['name','status','country_id'];
 
     public function scopeFilter($query, $filter)
     {

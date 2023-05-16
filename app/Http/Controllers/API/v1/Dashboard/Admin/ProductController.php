@@ -22,6 +22,7 @@ use App\Repositories\ProductRepository\StockRepository;
 use App\Services\ProductService\ProductAdditionalService;
 use App\Services\ProductService\ProductService;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\LazyCollection;
@@ -53,10 +54,10 @@ class ProductController extends AdminBaseController
 
     /**
      * Store a newly created resource in storage.
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $result = $this->productService->create($request);
         if ($result['status']) {
@@ -72,7 +73,7 @@ class ProductController extends AdminBaseController
      * Display the specified resource.
      *
      * @param string $uuid
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function show(string $uuid)
     {
@@ -89,9 +90,9 @@ class ProductController extends AdminBaseController
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @param string $uuid
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function update(Request $request, string $uuid)
     {
@@ -109,7 +110,7 @@ class ProductController extends AdminBaseController
      * Remove the specified resource from storage.
      *
      * @param string $uuid
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function destroy(string $uuid)
     {
@@ -129,7 +130,7 @@ class ProductController extends AdminBaseController
      *
      * @param string $uuid
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function addProductProperties(string $uuid, Request $request)
     {
@@ -149,7 +150,7 @@ class ProductController extends AdminBaseController
      *
      * @param string $uuid
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function addProductExtras(string $uuid, Request $request)
     {
@@ -200,7 +201,7 @@ class ProductController extends AdminBaseController
      * Change Active Status of Model.
      *
      * @param string $uuid
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function setActive(string $uuid)
     {

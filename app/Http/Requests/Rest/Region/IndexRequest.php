@@ -27,7 +27,7 @@ class IndexRequest extends FormRequest
             'perPage' => 'required|integer',
             'lang' => 'required|string',
             'search' => 'nullable|string|max:255',
-            'country_id' => 'required|integer|exists:countries,id'
+            'country_id' => 'nullable|integer|exists:countries,id'
         ];
     }
 }

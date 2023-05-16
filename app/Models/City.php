@@ -14,6 +14,7 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property int $region_id
  * @property string|null $name
+ * @property boolean|true $status
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @method static Builder|City filter($filter)
@@ -30,6 +31,7 @@ use Illuminate\Support\Carbon;
 class City extends Model
 {
     use HasFactory;
+    protected $fillable = ['name','status','region_id'];
 
     public function scopeFilter($query, $filter)
     {

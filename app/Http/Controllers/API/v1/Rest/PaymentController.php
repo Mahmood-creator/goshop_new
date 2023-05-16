@@ -2,19 +2,16 @@
 
 namespace App\Http\Controllers\API\v1\Rest;
 
-use App\Helpers\ResponseError;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\PaymentResource;
 use App\Models\Payment;
-use App\Repositories\PaymentRepository\PaymentRepository;
+use App\Helpers\ResponseError;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use App\Http\Resources\PaymentResource;
 use Symfony\Component\HttpFoundation\Response;
+use App\Repositories\PaymentRepository\PaymentRepository;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class PaymentController extends RestBaseController
 {
-    private Payment $model;
     private PaymentRepository $paymentRepository;
 
     /**
@@ -32,7 +29,7 @@ class PaymentController extends RestBaseController
      *
      * @return AnonymousResourceCollection
      */
-    public function index()
+    public function index(): AnonymousResourceCollection
     {
         $payments = $this->paymentRepository->paginate(['active' => 1]);
         return PaymentResource::collection($payments);
@@ -45,7 +42,7 @@ class PaymentController extends RestBaseController
      * @param  int  $id
      * @return AnonymousResourceCollection|JsonResponse
      */
-    public function show(int $id)
+    public function show(int $id): JsonResponse|AnonymousResourceCollection
     {
         $payment = $this->paymentRepository->paymentDetails($id);
         if ($payment && $payment->active){
