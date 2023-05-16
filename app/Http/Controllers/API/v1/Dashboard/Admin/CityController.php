@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\API\v1\Dashboard\Admin;
 
-use App\Helpers\ResponseError;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\CityResource;
+use App\Http\Requests\Rest\City\IndexRequest;
 use App\Models\City;
 use App\Traits\ApiResponse;
+use App\Helpers\ResponseError;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\CityResource;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -22,6 +22,19 @@ class CityController extends Controller
     {
         $this->model = $model;
         $this->lang = request('lang') ?? null;
+    }
+
+    /**
+     * Display a listing of the FAQ.
+     *
+     * @param IndexRequest $request
+     * @return AnonymousResourceCollection
+     */
+    public function index(IndexRequest $request): AnonymousResourceCollection
+    {
+        $collection = $request->validated();
+        $cities = $this->model->select('id','name','status')->where('status',1)->filter($collection)->paginate($collection['perPage']);
+        return CityResource::collection($cities);
     }
 
     public function changeStatus(int $id): JsonResponse|AnonymousResourceCollection

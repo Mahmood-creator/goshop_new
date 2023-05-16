@@ -335,6 +335,12 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('payment/all-payment', [Seller\ShopPaymentController::class, 'allPayment']);
             Route::apiResource('payment', Seller\ShopPaymentController::class);
             Route::delete('payment', [Seller\ShopPaymentController::class, 'destroy']);
+
+            Route::get('countries',[Seller\CountryController::class,'index']);
+
+            Route::get('regions',[Seller\RegionController::class,'index']);
+
+            Route::get('cities',[Seller\CityController::class,'index']);
         });
 
         // ADMIN BLOCK
@@ -540,7 +546,14 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('shops/report/chart', [Admin\ShopController::class, 'reportChart']);
             Route::get('shops/report/compare', [Admin\ShopController::class, 'reportCompare']);
 
+            Route::get('countries',[Admin\CountryController::class,'index']);
             Route::put('countries/status-change/{id}', [Admin\CountryController::class, 'changeStatus']);
+
+            Route::get('cities',[Admin\CityController::class,'index']);
+            Route::put('cities/status-change/{id}', [Admin\CityController::class, 'changeStatus']);
+
+            Route::get('regions',[Admin\RegionController::class,'index']);
+            Route::put('regions/status-change/{id}', [Admin\RegionController::class, 'changeStatus']);
 
         });
 
