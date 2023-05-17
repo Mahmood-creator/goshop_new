@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\API\v1\Dashboard\Admin;
 
-use App\Http\Requests\Rest\City\IndexRequest;
 use App\Models\City;
 use App\Traits\ApiResponse;
 use App\Helpers\ResponseError;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CityResource;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use App\Http\Requests\Rest\City\IndexRequest;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class CityController extends Controller
 {

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API\v1\Dashboard\Admin;
 
-use App\Http\Requests\Rest\Region\IndexRequest;
 use App\Models\Region;
 use App\Traits\ApiResponse;
 use App\Helpers\ResponseError;
@@ -10,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\RegionResource;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Requests\Rest\Region\IndexRequest;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class RegionController extends Controller

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\API\v1\Dashboard\Seller;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Rest\Region\IndexRequest;
-use App\Http\Resources\RegionResource;
 use App\Models\Region;
 use App\Traits\ApiResponse;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\RegionResource;
+use App\Http\Requests\Rest\Region\IndexRequest;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class RegionController extends Controller

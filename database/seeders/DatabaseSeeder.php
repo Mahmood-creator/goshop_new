@@ -1,18 +1,8 @@
 <?php
 
 namespace Database\Seeders;
-
-use App\Models\Brand;
-use App\Models\Category;
-use App\Models\ExtraGroup;
-use App\Models\Order;
-use App\Models\OrderDetail;
-use App\Models\Product;
-use App\Models\Shop;
-use App\Models\Stock;
-use App\Models\Subscription;
-use App\Models\User;
-use Database\Factories\OrderFactory;
+ini_set('memory_limit', '-1');
+set_time_limit(0);
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -33,8 +23,8 @@ class DatabaseSeeder extends Seeder
 //        $this->call(CitySeeder::class);
 //        $this->call(PaymentSeeder::class);
 //        $this->call(SmsGatewaySeeder::class);
-        $this->call(CountrySeeder::class);
-        $this->call(RegionSeeder::class);
+//        $this->call(CountrySeeder::class);
+//        $this->call(RegionSeeder::class);
         $this->call(CitySeeder::class);
 
 

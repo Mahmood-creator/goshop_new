@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\API\v1\Dashboard\Seller;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Rest\Country\IndexRequest;
-use App\Http\Resources\CountryResource;
 use App\Models\Country;
 use App\Traits\ApiResponse;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\CountryResource;
+use App\Http\Requests\Rest\Country\IndexRequest;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class CountryController extends Controller

@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\API\v1\Dashboard\Seller;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Rest\City\IndexRequest;
-use App\Http\Resources\CityResource;
 use App\Models\City;
 use App\Traits\ApiResponse;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\CityResource;
+use App\Http\Requests\Rest\City\IndexRequest;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class CityController extends Controller

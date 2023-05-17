@@ -31,7 +31,7 @@ class ShopPaymentController extends SellerBaseController
         return $this->shopPaymentRepository->paginate($request->perPage, $this->shop->id);
     }
 
-    public function show(int $id)
+    public function show(int $id): JsonResponse|AnonymousResourceCollection
     {
         $shopPayment = $this->shopPaymentRepository->getById($id, $this->shop->id);
 
@@ -44,7 +44,7 @@ class ShopPaymentController extends SellerBaseController
         );
     }
 
-    public function store(StoreRequest $request)
+    public function store(StoreRequest $request): JsonResponse|AnonymousResourceCollection
     {
         $collection = $request->validated();
         $collection['shop_id'] = $this->shop->id;
@@ -58,7 +58,7 @@ class ShopPaymentController extends SellerBaseController
         );
     }
 
-    public function update(UpdateRequest $request, $id)
+    public function update(UpdateRequest $request, $id): JsonResponse|AnonymousResourceCollection
     {
         $collection = $request->validated();
 
@@ -81,9 +81,10 @@ class ShopPaymentController extends SellerBaseController
     /**
      * Remove the specified resource from storage.
      *
+     * @param int $id
      * @return AnonymousResourceCollection|JsonResponse
      */
-    public function destroy(int $id)
+    public function destroy(int $id): JsonResponse|AnonymousResourceCollection
     {
         $result = $this->shopPaymentService->delete($id);
         if ($result['status']) {
