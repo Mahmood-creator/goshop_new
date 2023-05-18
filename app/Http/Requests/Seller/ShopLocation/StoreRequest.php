@@ -21,7 +21,7 @@ class StoreRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'country_id' => 'nullable|integer|exists:countries,id',

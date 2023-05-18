@@ -3,11 +3,10 @@
 namespace App\Services\OrderService;
 
 use App\Helpers\ResponseError;
-use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Shop;
-use App\Models\Stock;
+use App\Models\ShopLocation;
 use App\Services\CoreService;
 
 class OrderDetailService extends CoreService
@@ -20,9 +19,9 @@ class OrderDetailService extends CoreService
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    protected function getModelClass()
+    protected function getModelClass(): string
     {
         return OrderDetail::class;
     }
@@ -44,8 +43,17 @@ class OrderDetailService extends CoreService
                 (collect($item['products'])->sum('total_price') / 100) * $shop->percentage;
 
             $detail = $order->orderDetails()->create($this->setDetailParams($item + ['commission_fee' => $commissionFee]));
+
             if ($detail) {
 
+                if (isset($collection['shop_location_id'])) {
+                    $shopLocation = ShopLocation::find($collection['shop_location_id']);
+
+                    if ($shopLocation) {
+                        $detail->update(['delivery_fee' => $shopLocation->delivery_fee]);
+                    }
+
+                }
 
                 $detail->orderStocks()->delete();
 
@@ -57,7 +65,7 @@ class OrderDetailService extends CoreService
         return true;
     }
 
-    public function updateStatus(int $id, $status)
+    public function updateStatus(int $id, $status): array
     {
         if (!isset($status)) {
             return ['status' => false, 'code' => ResponseError::ERROR_400];
@@ -70,20 +78,21 @@ class OrderDetailService extends CoreService
         return ['status' => false, 'code' => ResponseError::ERROR_404];
     }
 
-    private function setDetailParams($detail)
+    private function setDetailParams($detail): array
     {
         return [
             'shop_id' => $detail['shop_id'],
-            'price' => round(collect($detail['products'])->sum('total_price')  / $this->rate, 2),
-            'tax' => round($detail['tax'] / $this->rate, 2) ,
-            'commission_fee' => round($detail['commission_fee'] / $this->rate, 2) ,
+            'price' => round(collect($detail['products'])->sum('total_price') / $this->rate, 2),
+            'tax' => round($detail['tax'] / $this->rate, 2),
+            'commission_fee' => round($detail['commission_fee'] / $this->rate, 2),
             'status' => $detail['status'] ?? Order::NEW,
-            'delivery_type_id' => $detail['delivery_type_id'] ?? null,
+            'delivery_type' => $detail['delivery_type'] ?? null,
             'delivery_fee' => $detail['delivery_fee'] / $this->rate,
             'delivery_address_id' => $detail['delivery_address_id'] ?? null,
             'deliveryman' => $detail['deliveryman'] ?? null,
             'delivery_date' => $detail['delivery_date'] ?? null,
             'delivery_time' => $detail['delivery_time'] ?? null,
+            'shop_location_id' => $detail['shop_location_id'] ?? null,
         ];
     }
 

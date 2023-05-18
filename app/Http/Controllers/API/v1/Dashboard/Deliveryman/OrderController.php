@@ -3,19 +3,14 @@
 namespace App\Http\Controllers\API\v1\Dashboard\Deliveryman;
 
 use App\Helpers\ResponseError;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\FilterParamsRequest;
-use App\Http\Resources\OrderDetailResource;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
-use App\Models\Transaction;
-use App\Models\User;
 use App\Repositories\OrderRepository\OrderRepository;
-use App\Services\FindexService\FindexService;
-use App\Services\OrderService\OrderDetailService;
 use App\Traits\Notification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Symfony\Component\HttpFoundation\Response;
 
 class OrderController extends DeliverymanBaseController
@@ -32,7 +27,7 @@ class OrderController extends DeliverymanBaseController
         $this->lang = \request('lang') ?? 'aze';
     }
 
-    public function paginate(Request $request)
+    public function paginate(Request $request): AnonymousResourceCollection
     {
         $orders = $this->model
             ->with([
@@ -57,7 +52,7 @@ class OrderController extends DeliverymanBaseController
         return OrderResource::collection($orders);
     }
 
-    public function show(int $id)
+    public function show(int $id): JsonResponse|AnonymousResourceCollection
     {
         $order = $this->model
             ->with([
@@ -126,9 +121,6 @@ class OrderController extends DeliverymanBaseController
 
         $order->update(['status' => $request->status]);
 
-        foreach ($order->orderDetails as $detail) {
-            $this->orderStatusChange($detail->id, $request);
-        }
         $data = Order::with('orderDetails')->find($id);
 
         return $this->successResponse(ResponseError::NO_ERROR, $data);

@@ -9,7 +9,8 @@ trait Notification
 {
     private string $url = 'https://fcm.googleapis.com/fcm/send';
 
-    public function sendNotification($receivers = [], $message = '', $title = null) {
+    public function sendNotification($receivers = [], $message = '', $title = null): string
+    {
 
         $server_key = $this->firebaseKey();
         $fields = [

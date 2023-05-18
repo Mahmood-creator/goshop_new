@@ -2,15 +2,14 @@
 
 namespace App\Http\Requests;
 
-use App\Helpers\ResponseError;
 use App\Models\Category;
 use App\Traits\ApiResponse;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
+use App\Helpers\ResponseError;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class CategoryCreateRequest extends FormRequest
 {
@@ -21,7 +20,7 @@ class CategoryCreateRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -31,7 +30,7 @@ class CategoryCreateRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'keywords' => ['string'],
@@ -47,7 +46,7 @@ class CategoryCreateRequest extends FormRequest
         ];
     }
 
-    public function messages()
+    public function messages(): array
     {
         return [
             'required' => trans('validation.required', [], request()->lang),

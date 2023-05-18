@@ -2,13 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Helpers\ResponseError;
 use App\Traits\ApiResponse;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Foundation\Http\FormRequest;
 
 class DeliveryCreateRequest extends FormRequest
 {
@@ -18,7 +14,7 @@ class DeliveryCreateRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -28,7 +24,7 @@ class DeliveryCreateRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'active' => ['numeric', Rule::in(1,0)],
@@ -37,7 +33,7 @@ class DeliveryCreateRequest extends FormRequest
         ];
     }
 
-    public function messages()
+    public function messages(): array
     {
         return [
             'required' => trans('validation.required', [], request()->lang),
@@ -48,15 +44,4 @@ class DeliveryCreateRequest extends FormRequest
         ];
     }
 
-    public function failedValidation(Validator $validator)
-    {
-        $errors = $validator->errors();
-
-        $response = $this->requestErrorResponse(
-            ResponseError::ERROR_400,
-            trans('errors.' . ResponseError::ERROR_400, [], request()->lang),
-            $errors->messages(), Response::HTTP_BAD_REQUEST);
-
-        throw new HttpResponseException($response);
-    }
 }

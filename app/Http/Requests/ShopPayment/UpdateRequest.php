@@ -2,12 +2,8 @@
 
 namespace App\Http\Requests\ShopPayment;
 
-use App\Helpers\ResponseError;
 use App\Traits\ApiResponse;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Symfony\Component\HttpFoundation\Response;
 
 class UpdateRequest extends FormRequest
 {
@@ -17,7 +13,7 @@ class UpdateRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -27,7 +23,7 @@ class UpdateRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'payment_id' => 'required|integer|exists:payments,id',
@@ -35,27 +31,5 @@ class UpdateRequest extends FormRequest
             'client_id' => 'nullable|string',
             'secret_id' => 'nullable|string',
         ];
-    }
-
-    public function messages()
-    {
-        return [
-            'required' => trans('validation.required', [], request()->lang),
-            'integer' => trans('validation.integer', [], request()->lang),
-            'exists' => trans('validation.exists', [], request()->lang),
-            'boolean' => trans('validation.boolean', [], request()->lang),
-            'string' => trans('validation.string', [], request()->lang),
-        ];
-    }
-
-    public function failedValidation(Validator $validator)
-    {
-        $errors = $validator->errors();
-        $response = $this->requestErrorResponse(
-            ResponseError::ERROR_400,
-            trans('errors.' . ResponseError::ERROR_400, [], request()->lang),
-            $errors->messages(), Response::HTTP_BAD_REQUEST);
-
-        throw new HttpResponseException($response);
     }
 }

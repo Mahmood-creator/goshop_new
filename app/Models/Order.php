@@ -36,6 +36,7 @@ use Illuminate\Support\Carbon;
  * @property int|null $declaration_id
  * @property float|null $tax
  * @property int $delivery_id
+ * @property string $delivery_type
  * @property int|null $country_id
  * @property int|null $product_type_id
  * @property int|null $deliveryman_id

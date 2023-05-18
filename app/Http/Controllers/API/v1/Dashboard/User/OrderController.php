@@ -2,19 +2,22 @@
 
 namespace App\Http\Controllers\API\v1\Dashboard\User;
 
-use App\Helpers\ResponseError;
-use App\Http\Requests\FilterParamsRequest;
-use App\Http\Resources\OrderResource;
+use App\Models\User;
 use App\Models\Order;
 use App\Models\OrderDetail;
-use App\Models\User;
-use App\Repositories\Interfaces\OrderRepoInterface;
-use App\Services\Interfaces\OrderServiceInterface;
-use App\Services\OrderService\OrderReviewService;
-use App\Services\OrderService\OrderStatusUpdateService;
 use App\Traits\Notification;
 use Illuminate\Http\Request;
+use App\Helpers\ResponseError;
+use Illuminate\Http\JsonResponse;
+use App\Http\Resources\OrderResource;
+use App\Http\Requests\FilterParamsRequest;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Requests\User\Order\StoreRequest;
+use App\Services\OrderService\OrderReviewService;
+use App\Services\Interfaces\OrderServiceInterface;
+use App\Repositories\Interfaces\OrderRepoInterface;
+use App\Services\OrderService\OrderStatusUpdateService;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class OrderController extends UserBaseController
 {
@@ -38,9 +41,10 @@ class OrderController extends UserBaseController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @param FilterParamsRequest $request
+     * @return AnonymousResourceCollection
      */
-    public function paginate(FilterParamsRequest $request)
+    public function paginate(FilterParamsRequest $request): AnonymousResourceCollection
     {
         $orders = $this->orderRepository->ordersPaginate($request->perPage ?? 15,
             auth('sanctum')->id(), $request->all());
@@ -50,10 +54,10 @@ class OrderController extends UserBaseController
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param StoreRequest $request
+     * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $result = $this->orderService->create($request->merge(['user_id' => auth('sanctum')->id()]));
         if ($result['status']) {
@@ -80,9 +84,9 @@ class OrderController extends UserBaseController
      * Display the specified resource.
      *
      * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function show(int $id)
+    public function show(int $id): JsonResponse
     {
         $order = $this->orderRepository->orderDetails($id);
         if ($order && $order->user_id == auth('sanctum')->id()) {
@@ -99,9 +103,9 @@ class OrderController extends UserBaseController
      *
      * @param int $id
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function addOrderReview(int $id, Request $request)
+    public function addOrderReview(int $id, Request $request): JsonResponse
     {
         $result = (new OrderReviewService())->addReview($id, $request);
         if ($result['status']) {
@@ -114,7 +118,7 @@ class OrderController extends UserBaseController
     }
 
 
-    public function orderStatusChange(Request $request, int $id)
+    public function orderStatusChange(Request $request, int $id): JsonResponse|AnonymousResourceCollection
     {
         $order = Order::find($id);
 
@@ -146,9 +150,9 @@ class OrderController extends UserBaseController
      *
      * @param int $id
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function orderDetailStatusChange(int $id, Request $request)
+    public function orderDetailStatusChange(int $id, Request $request): JsonResponse
     {
         if (!isset($request->status) || $request->status != 13) {
             return $this->errorResponse(ResponseError::ERROR_253, trans('errors.' . ResponseError::ERROR_253, [], \request()->lang ?? config('app.locale')),

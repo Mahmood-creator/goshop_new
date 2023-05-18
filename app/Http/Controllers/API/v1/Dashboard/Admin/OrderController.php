@@ -4,27 +4,27 @@ namespace App\Http\Controllers\API\v1\Dashboard\Admin;
 
 use App\Helpers\ResponseError;
 use App\Http\Requests\FilterParamsRequest;
-use App\Http\Requests\ReportChartRequest;
-use App\Http\Requests\ReportPaginateRequest;
 use App\Http\Resources\OrderDetailResource;
 use App\Http\Resources\OrderResource;
 use App\Models\Currency;
 use App\Models\Order;
 use App\Models\OrderDetail;
-use App\Models\Transaction;
 use App\Models\User;
 use App\Repositories\Interfaces\OrderRepoInterface;
 use App\Repositories\ProductTypeRepository\ProductTypeRepository;
-use App\Services\FindexService\FindexService;
 use App\Services\Interfaces\OrderServiceInterface;
 use App\Services\OrderService\OrderStatusUpdateService;
 use App\Traits\Notification;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
+use Exception;
 
 class OrderController extends AdminBaseController
 {
@@ -53,9 +53,9 @@ class OrderController extends AdminBaseController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return AnonymousResourceCollection
      */
-    public function index()
+    public function index(): AnonymousResourceCollection
     {
         $orders = $this->orderRepository->ordersList();
 
@@ -65,9 +65,10 @@ class OrderController extends AdminBaseController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @param FilterParamsRequest $request
+     * @return AnonymousResourceCollection
      */
-    public function paginate(FilterParamsRequest $request)
+    public function paginate(FilterParamsRequest $request): AnonymousResourceCollection
     {
         $orders = $this->orderRepository->ordersPaginate($request->perPage ?? 15, $request->user_id ?? null, $request->all());
 
@@ -77,10 +78,10 @@ class OrderController extends AdminBaseController
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $result = $this->orderService->create($request);
         if ($result['status']) {
@@ -105,7 +106,7 @@ class OrderController extends AdminBaseController
      * @param  int  $id
      * @return JsonResponse
      */
-    public function show(int $id)
+    public function show(int $id): JsonResponse
     {
         $order = $this->orderRepository->orderDetails($id);
         if ($order) {
@@ -117,7 +118,7 @@ class OrderController extends AdminBaseController
         );
     }
 
-    public function allOrderStatusChange(Request $request, int $id)
+    public function allOrderStatusChange(Request $request, int $id): JsonResponse|AnonymousResourceCollection
     {
 
         $order = Order::find($id);
@@ -148,11 +149,11 @@ class OrderController extends AdminBaseController
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param int $id
      * @return JsonResponse
      */
-    public function update(int $id, Request $request)
+    public function update(int $id, Request $request): JsonResponse
     {
         $result = $this->orderService->update($id, $request);
         if ($result['status']) {
@@ -167,11 +168,11 @@ class OrderController extends AdminBaseController
     /**
      * Update Order Delivery details by OrderDetail ID.
      *
-     * @param int $orderDetail
+     * @param int $orderId
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function orderDeliverymanUpdate(int $orderId, Request $request)
+    public function orderDeliverymanUpdate(int $orderId, Request $request): JsonResponse
     {
         $order = $this->orderRepository->orderDetails($orderId);
         if ($order){
@@ -193,7 +194,7 @@ class OrderController extends AdminBaseController
      * @param Request $request
      * @return JsonResponse
      */
-    public function orderStatusChange(int $id, Request $request)
+    public function orderStatusChange(int $id, Request $request): JsonResponse
     {
 
         $detail = OrderDetail::find($id);
@@ -213,7 +214,12 @@ class OrderController extends AdminBaseController
         );
     }
 
-    public function exportTicketPdf(int $id)
+    /**
+     * @param int $id
+     * @return \Illuminate\Http\Response|JsonResponse|Application|ResponseFactory
+     * @throws FileNotFoundException
+     */
+    public function exportTicketPdf(int $id): \Illuminate\Http\Response|JsonResponse|Application|ResponseFactory
     {
         $order = Order::with('orderDetails.orderStocks', 'orderDetails.shop')->find($id);
 
@@ -239,22 +245,22 @@ class OrderController extends AdminBaseController
     }
 
 
-    public function ordersReportChart()
+    public function ordersReportChart(): JsonResponse|AnonymousResourceCollection
     {
         try {
             $result = $this->orderRepository->orderReportChartCache();
             return $this->successResponse('', $result);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return $this->errorResponse(ResponseError::ERROR_400, $exception->getMessage());
         }
     }
 
-    public function ordersReportPaginate(FilterParamsRequest $filterParamsRequest)
+    public function ordersReportPaginate(FilterParamsRequest $filterParamsRequest): JsonResponse|AnonymousResourceCollection
     {
         try {
             $result = $this->orderRepository->ordersReportPaginate($filterParamsRequest->get('perPage', 15));
             return $this->successResponse('', $result);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return $this->errorResponse(ResponseError::ERROR_400, $exception->getMessage());
         }
     }

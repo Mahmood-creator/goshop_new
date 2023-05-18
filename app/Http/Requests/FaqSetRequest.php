@@ -2,14 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Helpers\ResponseError;
-use App\Models\OrderDetail;
 use App\Traits\ApiResponse;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Foundation\Http\FormRequest;
 
 class FaqSetRequest extends FormRequest
 {
@@ -19,7 +14,7 @@ class FaqSetRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -29,31 +24,10 @@ class FaqSetRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             "active" => ['bool', Rule::in([1, 2])],
         ];
-    }
-
-    public function messages()
-    {
-        return [
-            'required' => trans('validation.required', [], request()->lang),
-            'min' => trans('validation.min.numeric', [], request()->lang),
-            'string' => trans('validation.string', [], request()->lang),
-            'numeric' => trans('validation.numeric', [], request()->lang),
-        ];
-    }
-
-    public function failedValidation(Validator $validator)
-    {
-        $errors = $validator->errors();
-        $response = $this->requestErrorResponse(
-            ResponseError::ERROR_400,
-            trans('errors.' . ResponseError::ERROR_400, [], request()->lang),
-            $errors->messages(), Response::HTTP_BAD_REQUEST);
-
-        throw new HttpResponseException($response);
     }
 }

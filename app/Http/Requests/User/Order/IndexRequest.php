@@ -1,22 +1,19 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\User\Order;
 
-use App\Traits\ApiResponse;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ExportRequest extends FormRequest
+class IndexRequest extends FormRequest
 {
-    use ApiResponse;
-
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize(): bool
+    public function authorize()
     {
-        return true;
+        return false;
     }
 
     /**
@@ -24,10 +21,10 @@ class ExportRequest extends FormRequest
      *
      * @return array
      */
-    public function rules(): array
+    public function rules()
     {
         return [
-            'shop_id' => 'required|integer|exists:shops,id',
+            //
         ];
     }
 }
