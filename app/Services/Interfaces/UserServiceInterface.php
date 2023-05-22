@@ -3,9 +3,9 @@
 namespace App\Services\Interfaces;
 
 
+use App\Models\User;
+
 interface UserServiceInterface
 {
-    public function create($collection);
-
-    public function update(string $uuid, $collection);
+    public function create(array $collection);
 }

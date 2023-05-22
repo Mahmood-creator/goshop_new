@@ -32,7 +32,7 @@ class UserStoreRequest extends FormRequest
         return [
             'name' => 'required|string|min:3|max:200|regex:[a-zA-Z\s]+',
             'surname' => 'required|string|min:3|max:255|regex:[a-zA-Z\s]+',
-            'birth_date' => 'nullable|date_format:Y-m-d|regex:/^[0-9]+$/',
+            'birth_date' => 'nullable|date_format:Y-m-d',
             'gender' => 'required|string|in:male,female',
             'address' => 'required|string|min:10|max:200|regex:/^[A-Za-z0-9\-\s]+$/',
             'email' => 'required|string|email|min:10|max:250',

@@ -23,9 +23,11 @@ class DatabaseSeeder extends Seeder
 //        $this->call(CitySeeder::class);
 //        $this->call(PaymentSeeder::class);
 //        $this->call(SmsGatewaySeeder::class);
-//        $this->call(CountrySeeder::class);
-//        $this->call(RegionSeeder::class);
+        $this->call(CountrySeeder::class);
+        $this->call(RegionSeeder::class);
         $this->call(CitySeeder::class);
+        $this->call(CitySeederSecond::class);
+        $this->call(TranslationSeeder::class);
 
 
 //        if (app()->environment() == 'local') {

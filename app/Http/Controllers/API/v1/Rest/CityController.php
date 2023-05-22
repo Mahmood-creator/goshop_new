@@ -32,7 +32,7 @@ class CityController extends Controller
     public function index(IndexRequest $request): AnonymousResourceCollection
     {
         $collection = $request->validated();
-        $cities = $this->model->select('id','name')->filter($collection)->paginate($collection['perPage']);
+        $cities = $this->model->select('id','name','status')->filter($collection)->paginate($collection['perPage']);
         return CityResource::collection($cities);
 
     }

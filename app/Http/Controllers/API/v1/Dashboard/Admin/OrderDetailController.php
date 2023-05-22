@@ -69,7 +69,8 @@ class OrderDetailController extends AdminBaseController
         if ($result['status']) {
 
             // Select User Firebase Token to Push Notification
-            $user = User::where('id', $result['data']->order->user_id)->pluck('firebase_token');
+            $user = User::where('id', $result['data']->order->user_id)->where('settings->notification', 1)->pluck('firebase_token');
+
             $this->sendNotification($user->toArray(), "Your order status has been changed to $request->status", $result['data']->order->id);
 
             return $this->successResponse( __('errors.' . ResponseError::NO_ERROR), OrderDetailResource::make($result['data']));

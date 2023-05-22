@@ -33,7 +33,7 @@ class RegionController extends Controller
     public function index(IndexRequest $request): AnonymousResourceCollection
     {
         $collection = $request->validated();
-        $regions = $this->model->select('id','name')->filter($collection)->paginate($collection['perPage']);
+        $regions = $this->model->select('id','name','status')->filter($collection)->paginate($collection['perPage']);
         return RegionResource::collection($regions);
     }
 

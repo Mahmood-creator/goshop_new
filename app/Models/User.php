@@ -4,13 +4,27 @@ namespace App\Models;
 
 use App\Traits\Loadable;
 use App\Traits\Reviewable;
+use Database\Factories\UserFactory;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Laravel\Sanctum\HasApiTokens;
+use Laravel\Sanctum\PersonalAccessToken;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -22,90 +36,91 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string|null $lastname
  * @property string|null $email
  * @property string|null $phone
- * @property \Illuminate\Support\Carbon|null $birthday
+ * @property Carbon|null $birthday
  * @property string $gender
- * @property \Illuminate\Support\Carbon|null $email_verified_at
- * @property \Illuminate\Support\Carbon|null $phone_verified_at
+ * @property Carbon|null $email_verified_at
+ * @property Carbon|null $phone_verified_at
  * @property string|null $ip_address
  * @property int $active
  * @property string|null $img
  * @property string|null $firebase_token
  * @property string|null $password
  * @property string|null $remember_token
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
  * @property string|null $address
  * @property string|null $passport_number
  * @property string|null $passport_secret
  * @property string|null $user_delivery_id
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserAddress> $addresses
+ * @property array|null $settings
+ * @property-read Collection<int, UserAddress> $addresses
  * @property-read int|null $addresses_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Gallery> $galleries
+ * @property-read Collection<int, Gallery> $galleries
  * @property-read int|null $galleries_count
  * @property-read mixed $role
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Invitation> $invitations
+ * @property-read Collection<int, Invitation> $invitations
  * @property-read int|null $invitations_count
- * @property-read \App\Models\Invitation|null $invite
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Banner> $likes
+ * @property-read Invitation|null $invite
+ * @property-read Collection<int, Banner> $likes
  * @property-read int|null $likes_count
- * @property-read \App\Models\Shop|null $moderatorShop
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Shop> $moderatorShops
+ * @property-read Shop|null $moderatorShop
+ * @property-read Collection<int, Shop> $moderatorShops
  * @property-read int|null $moderator_shops_count
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
+ * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\OrderDetail> $orderDetails
+ * @property-read Collection<int, OrderDetail> $orderDetails
  * @property-read int|null $order_details_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Order> $orders
+ * @property-read Collection<int, Order> $orders
  * @property-read int|null $orders_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Permission> $permissions
+ * @property-read Collection<int, Permission> $permissions
  * @property-read int|null $permissions_count
- * @property-read \App\Models\UserPoint|null $point
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PointHistory> $pointHistory
+ * @property-read UserPoint|null $point
+ * @property-read Collection<int, PointHistory> $pointHistory
  * @property-read int|null $point_history_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Review> $reviews
+ * @property-read Collection<int, Review> $reviews
  * @property-read int|null $reviews_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Role> $roles
+ * @property-read Collection<int, Role> $roles
  * @property-read int|null $roles_count
- * @property-read \App\Models\Shop|null $shop
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SocialProvider> $socialProviders
+ * @property-read Shop|null $shop
+ * @property-read Collection<int, SocialProvider> $socialProviders
  * @property-read int|null $social_providers_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
+ * @property-read Collection<int, PersonalAccessToken> $tokens
  * @property-read int|null $tokens_count
- * @property-read \App\Models\Wallet|null $wallet
- * @method static \Database\Factories\UserFactory factory(...$parameters)
- * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|User onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|User permission($permissions)
- * @method static \Illuminate\Database\Eloquent\Builder|User query()
- * @method static \Illuminate\Database\Eloquent\Builder|User role($roles, $guard = null)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereAddress($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereBirthday($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereEmailVerifiedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereFirebaseToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereFirstname($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereGender($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereImg($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereIpAddress($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereLastname($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User wherePassportNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User wherePassportSecret($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User wherePhone($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User wherePhoneVerifiedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereRememberToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereUserDeliveryId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereUuid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User withTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|User withoutTrashed()
- * @mixin \Eloquent
+ * @property-read Wallet|null $wallet
+ * @method static UserFactory factory(...$parameters)
+ * @method static Builder|User newModelQuery()
+ * @method static Builder|User newQuery()
+ * @method static Builder|User onlyTrashed()
+ * @method static Builder|User permission($permissions)
+ * @method static Builder|User query()
+ * @method static Builder|User role($roles, $guard = null)
+ * @method static Builder|User whereActive($value)
+ * @method static Builder|User whereAddress($value)
+ * @method static Builder|User whereBirthday($value)
+ * @method static Builder|User whereCreatedAt($value)
+ * @method static Builder|User whereDeletedAt($value)
+ * @method static Builder|User whereEmail($value)
+ * @method static Builder|User whereEmailVerifiedAt($value)
+ * @method static Builder|User whereFirebaseToken($value)
+ * @method static Builder|User whereFirstname($value)
+ * @method static Builder|User whereGender($value)
+ * @method static Builder|User whereId($value)
+ * @method static Builder|User whereImg($value)
+ * @method static Builder|User whereIpAddress($value)
+ * @method static Builder|User whereLastname($value)
+ * @method static Builder|User wherePassportNumber($value)
+ * @method static Builder|User wherePassportSecret($value)
+ * @method static Builder|User wherePassword($value)
+ * @method static Builder|User wherePhone($value)
+ * @method static Builder|User wherePhoneVerifiedAt($value)
+ * @method static Builder|User whereRememberToken($value)
+ * @method static Builder|User whereUpdatedAt($value)
+ * @method static Builder|User whereUserDeliveryId($value)
+ * @method static Builder|User whereUuid($value)
+ * @method static Builder|User withTrashed()
+ * @method static Builder|User withoutTrashed()
+ * @mixin Eloquent
  */
 class User extends Authenticatable
 {
@@ -142,8 +157,10 @@ class User extends Authenticatable
         'user_delivery_id',
         'address_email',
         'address_phone',
-        'active'
+        'active',
+        'settings',
     ];
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -164,14 +181,16 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'phone_verified_at' => 'datetime',
         'birthday' => 'date',
+        'settingssettings' => 'array',
     ];
 
-    public function isOnline()
+    public function isOnline(): bool
     {
         return Cache::has('user-online-' . $this->id);
     }
 
-    public function getRoleAttribute(){
+    public function getRoleAttribute(): string
+    {
         return $this->role = $this->roles[0]->name ?? 'no role';
     }
 
@@ -185,17 +204,19 @@ class User extends Authenticatable
     }
 
 
-    public function moderatorShop() {
+    public function moderatorShop(): HasOneThrough
+    {
         return $this->hasOneThrough(Shop::class, Invitation::class,
             'user_id', 'id', 'id', 'shop_id');
     }
 
-    public function moderatorShops() {
+    public function moderatorShops(): HasManyThrough
+    {
         return $this->hasManyThrough(Shop::class, Invitation::class,
             'user_id', 'id', 'id', 'shop_id');
     }
 
-    public function addresses(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function addresses(): HasMany
     {
         return $this->hasMany(UserAddress::class);
     }
@@ -205,37 +226,37 @@ class User extends Authenticatable
         return $this->hasOne(Wallet::class, 'user_id');
     }
 
-    public function invitations()
+    public function invitations(): HasMany
     {
         return $this->hasMany(Invitation::class);
     }
 
-    public function socialProviders()
+    public function socialProviders(): HasMany
     {
         return $this->hasMany(SocialProvider::class,'user_id','id');
     }
 
-    public function orders()
+    public function orders(): HasMany
     {
         return $this->hasMany(Order::class,'user_id');
     }
 
-    public function orderDetails()
+    public function orderDetails(): HasManyThrough
     {
         return $this->hasManyThrough(OrderDetail::class,Order::class);
     }
 
-    public function point()
+    public function point(): HasOne
     {
         return $this->hasOne(UserPoint::class, 'user_id');
     }
 
-    public function pointHistory(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function pointHistory(): HasMany
     {
         return $this->hasMany(PointHistory::class, 'user_id');
     }
 
-    public function likes()
+    public function likes(): BelongsToMany
     {
         return $this->belongsToMany(Banner::class, Like::class);
     }

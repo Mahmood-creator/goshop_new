@@ -11,9 +11,9 @@ use App\Services\Interfaces\UserServiceInterface;
 class UserService extends CoreService implements UserServiceInterface
 {
     /**
-     * @return mixed
+     * @return string
      */
-    protected function getModelClass()
+    protected function getModelClass(): string
     {
         return Model::class;
     }
@@ -24,72 +24,59 @@ class UserService extends CoreService implements UserServiceInterface
     }
 
     /**
-     * @param $collection
-     * @return mixed
+     * @param array $collection
+     * @return array
      */
-    public function create($collection)
+    public function create(array $collection): array
     {
-        try {
-            $user = $this->model()->create(
-                $this->setUserParams($collection) + [
-                    'password' => bcrypt($collection->password ?? 'password'),
-                    'ip_address' => request()->ip()
-                ]);
+        $collection['password'] = bcrypt($collection['password']);
 
-            if (isset($collection->images)) {
-                $user->uploads($collection->images);
-                $user->update(['img' => $collection->images[0]]);
-            }
-            $user->syncRoles($collection->role ?? 'user');
+        $collection['ip_address'] = request()->ip();
 
-            (new UserWalletService())->create($user);
+        $user = $this->model()->create($collection);
+
+        if (isset($collection['images'])) {
+            $user->uploads($collection['images']);
+            $user->update(['img' => $collection['images'][0]]);
+        }
+
+        $user->syncRoles($collection['role'] ?? 'user');
+
+        (new UserWalletService())->create($user);
+
+        return ['status' => true, 'code' => ResponseError::NO_ERROR, 'data' => $user];
+
+    }
+
+    public function update($user, $collection): array
+    {
+        if (isset($collection['password'])) {
+            $collection['password'] = bcrypt($collection['password']);
+        }
+
+        $item = $user->update($collection);
+
+        if ($item && isset($collection['images'])) {
+            $user->galleries()->delete();
+            $user->update(['img' => $collection['images'][0]]);
+            $user->uploads($collection['images']);
+        }
+        return ['status' => true, 'code' => ResponseError::NO_ERROR, 'data' => $user];
+    }
+
+    public function updatePassword($uuid, $password): array
+    {
+        $user = $this->model()->firstWhere('uuid', $uuid);
+        if ($user) {
+
+            $user->update(['password' => bcrypt($password)]);
 
             return ['status' => true, 'code' => ResponseError::NO_ERROR, 'data' => $user];
-        } catch (\Exception $e) {
-            return ['status' => false, 'code' => ResponseError::ERROR_400, 'message' => $e->getMessage()];
-        }
-    }
-
-    public function update(string $uuid, $collection)
-    {
-        $user = $this->model()->firstWhere('uuid', $uuid);
-        if ($user) {
-            try {
-                $item = $user->update($this->setUserParams($collection, $user));
-                if (isset($collection->password)) {
-                    $user->update([
-                        'password' => bcrypt($collection->password)
-                    ]);
-                }
-                if ($item && isset($collection->images)) {
-                    $user->galleries()->delete();
-                    $user->update(['img' => $collection->images[0]]);
-                    $user->uploads($collection->images);
-                }
-                return ['status' => true, 'code' => ResponseError::NO_ERROR, 'data' => $user];
-            } catch (\Exception $e) {
-                return ['status' => false, 'code' => ResponseError::ERROR_400, 'message' => $e->getMessage()];
-            }
         }
         return ['status' => false, 'code' => ResponseError::ERROR_404];
     }
 
-    public function updatePassword($uuid, $password)
-    {
-        $user = $this->model()->firstWhere('uuid', $uuid);
-        if ($user) {
-            try {
-                $user->update(['password' => bcrypt($password)]);
-
-                return ['status' => true, 'code' => ResponseError::NO_ERROR, 'data' => $user];
-            } catch (\Exception $e) {
-                return ['status' => false, 'code' => ResponseError::ERROR_400, 'message' => $e->getMessage()];
-            }
-        }
-        return ['status' => false, 'code' => ResponseError::ERROR_404];
-    }
-
-    public function addReviewToDeliveryMan($orderId, $collection)
+    public function addReviewToDeliveryMan($orderId, $collection): array
     {
         $order = Order::find($orderId);
         if ($order?->deliveryMan && Order::DELIVERED) {
@@ -99,18 +86,5 @@ class UserService extends CoreService implements UserServiceInterface
         return ['status' => false, 'code' => ResponseError::ERROR_432];
     }
 
-    public function setUserParams($collection, $user = null): array
-    {
-        return [
-            'firstname' => isset($user) ? $collection->firstname ?? $user->firstname : $collection->firstname ?? null,
-            'lastname' => isset($user) ? $collection->lastname ?? $user->lastname : $collection->lastname ?? null,
-            'email' => isset($user) ? $collection->email ?? $user->email : $collection->email ?? null,
-            'phone' => isset($user) ? $collection->phone ?? $user->phone : $collection->phone ?? null,
-            'birthday' => isset($user) ? $collection->birthday ?? $user->birthday : $collection->birthday ?? null,
-            'gender' => isset($user) ? $collection->gender ?? $user->gender : $collection->gender ?? null ?? 'male',
-            'firebase_token' => isset($user) ? $collection->firebase_token ?? $user->firebase_token : $collection->firebase_token ?? null,
-            'active' => 1
-        ];
-    }
 
 }

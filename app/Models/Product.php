@@ -8,6 +8,7 @@ use App\Traits\Loadable;
 use App\Traits\Reviewable;
 use App\Traits\SetCurrency;
 use Illuminate\Support\Carbon;
+use Database\Factories\ProductFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -62,7 +63,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  * @property-read Collection<int, ProductTranslation> $translations
  * @property-read int|null $translations_count
  * @property-read Unit|null $unit
- * @method static \Database\Factories\ProductFactory factory(...$parameters)
+ * @method static ProductFactory factory(...$parameters)
  * @method static Builder|Product filter($array)
  * @method static Builder|Product newModelQuery()
  * @method static Builder|Product newQuery()

@@ -6,7 +6,9 @@ use App\Helpers\ResponseError;
 use App\Http\Requests\Filter\FilterRequest;
 use App\Http\Requests\FilterParamsRequest;
 use App\Http\Resources\ProductResource;
+use App\Models\OrderProduct;
 use App\Models\Point;
+use App\Models\Product;
 use App\Repositories\CategoryRepository\CategoryRepository;
 use App\Repositories\Interfaces\ProductRepoInterface;
 use App\Repositories\OrderRepository\OrderDetailRepository;
@@ -65,7 +67,7 @@ class ProductController extends RestBaseController
         );
     }
 
-    public function productsByShopUuid(FilterParamsRequest $request, string $uuid)
+    public function productsByShopUuid(FilterParamsRequest $request, string $uuid): JsonResponse|AnonymousResourceCollection
     {
         $shop = (new ShopRepository())->shopDetails($uuid);
         if ($shop) {
@@ -84,7 +86,7 @@ class ProductController extends RestBaseController
         return ProductResource::collection($products);
     }
 
-    public function productsByCategoryUuid(FilterParamsRequest $request, string $uuid)
+    public function productsByCategoryUuid(FilterParamsRequest $request, string $uuid): JsonResponse|AnonymousResourceCollection
     {
         $category = (new CategoryRepository())->categoryByUuid($uuid);
         if ($category) {
@@ -145,7 +147,7 @@ class ProductController extends RestBaseController
      * @param Request $request
      * @return JsonResponse|AnonymousResourceCollection
      */
-    public function productsCalculate(Request $request)
+    public function productsCalculate(Request $request): JsonResponse|AnonymousResourceCollection
     {
         $result = (new OrderDetailRepository())->orderProductsCalculate($request->all());
         return $this->successResponse(__('web.products_calculated'), $result);
@@ -163,9 +165,8 @@ class ProductController extends RestBaseController
         return ProductResource::collection($products);
     }
 
-    public function checkCashback(Request $request)
+    public function checkCashback(Request $request): JsonResponse|AnonymousResourceCollection
     {
-
         $point = Point::getActualPoint($request->amount ?? 0);
         return $this->successResponse(__('web.cashback'), ['price' => $point]);
     }
@@ -174,5 +175,10 @@ class ProductController extends RestBaseController
     {
         $products = $this->restProductRepository->getByBrandId($request->perPage ?? 15,$id);
         return ProductResource::collection($products);
+    }
+
+    public function buyWithProduct(int $id)
+    {
+        $product = $this->restProductRepository->buyWithProduct($id);
     }
 }

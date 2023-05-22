@@ -82,6 +82,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('products/ids', [Rest\ProductController::class, 'productsByIDs']);
         Route::get('products/{uuid}', [Rest\ProductController::class, 'show']);
         Route::get('products/brands/{id}', [Rest\ProductController::class, 'getByBrandId']);
+        Route::get('products/buy-with/{id}', [Rest\ProductController::class, 'buyWithProduct']);
 
         /* Categories */
         Route::get('categories/most-sold', [Rest\CategoryController::class, 'mostSoldCategory']);

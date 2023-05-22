@@ -5,8 +5,10 @@ namespace Database\Seeders;
 use App\Models\Subscription;
 use App\Models\Translation;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Lang;
+use Throwable;
 
 class TranslationSeeder extends Seeder
 {
@@ -17,17 +19,13 @@ class TranslationSeeder extends Seeder
      */
     public function run()
     {
-        $data = Lang::get('errors');
-
-        foreach ($data as $index => $item){
-            Translation::updateOrInsert(['key' => $index], [
-                'status' => true,
-                'locale' => 'en',
-                'group' => 'errors',
-                'value' => $item,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+        try {
+            $filePath = resource_path('lang/translations.sql');
+            if (file_exists($filePath)) {
+                Translation::truncate();
+//                DB::unprepared(file_get_contents($filePath));
+            }
+        } catch (Throwable $e) {
         }
     }
 }

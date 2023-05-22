@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\Region;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class RegionSeeder extends Seeder
 {
@@ -14,16 +16,13 @@ class RegionSeeder extends Seeder
      */
     public function run()
     {
-        $stateJson = file_get_contents(storage_path('app/public/export/states.json'));
-
-        $stateFiles = json_decode($stateJson);
-
-        foreach ($stateFiles as $stateFile) {
-            Region::create([
-                'id' => $stateFile->id,
-                'name' => $stateFile->name,
-                'country_id' => $stateFile->country_id
-            ]);
+        try {
+            $filePath = storage_path('app/public/locations/regions.sql');
+            if (file_exists($filePath)) {
+                Region::truncate();
+                DB::unprepared(file_get_contents($filePath));
+            }
+        } catch (Throwable $e) {
         }
     }
 }

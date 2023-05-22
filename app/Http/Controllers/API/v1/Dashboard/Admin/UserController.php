@@ -15,7 +15,9 @@ use App\Services\AuthService\UserVerifyService;
 use App\Services\Interfaces\UserServiceInterface;
 use App\Services\UserServices\UserService;
 use App\Services\UserServices\UserWalletService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends AdminBaseController
@@ -37,7 +39,7 @@ class UserController extends AdminBaseController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return AnonymousResourceCollection
      */
     public function paginate(Request $request)
     {
@@ -49,7 +51,7 @@ class UserController extends AdminBaseController
      * Store a newly created resource in storage.
      *
      * @param UserCreateRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function store(UserCreateRequest $request)
     {
@@ -69,7 +71,7 @@ class UserController extends AdminBaseController
      * Display the specified resource.
      *
      * @param string $uuid
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return JsonResponse|AnonymousResourceCollection
      */
     public function show(string $uuid)
     {
@@ -86,11 +88,11 @@ class UserController extends AdminBaseController
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param Request $request
      * @param string $uuid
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return JsonResponse|AnonymousResourceCollection
      */
-    public function update(Request $request, string $uuid)
+    public function update(Request $request, string $uuid): JsonResponse|AnonymousResourceCollection
     {
         $result = $this->userService->update($uuid, $request);
         if ($result['status']){
@@ -102,16 +104,6 @@ class UserController extends AdminBaseController
         );
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 
     public function updateRole($uuid, Request $request){
 
@@ -159,7 +151,7 @@ class UserController extends AdminBaseController
      *
      * @param string $uuid
      * @param FilterParamsRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function topUpWallet(string $uuid, FilterParamsRequest $request){
         $user = User::firstWhere('uuid', $uuid);
@@ -185,7 +177,7 @@ class UserController extends AdminBaseController
      *
      * @param string $uuid
      * @param FilterParamsRequest $request
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection|\Illuminate\Http\JsonResponse
+     * @return AnonymousResourceCollection|JsonResponse
      */
     public function walletHistories(string $uuid, FilterParamsRequest $request)
     {

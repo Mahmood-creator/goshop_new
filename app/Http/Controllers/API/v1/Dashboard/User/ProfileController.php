@@ -2,47 +2,46 @@
 
 namespace App\Http\Controllers\API\v1\Dashboard\User;
 
-use App\Helpers\ResponseError;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\FilterParamsRequest;
-use App\Http\Requests\PasswordUpdateRequest;
-use App\Http\Requests\UserCreateRequest;
-use App\Http\Resources\BannerResource;
-use App\Http\Resources\UserResource;
-use App\Models\Banner;
+use App\Http\Requests\User\User\UpdateRequest;
 use App\Models\Like;
 use App\Models\User;
-use App\Repositories\UserRepository\UserRepository;
-use App\Services\UserServices\UserService;
-use Illuminate\Http\JsonResponse;
+use App\Models\Banner;
 use Illuminate\Http\Request;
+use App\Helpers\ResponseError;
+use Illuminate\Http\JsonResponse;
+use App\Http\Resources\UserResource;
+use App\Http\Resources\BannerResource;
+use App\Http\Requests\UserCreateRequest;
+use App\Services\UserServices\UserService;
+use App\Http\Requests\FilterParamsRequest;
+use App\Http\Requests\PasswordUpdateRequest;
+use App\Http\Requests\User\User\StoreRequest;
 use Symfony\Component\HttpFoundation\Response;
+use App\Repositories\UserRepository\UserRepository;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ProfileController extends UserBaseController
 {
-    private  UserRepository $userRepository;
-    private  UserService $userService;
-
     /**
      * @param UserRepository $userRepository
      * @param UserService $userService
      */
-    public function __construct(UserRepository $userRepository, UserService $userService)
+    public function __construct(private UserRepository $userRepository,private UserService $userService)
     {
         parent::__construct();
-        $this->userRepository = $userRepository;
-        $this->userService = $userService;
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param UserCreateRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param StoreRequest $request
+     * @return JsonResponse
      */
-    public function store(UserCreateRequest $request)
+    public function store(StoreRequest $request): JsonResponse
     {
-        $result = $this->userService->create($request);
+        $collection = $request->validated();
+
+        $result = $this->userService->create($collection);
 
         if ($result['status']) {
             return $this->successResponse(__('web.record_successfully_created'), $request['data']);
@@ -56,9 +55,9 @@ class ProfileController extends UserBaseController
     /**
      * Display the specified resource.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function show()
+    public function show(): JsonResponse
     {
         $user = $this->userRepository->userById(auth('sanctum')->id());
         if ($user) {
@@ -73,12 +72,14 @@ class ProfileController extends UserBaseController
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection|\Illuminate\Http\Response
+     * @param UpdateRequest $request
+     * @return AnonymousResourceCollection|JsonResponse
      */
-    public function update(UserCreateRequest $request)
+    public function update(UpdateRequest $request): JsonResponse|AnonymousResourceCollection
     {
-        $result = $this->userService->update(auth('sanctum')->user()->uuid, $request);
+        $collection = $request->validated();
+
+        $result = $this->userService->update(auth('sanctum')->user(), $collection);
 
         if ($result['status']){
             return $this->successResponse(__('web.user_updated'), UserResource::make($result['data']));
@@ -92,9 +93,9 @@ class ProfileController extends UserBaseController
     /**
      * Remove the specified resource from storage.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function delete()
+    public function delete(): JsonResponse
     {
         $user = $this->userRepository->userByUUID(auth('sanctum')->user()->uuid);
         if ($user) {
@@ -108,7 +109,7 @@ class ProfileController extends UserBaseController
         }
     }
 
-    public function fireBaseTokenUpdate(Request $request)
+    public function fireBaseTokenUpdate(Request $request): JsonResponse|AnonymousResourceCollection
     {
         $user = User::firstWhere('uuid', auth('sanctum')->user()->uuid);
         if ($user) {
@@ -122,7 +123,7 @@ class ProfileController extends UserBaseController
         }
     }
 
-    public function passwordUpdate(PasswordUpdateRequest $request)
+    public function passwordUpdate(PasswordUpdateRequest $request): JsonResponse|AnonymousResourceCollection
     {
         $result = $this->userService->updatePassword(auth('sanctum')->user()->uuid, $request->password);
         if ($result['status']){
@@ -134,13 +135,13 @@ class ProfileController extends UserBaseController
         );
     }
 
-    public function likedLooks(FilterParamsRequest $request)
+    public function likedLooks(FilterParamsRequest $request): JsonResponse|AnonymousResourceCollection
     {
         $user = $this->userRepository->userById(auth('sanctum')->id());
         if ($user) {
             $likes = Like::where(['likable_type' => Banner::class, 'user_id' => $user->id])->pluck('likable_id');
             $looks = Banner::whereIn('id', $likes)->paginate($request->perPaage ?? 15);
-            
+
             return $this->successResponse(__('web.list_of_looks'), BannerResource::collection($looks));
         }
         return $this->errorResponse(

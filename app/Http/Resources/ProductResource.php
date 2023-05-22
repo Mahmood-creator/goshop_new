@@ -3,8 +3,11 @@
 namespace App\Http\Resources;
 
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\Stock;
 use App\Models\User;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductResource extends JsonResource
@@ -12,11 +15,13 @@ class ProductResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
+     * @param Request $request
+     * @return array
      */
     public function toArray($request)
     {
+        /** @var Product|JsonResource $this */
+
         return [
             'id' => (int)$this->id,
             'uuid' => (string)$this->uuid,

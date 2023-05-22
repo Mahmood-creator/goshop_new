@@ -4,26 +4,26 @@ namespace App\Http\Controllers\API\v1\Dashboard\Seller;
 
 use App\Helpers\ResponseError;
 use App\Http\Requests\FilterParamsRequest;
-use App\Http\Requests\ReportChartRequest;
-use App\Http\Requests\ReportPaginateRequest;
 use App\Http\Resources\OrderDetailResource;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use App\Models\OrderDetail;
-use App\Models\Transaction;
 use App\Models\User;
 use App\Repositories\Interfaces\OrderRepoInterface;
-use App\Services\FindexService\FindexService;
 use App\Services\Interfaces\OrderServiceInterface;
 use App\Services\OrderService\OrderDetailService;
 use App\Traits\Notification;
+use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class OrderController extends SellerBaseController
 {
     use Notification;
+
     private OrderRepoInterface $orderRepository;
     private OrderServiceInterface $orderService;
 
@@ -41,9 +41,10 @@ class OrderController extends SellerBaseController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection|\Illuminate\Http\JsonResponse
+     * @param FilterParamsRequest $request
+     * @return AnonymousResourceCollection|JsonResponse
      */
-    public function paginate(FilterParamsRequest $request)
+    public function paginate(FilterParamsRequest $request): JsonResponse|AnonymousResourceCollection
     {
         if ($this->shop) {
             $orders = $this->orderRepository->ordersPaginate(
@@ -51,7 +52,7 @@ class OrderController extends SellerBaseController
                 $request->merge(['shop_id' => $this->shop->id])->all());
 
             return OrderResource::collection($orders);
-        }  else {
+        } else {
             return $this->errorResponse(
                 ResponseError::ERROR_101, __('errors.' . ResponseError::ERROR_101, [], \request()->lang),
                 Response::HTTP_FORBIDDEN
@@ -62,10 +63,10 @@ class OrderController extends SellerBaseController
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         if ($this->shop) {
             $result = $this->orderService->create($request);
@@ -79,61 +80,6 @@ class OrderController extends SellerBaseController
                 Log::info("ADMIN NOTIFICATION", $admins->toArray());
 
                 $this->sendNotification($admins->toArray(), "New order was created", $result['data']->id);
-                return $this->successResponse( __('web.record_was_successfully_create'), OrderResource::make($result['data']));
-            }
-            return $this->errorResponse(
-                $result['code'], $result['message'] ?? trans('errors.' . $result['code'], [], \request()->lang),
-                Response::HTTP_BAD_REQUEST
-            );
-        }  else {
-            return $this->errorResponse(
-                ResponseError::ERROR_101, __('errors.' . ResponseError::ERROR_101, [], \request()->lang),
-                Response::HTTP_FORBIDDEN
-            );
-        }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function show(int $id)
-    {
-        if ($this->shop) {
-            $order = $this->orderRepository->orderDetails($id, $this->shop->id);
-            if ($order) {
-                return $this->successResponse(__('web.order_found'), OrderResource::make($order));
-            }
-            return $this->errorResponse(
-                ResponseError::ERROR_404,  trans('errors.' . ResponseError::ERROR_404, [], request()->lang),
-                Response::HTTP_NOT_FOUND
-            );
-        }  else {
-            return $this->errorResponse(
-                ResponseError::ERROR_101, __('errors.' . ResponseError::ERROR_101, [], \request()->lang),
-                Response::HTTP_FORBIDDEN
-            );
-        }
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function update(int $id, Request $request)
-    {
-        if ($this->shop) {
-//            $order = Order::whereHas('orderDetails', function ($q) {
-//                $q->where('shop_id', $this->shop->id);
-//            })->find($id);
-
-            $result = $this->orderService->update($id, $request);
-            if ($result['status']) {
                 return $this->successResponse(__('web.record_was_successfully_create'), OrderResource::make($result['data']));
             }
             return $this->errorResponse(
@@ -148,7 +94,57 @@ class OrderController extends SellerBaseController
         }
     }
 
-    public function allOrderStatusChange(Request $request, int $id)
+    /**
+     * Display the specified resource.
+     *
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function show(int $id): JsonResponse
+    {
+        if ($this->shop) {
+            $order = $this->orderRepository->orderDetails($id, $this->shop->id);
+            if ($order) {
+                return $this->successResponse(__('web.order_found'), OrderResource::make($order));
+            }
+            return $this->errorResponse(
+                ResponseError::ERROR_404, trans('errors.' . ResponseError::ERROR_404, [], request()->lang),
+                Response::HTTP_NOT_FOUND
+            );
+        } else {
+            return $this->errorResponse(
+                ResponseError::ERROR_101, __('errors.' . ResponseError::ERROR_101, [], \request()->lang),
+                Response::HTTP_FORBIDDEN
+            );
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function update(int $id, Request $request): JsonResponse
+    {
+        if ($this->shop) {
+            $result = $this->orderService->update($id, $request);
+            if ($result['status']) {
+                return $this->successResponse(__('web.record_was_successfully_create'), OrderResource::make($result['data']));
+            }
+            return $this->errorResponse(
+                $result['code'], $result['message'] ?? trans('errors.' . $result['code'], [], \request()->lang),
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+        return $this->errorResponse(
+            ResponseError::ERROR_101, __('errors.' . ResponseError::ERROR_101, [], \request()->lang),
+            Response::HTTP_FORBIDDEN
+        );
+    }
+
+    public function allOrderStatusChange(Request $request, int $id): JsonResponse|AnonymousResourceCollection
     {
 
         $order = Order::find($id);
@@ -181,10 +177,10 @@ class OrderController extends SellerBaseController
      * Update Order Status details by OrderDetail ID.
      *
      * @param int $orderDetail
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function orderDetailStatusUpdate(int $orderDetail, Request $request)
+    public function orderDetailStatusUpdate(int $orderDetail, Request $request): JsonResponse
     {
         if ($this->shop) {
             $order = OrderDetail::where('shop_id', $this->shop->id)->find($orderDetail);
@@ -192,9 +188,11 @@ class OrderController extends SellerBaseController
                 $result = (new OrderDetailService())->updateStatus($orderDetail, $request->status ?? null);
                 if ($result['status']) {
                     // Select User Firebase Token to Push Notification
-                    $user = User::where('id', $result['data']->order->user_id)->pluck('firebase_token');
+                    $user = User::where('id', $result['data']->order->user_id)->where('settings->notification', 1)->pluck('firebase_token');
+
                     $this->sendNotification($user->toArray(), "Your order status has been changed to $request->status", $result['data']->order->id);
-                    return $this->successResponse( __('errors.' . ResponseError::NO_ERROR), OrderDetailResource::make($result['data']));
+
+                    return $this->successResponse(__('errors.' . ResponseError::NO_ERROR), OrderDetailResource::make($result['data']));
                 }
                 return $this->errorResponse(
                     $result['code'], $result['message'] ?? trans('errors.' . $result['code'], [], \request()->lang ?? 'en'),
@@ -219,9 +217,9 @@ class OrderController extends SellerBaseController
      *
      * @param int $orderDetail
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function orderDetailDeliverymanUpdate(int $orderDetail, Request $request)
+    public function orderDetailDeliverymanUpdate(int $orderDetail, Request $request): JsonResponse
     {
         if ($this->shop) {
             $orderDetail = OrderDetail::where('shop_id', $this->shop->id)->find($orderDetail);
@@ -243,7 +241,7 @@ class OrderController extends SellerBaseController
         }
     }
 
-    public function ordersReportChart()
+    public function ordersReportChart(): JsonResponse|AnonymousResourceCollection
     {
         try {
             request()->offsetSet('sellers', [auth('sanctum')->id()]);
@@ -251,12 +249,12 @@ class OrderController extends SellerBaseController
             $result = $this->orderRepository->orderReportChartCache();
 
             return $this->successResponse('', $result);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return $this->errorResponse(ResponseError::ERROR_400, $exception->getMessage());
         }
     }
 
-    public function ordersReportPaginate(FilterParamsRequest $filterParamsRequest)
+    public function ordersReportPaginate(FilterParamsRequest $filterParamsRequest): JsonResponse|AnonymousResourceCollection
     {
         try {
             request()->offsetSet('sellers', [auth('sanctum')->id()]);
@@ -264,7 +262,7 @@ class OrderController extends SellerBaseController
             $result = $this->orderRepository->ordersReportPaginate($filterParamsRequest->get('perPage', 15));
 
             return $this->successResponse('', $result);
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             return $this->errorResponse(ResponseError::ERROR_400, $exception->getMessage());
         }
     }

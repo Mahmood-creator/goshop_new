@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
+use Throwable;
 use App\Models\City;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class CitySeeder extends Seeder
 {
@@ -12,18 +14,16 @@ class CitySeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
-        $cityJson = file_get_contents(storage_path('app/public/export/cities.json'));
-
-        $cityFiles = json_decode($cityJson);
-
-        foreach ($cityFiles as $cityFile) {
-            City::create([
-                'id' => $cityFile->id,
-                'name' => $cityFile->name,
-                'region_id' => $cityFile->state_id
-            ]);
+        try {
+            $filePath1 = storage_path('app/public/locations/cities.sql');
+            if (file_exists($filePath1)) {
+                City::truncate();
+                DB::unprepared(file_get_contents($filePath1));
+            }
+        } catch (Throwable $e) {
+            dd($e);
         }
     }
 }

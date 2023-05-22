@@ -18,7 +18,7 @@ class RestProductRepository extends CoreRepository
         $this->lang = $this->setLanguage();
     }
 
-    protected function getModelClass()
+    protected function getModelClass(): string
     {
         return Product::class;
     }
@@ -59,9 +59,11 @@ class RestProductRepository extends CoreRepository
     }
 
     /**
+     * @param $perPage
+     * @param array $array
      * @return array|Application|Request|string|null
      */
-    public function productsDiscount($perPage, $array = [])
+    public function productsDiscount($perPage, array $array = []): array|string|Request|Application|null
     {
         $profitable = isset($array['profitable']) ? '=' : '>=';
 
@@ -108,5 +110,11 @@ class RestProductRepository extends CoreRepository
             })
             ->where('brand_id',$brandId)
             ->paginate($perPage );
+    }
+
+    public function buyWithProduct(int $id)
+    {
+        $product = Product::with('orders')->whereHas('stocks')->whereHas('orders')->find($id);
+        dd($product);
     }
 }

@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use App\Models\Country;
 use App\Models\CountryTranslation;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class CountrySeeder extends Seeder
 {
@@ -15,27 +17,16 @@ class CountrySeeder extends Seeder
      */
     public function run()
     {
-        $countryJson = file_get_contents(storage_path('app/public/export/countries.json'));
+        try {
+            $filePath = storage_path('app/public/locations/countries.sql');
 
-        $countryFiles = json_decode($countryJson);
-
-        foreach ($countryFiles as $countryFile) {
-
-            $country = Country::create([
-                'id' => $countryFile->id,
-                'name' => $countryFile->name
-            ]);
-
-            $countries = collect($countryFile->translations)->toArray();
-
-            foreach ($countries as $key => $value){
-                CountryTranslation::create([
-                    'country_id' => $country->id,
-                    'locale' => $key,
-                    'title' => $value
-                ]);
+            if (file_exists($filePath)) {
+                DB::table('countries')->delete();
+                DB::table('country_translations')->delete();
+                DB::unprepared(file_get_contents($filePath));
             }
-
+        } catch (Throwable $e) {
+            dd($e);
         }
     }
 }
