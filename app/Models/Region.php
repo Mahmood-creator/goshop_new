@@ -39,6 +39,8 @@ class Region extends Model
             $q->where('name', 'LIKE', '%' . $filter['search'] . '%');
         })->when(isset($filter['country_id']), function ($q) use ($filter) {
             $q->where('country_id', $filter['country_id']);
+        })->when(isset($filter['status']),function ($q) use ($filter){
+            $q->where('status',$filter['status']);
         });
     }
 }

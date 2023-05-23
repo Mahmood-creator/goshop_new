@@ -51,6 +51,8 @@ class Country extends Model
     {
         return $query->when(isset($filter['search']), function ($q) use ($filter) {
             $q->where('name', 'LIKE', '%'. $filter['search'] . '%');
+        })->when(isset($filter['status']),function ($q) use ($filter){
+            $q->where('status',$filter['status']);
         });
     }
 }

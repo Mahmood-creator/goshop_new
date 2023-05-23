@@ -11,7 +11,7 @@ class IndexRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -21,13 +21,14 @@ class IndexRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'perPage' => 'required|integer',
-            'lang' => 'required|string',
-            'search' => 'nullable|string|max:255',
-            'region_id' => 'nullable|integer|exists:regions,id'
+            'perPage'   => 'required|integer',
+            'lang'      => 'required|string',
+            'search'    => 'nullable|string|max:255',
+            'region_id' => 'nullable|integer|exists:regions,id',
+            'status'    => 'nullable|boolean'
         ];
     }
 }
