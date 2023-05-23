@@ -2,10 +2,15 @@
 
 namespace App\Models;
 
+use Database\Factories\OrderProductFactory;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Models\OrderProduct
@@ -18,26 +23,26 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property float $tax
  * @property float $discount
  * @property int $quantity
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\OrderDetail $detail
- * @property-read \App\Models\Stock $stock
- * @property-read \App\Models\ProductTranslation|null $translation
- * @method static \Database\Factories\OrderProductFactory factory(...$parameters)
- * @method static \Illuminate\Database\Eloquent\Builder|OrderProduct newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|OrderProduct newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|OrderProduct query()
- * @method static \Illuminate\Database\Eloquent\Builder|OrderProduct whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|OrderProduct whereDiscount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|OrderProduct whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|OrderProduct whereOrderDetailId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|OrderProduct whereOriginPrice($value)
- * @method static \Illuminate\Database\Eloquent\Builder|OrderProduct whereQuantity($value)
- * @method static \Illuminate\Database\Eloquent\Builder|OrderProduct whereStockId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|OrderProduct whereTax($value)
- * @method static \Illuminate\Database\Eloquent\Builder|OrderProduct whereTotalPrice($value)
- * @method static \Illuminate\Database\Eloquent\Builder|OrderProduct whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read OrderDetail $detail
+ * @property-read Stock $stock
+ * @property-read ProductTranslation|null $translation
+ * @method static OrderProductFactory factory(...$parameters)
+ * @method static Builder|OrderProduct newModelQuery()
+ * @method static Builder|OrderProduct newQuery()
+ * @method static Builder|OrderProduct query()
+ * @method static Builder|OrderProduct whereCreatedAt($value)
+ * @method static Builder|OrderProduct whereDiscount($value)
+ * @method static Builder|OrderProduct whereId($value)
+ * @method static Builder|OrderProduct whereOrderDetailId($value)
+ * @method static Builder|OrderProduct whereOriginPrice($value)
+ * @method static Builder|OrderProduct whereQuantity($value)
+ * @method static Builder|OrderProduct whereStockId($value)
+ * @method static Builder|OrderProduct whereTax($value)
+ * @method static Builder|OrderProduct whereTotalPrice($value)
+ * @method static Builder|OrderProduct whereUpdatedAt($value)
+ * @mixin Eloquent
  */
 class OrderProduct extends Model
 {
@@ -49,12 +54,13 @@ class OrderProduct extends Model
         return $this->hasOne(ProductTranslation::class, 'product_id', 'product_id');
     }
 
-    public function detail()
+    public function detail(): BelongsTo
     {
         return $this->belongsTo(OrderDetail::class, 'order_detail_id');
     }
 
-    public function stock() {
+    public function stock(): BelongsTo
+    {
         return $this->belongsTo(Stock::class)->withTrashed();
     }
 

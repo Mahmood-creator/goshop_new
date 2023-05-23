@@ -2,10 +2,12 @@
 
 namespace App\Repositories\ProductRepository;
 
+use App\Models\OrderProduct;
 use App\Models\Product;
 use App\Repositories\CoreRepository;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RestProductRepository extends CoreRepository
 {
@@ -114,7 +116,17 @@ class RestProductRepository extends CoreRepository
 
     public function buyWithProduct(int $id)
     {
-        $product = Product::with('orders')->whereHas('stocks')->whereHas('orders')->find($id);
-        dd($product);
+        $orderDetailsIds = OrderProduct::whereHas('stock',function ($q) use ($id){
+            $q->whereHas('countable',function ($b) use ($id){
+                $b->where('id',$id);
+            });
+        })->pluck('order_detail_id');
+
+        $productIds = DB::table('order_products')
+            ->groupBy('stock_id')
+            ->whereIn('order_detail_id',$orderDetailsIds)
+            ->pluck('stock_id');
+
+        dd($productIds);
     }
 }

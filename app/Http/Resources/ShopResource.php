@@ -2,20 +2,22 @@
 
 namespace App\Http\Resources;
 
-use App\Models\ShopTranslation;
+use App\Models\Shop;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use function Symfony\Component\String\s;
 
 class ShopResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
+     * @param  Request  $request
+     * @return array
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
+        /** @var Shop|JsonResource $this */
+
         return [
             'id'  => (int) $this->id,
             'uuid' => $this->uuid,
@@ -39,6 +41,7 @@ class ShopResource extends JsonResource
             'mark' => (string) $this->mark,
             'status' => (string) $this->status,
             'status_note' => (string) $this->status_note,
+            'delivery_zone_type' => (string) $this->delivery_zone_type,
             'invite_link' => $this->when(auth('sanctum')->check() && auth('sanctum')->user()->hasRole('seller'), '/shop/invitation/' .$this->uuid . '/link'),
             'rating_avg' => $this->when($this->reviews_avg_rating, number_format($this->reviews_avg_rating, 2)),
             'reviews_count' => $this->when($this->reviews_count, (int) $this->reviews_count),
