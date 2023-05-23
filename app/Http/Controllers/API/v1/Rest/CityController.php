@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers\Api\v1\Rest;
 
-use App\Http\Resources\CityResource;
 use App\Models\City;
 use App\Traits\ApiResponse;
 use App\Helpers\ResponseError;
 use Illuminate\Http\JsonResponse;
+use App\Http\Resources\CityResource;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Rest\City\IndexRequest;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class CityController extends Controller
 {
