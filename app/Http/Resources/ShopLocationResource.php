@@ -34,8 +34,8 @@ class ShopLocationResource extends JsonResource
 
             // Relation
             'country' => CountryResource::make($this->whenLoaded('country')),
-            'region' => RegionResource::collection($this->whenLoaded('region')),
-            'city' => CityResource::collection($this->whenLoaded('city')),
+            'region' => RegionResource::make($this->whenLoaded('region')),
+            'city' => CityResource::make($this->whenLoaded('city')),
         ];
     }
 }
