@@ -27,7 +27,7 @@ class UpdateRequest extends FormRequest
             'country_id' => 'nullable|integer|exists:countries,id',
             'region_id' => 'nullable|integer|exists:regions,id',
             'city_id' => 'nullable|integer|exists:cities,id',
-            'delivery_fee' => 'nullable|double',
+            'delivery_fee' => 'nullable|numeric',
             'pickup' => 'required|boolean',
             'delivery' => 'required|boolean',
         ];
