@@ -7,7 +7,6 @@ use App\Models\Product;
 use App\Repositories\CoreRepository;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class RestProductRepository extends CoreRepository
 {
@@ -39,8 +38,8 @@ class RestProductRepository extends CoreRepository
                 'stocks.discount',
                 'translation' => fn($q) => $q->where('locale', $this->lang)
                     ->select('id', 'product_id', 'locale', 'title'),
-                ])
-            ->whereHas('stocks', function ($item){
+            ])
+            ->whereHas('stocks', function ($item) {
                 $item->where('quantity', '>', 0)->where('price', '>', 0);
             })
             ->whereHas('shop', function ($item) {
@@ -51,12 +50,11 @@ class RestProductRepository extends CoreRepository
             ->whereActive(1)
             ->paginate($perPage);
 
-            if ($perPage > 7)
-            {
-                return $mostSoldProducts->paginate($perPage);
-            }
+        if ($perPage > 7) {
+            return $mostSoldProducts->paginate($perPage);
+        }
 
-            return $mostSoldProducts->take(4)->get();
+        return $mostSoldProducts->take(4)->get();
 
     }
 
@@ -78,13 +76,13 @@ class RestProductRepository extends CoreRepository
             ->whereHas('translation', function ($q) {
                 $q->where('locale', $this->lang);
             })
-            ->whereHas('stocks', function ($item){
+            ->whereHas('stocks', function ($item) {
                 $item->where('quantity', '>', 0)->where('price', '>', 0);
             })
             ->withAvg('reviews', 'rating')
             ->whereHas('category')
             ->with([
-                'stocks' => fn($q) => $q->where('quantity', '>', 0)->where('price', '>', 0),'stocks.stockExtras.group.translation' => fn($q) => $q->where('locale', $this->lang),
+                'stocks' => fn($q) => $q->where('quantity', '>', 0)->where('price', '>', 0), 'stocks.stockExtras.group.translation' => fn($q) => $q->where('locale', $this->lang),
                 'translation' => fn($q) => $q->where('locale', $this->lang)
                     ->select('id', 'product_id', 'locale', 'title'),
                 'category' => fn($q) => $q->select('id', 'uuid'),
@@ -99,7 +97,7 @@ class RestProductRepository extends CoreRepository
             ->paginate($perPage);
     }
 
-    public function getByBrandId($perPage,int $brandId)
+    public function getByBrandId($perPage, int $brandId)
     {
         return $this->model()->with([
             'stocks' => fn($q) => $q->where('quantity', '>', 0)->where('price', '>', 0),
@@ -110,23 +108,29 @@ class RestProductRepository extends CoreRepository
             ->whereHas('shop', function ($item) {
                 $item->whereNull('deleted_at')->where('status', 'approved');
             })
-            ->where('brand_id',$brandId)
-            ->paginate($perPage );
+            ->where('brand_id', $brandId)
+            ->paginate($perPage);
     }
 
     public function buyWithProduct(int $id)
     {
-        $orderDetailsIds = OrderProduct::whereHas('stock',function ($q) use ($id){
-            $q->whereHas('countable',function ($b) use ($id){
-                $b->where('id',$id);
+        $orderDetailsIds = OrderProduct::whereHas('stock', function ($q) use ($id) {
+            $q->whereHas('countable', function ($b) use ($id) {
+                $b->where('id', $id);
             });
         })->pluck('order_detail_id');
 
-        $productIds = DB::table('order_products')
-            ->groupBy('stock_id')
-            ->whereIn('order_detail_id',$orderDetailsIds)
+        $productIds = OrderProduct::whereHas('stock', function ($q) use ($id) {
+            $q->whereHas('countable', function ($b) use ($id) {
+                $b->where('id', $id);
+            });
+        })
+            ->where('id', '!=', $id)
+            ->orderBy('stock_id')
+            ->whereIn('order_detail_id', $orderDetailsIds)
             ->pluck('stock_id');
 
-        dd($productIds);
+        DD($productIds);
+
     }
 }
