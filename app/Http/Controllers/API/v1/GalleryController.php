@@ -10,6 +10,7 @@ use App\Http\Resources\GalleryResource;
 use App\Models\Gallery;
 use App\Services\GalleryService\FileStorageService;
 use App\Traits\ApiResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,7 +32,7 @@ class GalleryController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function getStorageFiles()
     {
@@ -49,7 +50,7 @@ class GalleryController extends Controller
     /**
      * Destroy a file from the storage.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function deleteStorageFile(Request $request)
     {
@@ -79,11 +80,12 @@ class GalleryController extends Controller
 
         return  GalleryResource::collection($galleries);
     }
+
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param GalleryUploadRequest $request
+     * @return JsonResponse
      */
     public function store(GalleryUploadRequest $request)
     {

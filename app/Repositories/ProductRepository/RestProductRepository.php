@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Repositories\CoreRepository;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RestProductRepository extends CoreRepository
 {
@@ -120,17 +121,26 @@ class RestProductRepository extends CoreRepository
             });
         })->pluck('order_detail_id');
 
-        $productIds = OrderProduct::whereHas('stock', function ($q) use ($id) {
-            $q->whereHas('countable', function ($b) use ($id) {
-                $b->where('id', $id);
-            });
-        })
-            ->where('id', '!=', $id)
-            ->orderBy('stock_id')
+        $productIds = DB::table('order_products as o_p')
+            ->leftJoin('stocks as s', 's.id', '=', 'o_p.stock_id')
+            ->leftJoin('products as p', 'p.id', '=', 's.countable_id')
+            ->select('stock_id', DB::raw('COUNT(stock_id) as stock_count'), 'p.id')
+            ->groupBy('stock_id')
+            ->orderBy('stock_count', 'desc')
             ->whereIn('order_detail_id', $orderDetailsIds)
-            ->pluck('stock_id');
+            ->where('p.id', '!=', $id)
+            ->where('s.quantity', '>', 0)
+            ->where('s.price', '>', 0)
+            ->take(3)
+            ->pluck('p.id');
 
-        DD($productIds);
-
+        return $this->model()->with([
+            'stocks',
+            'translation' => fn($q) => $q->actualTranslation($this->lang),
+        ])
+            ->whereHas('shop', function ($item) {
+                $item->whereNull('deleted_at')->where('status', 'approved');
+            })
+            ->find($productIds);
     }
 }

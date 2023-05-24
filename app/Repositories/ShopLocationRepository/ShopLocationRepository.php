@@ -13,7 +13,7 @@ class ShopLocationRepository extends CoreRepository
         parent::__construct();
     }
 
-    protected function getModelClass()
+    protected function getModelClass(): string
     {
         return ShopLocation::class;
     }

@@ -5,6 +5,7 @@ namespace App\Helpers;
 
 
 
+use Exception;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
@@ -15,12 +16,23 @@ class FileHelper
     {
         try {
 
-            $pathDisc = Storage::disk('do')->put('public/images/' . $path, $file,'public');
+            $id = auth('sanctum')->id() ?? "0001";
+            $ext = strtolower(
+                preg_replace("#.+\.([a-z]+)$#i", "$1",
+                    str_replace(['.png', '.jpg'], '.webp', $file->getClientOriginalName())
+                )
+            );
 
-            $filePath = substr(strrchr($pathDisc, "/"), 1);
+            $fileName = $id . '-' . now()->unix() . '.' . $ext;
 
-            return ['status' => true, 'code' => ResponseError::NO_ERROR, 'data' => $path.'/'.$filePath];
-        } catch (\Exception $e) {
+            $url = $file->storeAs("public/images/$path", $fileName);
+
+            return [
+                'status' => true,
+                'code'   => ResponseError::NO_ERROR,
+                'data'   => config('app.img_host') . str_replace('public/images/', '', $url)
+            ];
+        } catch (Exception $e) {
             return ['status' => false, 'code' => ResponseError::ERROR_400, 'message' => $e->getMessage()];
         }
     }

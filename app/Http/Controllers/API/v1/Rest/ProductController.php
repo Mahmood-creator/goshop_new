@@ -179,6 +179,7 @@ class ProductController extends RestBaseController
 
     public function buyWithProduct(int $id)
     {
-        $product = $this->restProductRepository->buyWithProduct($id);
+        $products = $this->restProductRepository->buyWithProduct($id);
+        return ProductResource::collection($products);
     }
 }
