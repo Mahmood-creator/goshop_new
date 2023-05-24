@@ -20,7 +20,7 @@ class ShopLocationRepository extends CoreRepository
 
     public function paginate($collection)
     {
-        return $this->model()->with(['country:name', 'region:name', 'city:name'])
+        return $this->model()->with(['country', 'region', 'city'])
             ->when(isset($collection['shop_id']), function ($q) use ($collection) {
                 $q->where('shop_id', $collection['shop_id']);
             })
