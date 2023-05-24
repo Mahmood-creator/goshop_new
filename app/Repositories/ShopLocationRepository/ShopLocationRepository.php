@@ -24,7 +24,6 @@ class ShopLocationRepository extends CoreRepository
             ->when(isset($collection['shop_id']), function ($q) use ($collection) {
                 $q->where('shop_id', $collection['shop_id']);
             })
-            ->select('id','shop_id','delivery_fee','pickup')
             ->orderByDesc('id')
             ->paginate($collection['perPage']);
     }
