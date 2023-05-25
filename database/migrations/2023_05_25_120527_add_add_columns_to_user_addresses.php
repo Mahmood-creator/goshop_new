@@ -14,7 +14,12 @@ class AddAddColumnsToUserAddresses extends Migration
     public function up()
     {
         Schema::table('user_addresses', function (Blueprint $table) {
-            $table->string('name')->nullable();
+            $table->dropColumn('passport_number');
+            $table->dropColumn('passport_secret');
+            $table->dropColumn('province');
+            $table->dropColumn('name');
+            $table->dropColumn('surname');
+
             $table->string('entrance')->nullable();
             $table->string('floor')->nullable();
             $table->string('apartment')->nullable();
@@ -33,6 +38,12 @@ class AddAddColumnsToUserAddresses extends Migration
             $table->dropColumn('entrance');
             $table->dropColumn('floor');
             $table->dropColumn('apartment');
+
+            $table->string('passport_number')->nullable();
+            $table->string('passport_secret')->nullable();
+            $table->string('province')->nullable();
+            $table->string('name')->nullable();
+            $table->string('surname')->nullable();
         });
     }
 }
