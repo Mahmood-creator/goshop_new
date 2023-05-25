@@ -72,7 +72,7 @@ class UserAddress extends Model
 
     protected $fillable = ['user_id','title','location','default','active',
         'country_id','apartment',
-        'note','name','region_id','city_id'
+        'note','name','region_id','city_id','floor','apartment'
     ];
 
     public function user(): BelongsTo

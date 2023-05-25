@@ -9,9 +9,6 @@ use Illuminate\Support\Str;
 
 class UserAddressService extends \App\Services\CoreService
 {
-    const FINDEX_URL = 'https://api2.findex.az/api/partners';
-    const SECRET_KEY = 'pasMallSi';
-
     public function __construct()
     {
         parent::__construct();
