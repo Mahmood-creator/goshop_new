@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Database\Factories\OrderCouponFactory;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,16 +16,16 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $name
  * @property float|null $price
  * @property int $order_id
- * @method static \Database\Factories\OrderCouponFactory factory(...$parameters)
- * @method static \Illuminate\Database\Eloquent\Builder|OrderCoupon newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|OrderCoupon newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|OrderCoupon query()
- * @method static \Illuminate\Database\Eloquent\Builder|OrderCoupon whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|OrderCoupon whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|OrderCoupon whereOrderId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|OrderCoupon wherePrice($value)
- * @method static \Illuminate\Database\Eloquent\Builder|OrderCoupon whereUserId($value)
- * @mixin \Eloquent
+ * @method static OrderCouponFactory factory(...$parameters)
+ * @method static Builder|OrderCoupon newModelQuery()
+ * @method static Builder|OrderCoupon newQuery()
+ * @method static Builder|OrderCoupon query()
+ * @method static Builder|OrderCoupon whereId($value)
+ * @method static Builder|OrderCoupon whereName($value)
+ * @method static Builder|OrderCoupon whereOrderId($value)
+ * @method static Builder|OrderCoupon wherePrice($value)
+ * @method static Builder|OrderCoupon whereUserId($value)
+ * @mixin Eloquent
  */
 class OrderCoupon extends Model
 {

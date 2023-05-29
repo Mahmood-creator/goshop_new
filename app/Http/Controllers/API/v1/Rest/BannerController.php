@@ -12,7 +12,9 @@ use App\Models\Product;
 use App\Models\ProductTranslation;
 use App\Repositories\BannerRepository\BannerRepository;
 use App\Repositories\ProductRepository\ProductRepository;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Symfony\Component\HttpFoundation\Response;
 
 class BannerController extends RestBaseController
@@ -32,7 +34,7 @@ class BannerController extends RestBaseController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return AnonymousResourceCollection
      */
     public function paginate(FilterParamsRequest $request)
     {
@@ -49,7 +51,7 @@ class BannerController extends RestBaseController
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function show($id)
     {
@@ -68,9 +70,9 @@ class BannerController extends RestBaseController
      * Banner Products show .
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection|\Illuminate\Http\JsonResponse
+     * @return AnonymousResourceCollection|JsonResponse
      */
-    public function bannerProducts(int $id)
+    public function bannerProducts(int $id): JsonResponse|AnonymousResourceCollection
     {
         $banner = $this->bannerRepository->bannerDetails($id);
         if ($banner){

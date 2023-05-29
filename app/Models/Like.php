@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Models\Like
@@ -12,19 +15,19 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $likable_type
  * @property int $likable_id
  * @property int $user_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\User $user
- * @method static \Illuminate\Database\Eloquent\Builder|Like newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Like newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Like query()
- * @method static \Illuminate\Database\Eloquent\Builder|Like whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Like whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Like whereLikableId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Like whereLikableType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Like whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Like whereUserId($value)
- * @mixin \Eloquent
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read User $user
+ * @method static Builder|Like newModelQuery()
+ * @method static Builder|Like newQuery()
+ * @method static Builder|Like query()
+ * @method static Builder|Like whereCreatedAt($value)
+ * @method static Builder|Like whereId($value)
+ * @method static Builder|Like whereLikableId($value)
+ * @method static Builder|Like whereLikableType($value)
+ * @method static Builder|Like whereUpdatedAt($value)
+ * @method static Builder|Like whereUserId($value)
+ * @mixin Eloquent
  */
 class Like extends Model
 {

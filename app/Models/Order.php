@@ -91,17 +91,13 @@ class Order extends Model
     protected $guarded = [];
 
 
-    const NEW = 1;
-    const READY = 2;
-    const DECLARATION_IN_ADVANCE = 5;
-    const EXTERNAL_WAREHOUSE = 7;
-    const ON_THE_WAY = 8;
-    const AT_CUSTOMS = 36;
-    const INTERNAL_WAREHOUSE = 9;
-    const HANDED_OVER = 10;
-    const COURIER = 11;
-    const DELIVERED = 12;
-    const CANCELED = 13;
+    const NEW = 'new';
+    const READY = 'ready';
+    const ON_A_WAY = 'on_a_way';
+    const PAID = 'paid';
+    const DELIVERED = 'delivered';
+    const COMPLETED = 'completed';
+    const CANCELED = 'canceled';
 
     public function currency(): BelongsTo
     {

@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Database\Factories\ProductPropertiesFactory;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,17 +16,17 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $locale
  * @property string $key
  * @property string|null $value
- * @method static \Illuminate\Database\Eloquent\Builder|ProductProperties actualTranslation($lang)
- * @method static \Database\Factories\ProductPropertiesFactory factory(...$parameters)
- * @method static \Illuminate\Database\Eloquent\Builder|ProductProperties newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ProductProperties newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ProductProperties query()
- * @method static \Illuminate\Database\Eloquent\Builder|ProductProperties whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ProductProperties whereKey($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ProductProperties whereLocale($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ProductProperties whereProductId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ProductProperties whereValue($value)
- * @mixin \Eloquent
+ * @method static Builder|ProductProperties actualTranslation($lang)
+ * @method static ProductPropertiesFactory factory(...$parameters)
+ * @method static Builder|ProductProperties newModelQuery()
+ * @method static Builder|ProductProperties newQuery()
+ * @method static Builder|ProductProperties query()
+ * @method static Builder|ProductProperties whereId($value)
+ * @method static Builder|ProductProperties whereKey($value)
+ * @method static Builder|ProductProperties whereLocale($value)
+ * @method static Builder|ProductProperties whereProductId($value)
+ * @method static Builder|ProductProperties whereValue($value)
+ * @mixin Eloquent
  */
 class ProductProperties extends Model
 {

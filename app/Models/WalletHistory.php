@@ -2,8 +2,12 @@
 
 namespace App\Models;
 
+use Database\Factories\WalletHistoryFactory;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Models\WalletHistory
@@ -17,27 +21,27 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $note
  * @property string $status
  * @property int $created_by
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\User $author
- * @property-read \App\Models\User|null $user
- * @property-read \App\Models\Wallet|null $wallet
- * @method static \Database\Factories\WalletHistoryFactory factory(...$parameters)
- * @method static \Illuminate\Database\Eloquent\Builder|WalletHistory newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|WalletHistory newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|WalletHistory query()
- * @method static \Illuminate\Database\Eloquent\Builder|WalletHistory whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|WalletHistory whereCreatedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder|WalletHistory whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|WalletHistory whereNote($value)
- * @method static \Illuminate\Database\Eloquent\Builder|WalletHistory wherePrice($value)
- * @method static \Illuminate\Database\Eloquent\Builder|WalletHistory whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|WalletHistory whereTransactionId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|WalletHistory whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|WalletHistory whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|WalletHistory whereUuid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|WalletHistory whereWalletUuid($value)
- * @mixin \Eloquent
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read User $author
+ * @property-read User|null $user
+ * @property-read Wallet|null $wallet
+ * @method static WalletHistoryFactory factory(...$parameters)
+ * @method static Builder|WalletHistory newModelQuery()
+ * @method static Builder|WalletHistory newQuery()
+ * @method static Builder|WalletHistory query()
+ * @method static Builder|WalletHistory whereCreatedAt($value)
+ * @method static Builder|WalletHistory whereCreatedBy($value)
+ * @method static Builder|WalletHistory whereId($value)
+ * @method static Builder|WalletHistory whereNote($value)
+ * @method static Builder|WalletHistory wherePrice($value)
+ * @method static Builder|WalletHistory whereStatus($value)
+ * @method static Builder|WalletHistory whereTransactionId($value)
+ * @method static Builder|WalletHistory whereType($value)
+ * @method static Builder|WalletHistory whereUpdatedAt($value)
+ * @method static Builder|WalletHistory whereUuid($value)
+ * @method static Builder|WalletHistory whereWalletUuid($value)
+ * @mixin Eloquent
  */
 class WalletHistory extends Model
 {

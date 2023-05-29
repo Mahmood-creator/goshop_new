@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Database\Factories\UnitTranslationFactory;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,16 +15,16 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $unit_id
  * @property string $locale
  * @property string $title
- * @method static \Illuminate\Database\Eloquent\Builder|UnitTranslation actualTranslation($lang)
- * @method static \Database\Factories\UnitTranslationFactory factory(...$parameters)
- * @method static \Illuminate\Database\Eloquent\Builder|UnitTranslation newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|UnitTranslation newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|UnitTranslation query()
- * @method static \Illuminate\Database\Eloquent\Builder|UnitTranslation whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UnitTranslation whereLocale($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UnitTranslation whereTitle($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UnitTranslation whereUnitId($value)
- * @mixin \Eloquent
+ * @method static Builder|UnitTranslation actualTranslation($lang)
+ * @method static UnitTranslationFactory factory(...$parameters)
+ * @method static Builder|UnitTranslation newModelQuery()
+ * @method static Builder|UnitTranslation newQuery()
+ * @method static Builder|UnitTranslation query()
+ * @method static Builder|UnitTranslation whereId($value)
+ * @method static Builder|UnitTranslation whereLocale($value)
+ * @method static Builder|UnitTranslation whereTitle($value)
+ * @method static Builder|UnitTranslation whereUnitId($value)
+ * @mixin Eloquent
  */
 class UnitTranslation extends Model
 {

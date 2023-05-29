@@ -3,9 +3,14 @@
 namespace App\Models;
 
 use App\Traits\Payable;
+use Database\Factories\WalletFactory;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Models\Wallet
@@ -15,32 +20,32 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $user_id
  * @property int $currency_id
  * @property float $price
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property-read \App\Models\Currency $currency
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
+ * @property-read Currency $currency
  * @property-read mixed $symbol
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\WalletHistory> $histories
+ * @property-read Collection<int, WalletHistory> $histories
  * @property-read int|null $histories_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Transaction> $transactions
+ * @property-read Collection<int, Transaction> $transactions
  * @property-read int|null $transactions_count
- * @property-read \App\Models\User $user
- * @method static \Database\Factories\WalletFactory factory(...$parameters)
- * @method static \Illuminate\Database\Eloquent\Builder|Wallet newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Wallet newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Wallet onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Wallet query()
- * @method static \Illuminate\Database\Eloquent\Builder|Wallet whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Wallet whereCurrencyId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Wallet whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Wallet whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Wallet wherePrice($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Wallet whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Wallet whereUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Wallet whereUuid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Wallet withTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Wallet withoutTrashed()
- * @mixin \Eloquent
+ * @property-read User $user
+ * @method static WalletFactory factory(...$parameters)
+ * @method static Builder|Wallet newModelQuery()
+ * @method static Builder|Wallet newQuery()
+ * @method static Builder|Wallet onlyTrashed()
+ * @method static Builder|Wallet query()
+ * @method static Builder|Wallet whereCreatedAt($value)
+ * @method static Builder|Wallet whereCurrencyId($value)
+ * @method static Builder|Wallet whereDeletedAt($value)
+ * @method static Builder|Wallet whereId($value)
+ * @method static Builder|Wallet wherePrice($value)
+ * @method static Builder|Wallet whereUpdatedAt($value)
+ * @method static Builder|Wallet whereUserId($value)
+ * @method static Builder|Wallet whereUuid($value)
+ * @method static Builder|Wallet withTrashed()
+ * @method static Builder|Wallet withoutTrashed()
+ * @mixin Eloquent
  */
 class Wallet extends Model
 {

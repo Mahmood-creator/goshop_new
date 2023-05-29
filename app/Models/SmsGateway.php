@@ -2,8 +2,12 @@
 
 namespace App\Models;
 
+use Database\Factories\SmsGatewayFactory;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Models\SmsGateway
@@ -17,24 +21,24 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $service_id
  * @property string|null $text
  * @property int $active
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Database\Factories\SmsGatewayFactory factory(...$parameters)
- * @method static \Illuminate\Database\Eloquent\Builder|SmsGateway newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|SmsGateway newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|SmsGateway query()
- * @method static \Illuminate\Database\Eloquent\Builder|SmsGateway whereActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SmsGateway whereApiKey($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SmsGateway whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SmsGateway whereFrom($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SmsGateway whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SmsGateway whereSecretKey($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SmsGateway whereServiceId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SmsGateway whereText($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SmsGateway whereTitle($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SmsGateway whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|SmsGateway whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @method static SmsGatewayFactory factory(...$parameters)
+ * @method static Builder|SmsGateway newModelQuery()
+ * @method static Builder|SmsGateway newQuery()
+ * @method static Builder|SmsGateway query()
+ * @method static Builder|SmsGateway whereActive($value)
+ * @method static Builder|SmsGateway whereApiKey($value)
+ * @method static Builder|SmsGateway whereCreatedAt($value)
+ * @method static Builder|SmsGateway whereFrom($value)
+ * @method static Builder|SmsGateway whereId($value)
+ * @method static Builder|SmsGateway whereSecretKey($value)
+ * @method static Builder|SmsGateway whereServiceId($value)
+ * @method static Builder|SmsGateway whereText($value)
+ * @method static Builder|SmsGateway whereTitle($value)
+ * @method static Builder|SmsGateway whereType($value)
+ * @method static Builder|SmsGateway whereUpdatedAt($value)
+ * @mixin Eloquent
  */
 class SmsGateway extends Model
 {

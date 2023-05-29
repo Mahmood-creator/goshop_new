@@ -1,26 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\API\v1\Dashboard\Admin;
+namespace App\Http\Controllers\API\v1\Dashboard\Seller;
 
 use App\Helpers\ResponseError;
-use App\Http\Resources\ExtraValueResource;
-use App\Models\ExtraValue;
+use App\Http\Resources\ExtraGroupResource;
+use App\Models\ExtraGroup;
 use App\Repositories\ExtraRepository\ExtraGroupRepository;
-use App\Repositories\ExtraRepository\ExtraValueRepository;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Symfony\Component\HttpFoundation\Response;
 
-class ExtraValueController extends AdminBaseController
+class ExtraGroupController extends SellerBaseController
 {
-
-    /**
-     * @param ExtraValue $model
-     * @param ExtraValueRepository $valueRepository
-     */
-    public function __construct(private ExtraValue $model, private ExtraValueRepository $valueRepository)
+    public function __construct(private ExtraGroup $model,private ExtraGroupRepository $groupRepository)
     {
         parent::__construct();
     }
@@ -33,13 +27,8 @@ class ExtraValueController extends AdminBaseController
      */
     public function index(Request $request): AnonymousResourceCollection
     {
-        $values = $this->valueRepository->extraValueList(
-            $request->active ?? null,
-            $request->group_id ?? null,
-            $request->perPage ?? 15,
-            $request->search ?? null);
-
-        return ExtraValueResource::collection($values);
+        $extras = $this->groupRepository->extraGroupList($request->active ?? null, $request->all());
+        return ExtraGroupResource::collection($extras);
     }
 
     /**
@@ -51,36 +40,33 @@ class ExtraValueController extends AdminBaseController
      */
     public function store(Request $request): JsonResponse
     {
-        try {
-            $group = (new ExtraGroupRepository())->extraGroupDetails($request->extra_group_id);
-            if ($group) {
-                $value = $group->extraValues()->create($request->all());
-                if (isset($request->images)) {
-                    $value->uploads($request->images);
-                }
-                return $this->successResponse(trans('web.record_has_been_successfully_created', [], \request()->lang), ExtraValueResource::make($value));
+        $extra = $this->model->create($request->all());
+        if ($extra && isset($request->title)) {
+            foreach ($request->title as $index => $title) {
+                $extra->translation()->create([
+                    'locale' => $index,
+                    'title' => $title,
+                ]);
             }
-            return $this->errorResponse(ResponseError::ERROR_404, trans('web.extra_group_not_found', [], \request()->lang), Response::HTTP_NOT_FOUND);
-        } catch (Exception $e) {
-            return $this->errorResponse(ResponseError::ERROR_400, $e->getMessage(), Response::HTTP_BAD_REQUEST);
+            return $this->successResponse(trans('web.extras_list', [], \request()->lang), $extra);
         }
+        return $this->errorResponse(trans('web.extras_list', [], \request()->lang), $extra);
     }
 
     /**
      * Display the specified resource.
      *
      * @param int $id
-     * @return AnonymousResourceCollection|JsonResponse
+     * @return JsonResponse
      */
-    public function show(int $id): JsonResponse|AnonymousResourceCollection
+    public function show(int $id): JsonResponse
     {
-        $extraValue = $this->valueRepository->extraValueDetails($id);
-        if ($extraValue) {
-            return $this->successResponse(trans('web.extra_value_found', [], \request()->lang), ExtraValueResource::make($extraValue));
+        $extra = $this->groupRepository->extraGroupDetails($id);
+        if ($extra) {
+            return $this->successResponse(trans('web.extra_found', [], \request()->lang), ExtraGroupResource::make($extra->load('translations')));
         }
         return $this->errorResponse(ResponseError::ERROR_404, trans('errors.' . ResponseError::ERROR_404, [], \request()->lang), Response::HTTP_NOT_FOUND);
     }
-
 
     /**
      * Update the specified resource in storage.
@@ -88,14 +74,22 @@ class ExtraValueController extends AdminBaseController
      * @param Request $request
      * @param int $id
      * @return JsonResponse
-     * @throws Exception
      */
     public function update(Request $request, int $id): JsonResponse
     {
-        $value = $this->model->find($id);
-        if ($value) {
-            $value->update($request->all());
-            return $this->successResponse(trans('web.record_has_been_successfully_updated', [], \request()->lang), ExtraValueResource::make($value));
+        $extra = $this->model->find($id);
+        if ($extra) {
+            $extra->update($request->all());
+            if (isset($request->title)) {
+                $extra->translations()->delete();
+                foreach ($request->title as $index => $title) {
+                    $extra->translation()->create([
+                        'locale' => $index,
+                        'title' => $title,
+                    ]);
+                }
+                return $this->successResponse(trans('web.record_has_been_successfully_updated', [], \request()->lang), ExtraGroupResource::make($extra));
+            }
         }
         return $this->errorResponse(ResponseError::ERROR_404, trans('errors.' . ResponseError::ERROR_404, [], \request()->lang), Response::HTTP_NOT_FOUND);
     }
@@ -108,15 +102,26 @@ class ExtraValueController extends AdminBaseController
      */
     public function destroy(int $id): JsonResponse
     {
-        $value = $this->model->find($id);
-        if ($value) {
-            if (count($value->stocks) > 0) {
+        $group = $this->model->find($id);
+        if ($group) {
+            if (count($group->extraValues) > 0){
                 return $this->errorResponse(ResponseError::ERROR_504, trans('errors.' . ResponseError::ERROR_504, [], \request()->lang), Response::HTTP_BAD_REQUEST);
             }
-            $value->delete();
+            $group->delete();
             return $this->successResponse(trans('web.record_has_been_successfully_deleted', [], \request()->lang), []);
         }
         return $this->errorResponse(ResponseError::ERROR_404, trans('errors.' . ResponseError::ERROR_404, [], \request()->lang), Response::HTTP_NOT_FOUND);
+    }
+
+
+    /**
+     * ExtraGroup type list.
+     *
+     * @return JsonResponse
+     */
+    public function typesList(): JsonResponse
+    {
+        return $this->successResponse('web.extra_groups_types', $this->model->getTypes());
     }
 
     /**
@@ -127,15 +132,15 @@ class ExtraValueController extends AdminBaseController
      */
     public function setActive(int $id): JsonResponse|AnonymousResourceCollection
     {
-        $value = $this->model->find($id);
-        if ($value) {
-            $value->update(['active' => !$value->active]);
-            return $this->successResponse(__('web.record_has_been_successfully_updated'), ExtraValueResource::make($value));
+        $group = $this->groupRepository->extraGroupDetails($id);
+        if ($group) {
+            $group->update(['active' => !$group->active]);
+
+            return $this->successResponse(__('web.record_has_been_successfully_updated'), ExtraGroupResource::make($group));
         }
         return $this->errorResponse(
             ResponseError::ERROR_404, trans('errors.' . ResponseError::ERROR_404, [], request()->lang),
             Response::HTTP_NOT_FOUND
         );
     }
-
 }

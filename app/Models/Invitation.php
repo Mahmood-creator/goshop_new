@@ -2,8 +2,12 @@
 
 namespace App\Models;
 
+use Database\Factories\InvitationFactory;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Models\Invitation
@@ -13,23 +17,23 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $user_id
  * @property string|null $role
  * @property int $status
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Shop $shop
- * @property-read \App\Models\User $user
- * @method static \Database\Factories\InvitationFactory factory(...$parameters)
- * @method static \Illuminate\Database\Eloquent\Builder|Invitation filter($array)
- * @method static \Illuminate\Database\Eloquent\Builder|Invitation newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Invitation newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Invitation query()
- * @method static \Illuminate\Database\Eloquent\Builder|Invitation whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Invitation whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Invitation whereRole($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Invitation whereShopId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Invitation whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Invitation whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Invitation whereUserId($value)
- * @mixin \Eloquent
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Shop $shop
+ * @property-read User $user
+ * @method static InvitationFactory factory(...$parameters)
+ * @method static Builder|Invitation filter($array)
+ * @method static Builder|Invitation newModelQuery()
+ * @method static Builder|Invitation newQuery()
+ * @method static Builder|Invitation query()
+ * @method static Builder|Invitation whereCreatedAt($value)
+ * @method static Builder|Invitation whereId($value)
+ * @method static Builder|Invitation whereRole($value)
+ * @method static Builder|Invitation whereShopId($value)
+ * @method static Builder|Invitation whereStatus($value)
+ * @method static Builder|Invitation whereUpdatedAt($value)
+ * @method static Builder|Invitation whereUserId($value)
+ * @mixin Eloquent
  */
 class Invitation extends Model
 {

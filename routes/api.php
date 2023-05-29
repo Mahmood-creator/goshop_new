@@ -342,6 +342,12 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('regions',[Seller\RegionController::class,'index']);
 
             Route::get('cities',[Seller\CityController::class,'index']);
+
+            /* Extras Group & Value */
+            Route::get('extra/groups/types', [Seller\ExtraGroupController::class, 'typesList']);
+            Route::apiResource('extra/groups', Seller\ExtraGroupController::class);
+            Route::apiResource('extra/values', Seller\ExtraValueController::class);
+
         });
 
         // ADMIN BLOCK

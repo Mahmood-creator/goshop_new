@@ -3,6 +3,10 @@
 namespace App\Models;
 
 use App\Traits\Loadable;
+use Database\Factories\LanguageFactory;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,20 +20,20 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $default
  * @property int $active
  * @property string|null $img
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Gallery> $galleries
+ * @property-read Collection<int, Gallery> $galleries
  * @property-read int|null $galleries_count
- * @method static \Database\Factories\LanguageFactory factory(...$parameters)
- * @method static \Illuminate\Database\Eloquent\Builder|Language newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Language newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Language query()
- * @method static \Illuminate\Database\Eloquent\Builder|Language whereActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Language whereBackward($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Language whereDefault($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Language whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Language whereImg($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Language whereLocale($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Language whereTitle($value)
- * @mixin \Eloquent
+ * @method static LanguageFactory factory(...$parameters)
+ * @method static Builder|Language newModelQuery()
+ * @method static Builder|Language newQuery()
+ * @method static Builder|Language query()
+ * @method static Builder|Language whereActive($value)
+ * @method static Builder|Language whereBackward($value)
+ * @method static Builder|Language whereDefault($value)
+ * @method static Builder|Language whereId($value)
+ * @method static Builder|Language whereImg($value)
+ * @method static Builder|Language whereLocale($value)
+ * @method static Builder|Language whereTitle($value)
+ * @mixin Eloquent
  */
 class Language extends Model
 {

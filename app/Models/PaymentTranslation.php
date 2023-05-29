@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Database\Factories\PaymentTranslationFactory;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,18 +17,18 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $title
  * @property string|null $client_title
  * @property string|null $secret_title
- * @method static \Illuminate\Database\Eloquent\Builder|PaymentTranslation actualTranslation($lang)
- * @method static \Database\Factories\PaymentTranslationFactory factory(...$parameters)
- * @method static \Illuminate\Database\Eloquent\Builder|PaymentTranslation newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PaymentTranslation newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PaymentTranslation query()
- * @method static \Illuminate\Database\Eloquent\Builder|PaymentTranslation whereClientTitle($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PaymentTranslation whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PaymentTranslation whereLocale($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PaymentTranslation wherePaymentId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PaymentTranslation whereSecretTitle($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PaymentTranslation whereTitle($value)
- * @mixin \Eloquent
+ * @method static Builder|PaymentTranslation actualTranslation($lang)
+ * @method static PaymentTranslationFactory factory(...$parameters)
+ * @method static Builder|PaymentTranslation newModelQuery()
+ * @method static Builder|PaymentTranslation newQuery()
+ * @method static Builder|PaymentTranslation query()
+ * @method static Builder|PaymentTranslation whereClientTitle($value)
+ * @method static Builder|PaymentTranslation whereId($value)
+ * @method static Builder|PaymentTranslation whereLocale($value)
+ * @method static Builder|PaymentTranslation wherePaymentId($value)
+ * @method static Builder|PaymentTranslation whereSecretTitle($value)
+ * @method static Builder|PaymentTranslation whereTitle($value)
+ * @mixin Eloquent
  */
 class PaymentTranslation extends Model
 {

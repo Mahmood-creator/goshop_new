@@ -3,9 +3,15 @@
 namespace App\Models;
 
 use App\Traits\SetCurrency;
+use Database\Factories\StockFactory;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -16,33 +22,33 @@ use Illuminate\Support\Facades\Log;
  * @property int $countable_id
  * @property float $price
  * @property int $quantity
- * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property Carbon|null $deleted_at
  * @property string|null $url
- * @property-read Model|\Eloquent $countable
- * @property-read \App\Models\Discount|null $discount
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StockExtra> $extras
+ * @property-read Model|Eloquent $countable
+ * @property-read Discount|null $discount
+ * @property-read Collection<int, StockExtra> $extras
  * @property-read int|null $extras_count
  * @property-read mixed $actual_discount
  * @property-read mixed $discount_expired
  * @property-read mixed $tax_price
  * @property-write mixed $currency_id
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ExtraValue> $stockExtras
+ * @property-read Collection<int, ExtraValue> $stockExtras
  * @property-read int|null $stock_extras_count
- * @method static \Database\Factories\StockFactory factory(...$parameters)
- * @method static \Illuminate\Database\Eloquent\Builder|Stock newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Stock newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Stock onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Stock query()
- * @method static \Illuminate\Database\Eloquent\Builder|Stock whereCountableId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Stock whereCountableType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Stock whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Stock whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Stock wherePrice($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Stock whereQuantity($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Stock whereUrl($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Stock withTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Stock withoutTrashed()
- * @mixin \Eloquent
+ * @method static StockFactory factory(...$parameters)
+ * @method static Builder|Stock newModelQuery()
+ * @method static Builder|Stock newQuery()
+ * @method static Builder|Stock onlyTrashed()
+ * @method static Builder|Stock query()
+ * @method static Builder|Stock whereCountableId($value)
+ * @method static Builder|Stock whereCountableType($value)
+ * @method static Builder|Stock whereDeletedAt($value)
+ * @method static Builder|Stock whereId($value)
+ * @method static Builder|Stock wherePrice($value)
+ * @method static Builder|Stock whereQuantity($value)
+ * @method static Builder|Stock whereUrl($value)
+ * @method static Builder|Stock withTrashed()
+ * @method static Builder|Stock withoutTrashed()
+ * @mixin Eloquent
  */
 class Stock extends Model
 {
@@ -58,7 +64,7 @@ class Stock extends Model
         'pivot'
     ];
 
-    public function countable(): \Illuminate\Database\Eloquent\Relations\MorphTo
+    public function countable(): MorphTo
     {
         return $this->morphTo('countable')->withTrashed();
     }

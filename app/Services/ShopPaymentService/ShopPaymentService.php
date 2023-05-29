@@ -9,7 +9,7 @@ use App\Helpers\ResponseError;
 class ShopPaymentService extends CoreService
 {
 
-    protected function getModelClass()
+    protected function getModelClass(): string
     {
         return ShopPayment::class;
     }

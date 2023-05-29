@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use App\Traits\Payable;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
 /**
@@ -16,24 +19,24 @@ use Illuminate\Support\Facades\Cache;
  * @property float $price
  * @property int $month
  * @property int $active
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $deleted_at
- * @method static \Illuminate\Database\Eloquent\Builder|Subscription newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Subscription newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Subscription onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Subscription query()
- * @method static \Illuminate\Database\Eloquent\Builder|Subscription whereActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Subscription whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Subscription whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Subscription whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Subscription whereMonth($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Subscription wherePrice($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Subscription whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Subscription whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Subscription withTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder|Subscription withoutTrashed()
- * @mixin \Eloquent
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
+ * @method static Builder|Subscription newModelQuery()
+ * @method static Builder|Subscription newQuery()
+ * @method static Builder|Subscription onlyTrashed()
+ * @method static Builder|Subscription query()
+ * @method static Builder|Subscription whereActive($value)
+ * @method static Builder|Subscription whereCreatedAt($value)
+ * @method static Builder|Subscription whereDeletedAt($value)
+ * @method static Builder|Subscription whereId($value)
+ * @method static Builder|Subscription whereMonth($value)
+ * @method static Builder|Subscription wherePrice($value)
+ * @method static Builder|Subscription whereType($value)
+ * @method static Builder|Subscription whereUpdatedAt($value)
+ * @method static Builder|Subscription withTrashed()
+ * @method static Builder|Subscription withoutTrashed()
+ * @mixin Eloquent
  */
 class Subscription extends Model
 {

@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Database\Factories\ProductExtraFactory;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,15 +14,15 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int $product_id
  * @property int $extra_group_id
- * @property-read \App\Models\ExtraGroup $extras
- * @method static \Database\Factories\ProductExtraFactory factory(...$parameters)
- * @method static \Illuminate\Database\Eloquent\Builder|ProductExtra newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ProductExtra newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ProductExtra query()
- * @method static \Illuminate\Database\Eloquent\Builder|ProductExtra whereExtraGroupId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ProductExtra whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ProductExtra whereProductId($value)
- * @mixin \Eloquent
+ * @property-read ExtraGroup $extras
+ * @method static ProductExtraFactory factory(...$parameters)
+ * @method static Builder|ProductExtra newModelQuery()
+ * @method static Builder|ProductExtra newQuery()
+ * @method static Builder|ProductExtra query()
+ * @method static Builder|ProductExtra whereExtraGroupId($value)
+ * @method static Builder|ProductExtra whereId($value)
+ * @method static Builder|ProductExtra whereProductId($value)
+ * @mixin Eloquent
  */
 class ProductExtra extends Model
 {

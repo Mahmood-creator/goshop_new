@@ -39,7 +39,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class ExtraValue extends Model
 {
     use HasFactory, Loadable;
-    protected $fillable = ['value', 'active','extra_group_id'];
+    protected $fillable = ['value', 'active','extra_group_id','created_by'];
     public $timestamps = false;
 
     public function group(): BelongsTo

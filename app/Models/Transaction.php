@@ -3,8 +3,13 @@
 namespace App\Models;
 
 use App\Traits\SetCurrency;
+use Database\Factories\TransactionFactory;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Models\Transaction
@@ -21,33 +26,33 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $refund_time
  * @property string $status
  * @property string $status_description
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property string|null $deleted_at
- * @property-read Model|\Eloquent $payable
- * @property-read \App\Models\Payment|null $paymentSystem
- * @property-read \App\Models\User|null $user
- * @method static \Database\Factories\TransactionFactory factory(...$parameters)
- * @method static \Illuminate\Database\Eloquent\Builder|Transaction filter($array = [])
- * @method static \Illuminate\Database\Eloquent\Builder|Transaction newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Transaction newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Transaction query()
- * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereNote($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Transaction wherePayableId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Transaction wherePayableType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Transaction wherePaymentSysId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Transaction wherePaymentTrxId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Transaction wherePerformTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Transaction wherePrice($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereRefundTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereStatusDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereUserId($value)
- * @mixin \Eloquent
+ * @property-read Model|Eloquent $payable
+ * @property-read Payment|null $paymentSystem
+ * @property-read User|null $user
+ * @method static TransactionFactory factory(...$parameters)
+ * @method static Builder|Transaction filter($array = [])
+ * @method static Builder|Transaction newModelQuery()
+ * @method static Builder|Transaction newQuery()
+ * @method static Builder|Transaction query()
+ * @method static Builder|Transaction whereCreatedAt($value)
+ * @method static Builder|Transaction whereDeletedAt($value)
+ * @method static Builder|Transaction whereId($value)
+ * @method static Builder|Transaction whereNote($value)
+ * @method static Builder|Transaction wherePayableId($value)
+ * @method static Builder|Transaction wherePayableType($value)
+ * @method static Builder|Transaction wherePaymentSysId($value)
+ * @method static Builder|Transaction wherePaymentTrxId($value)
+ * @method static Builder|Transaction wherePerformTime($value)
+ * @method static Builder|Transaction wherePrice($value)
+ * @method static Builder|Transaction whereRefundTime($value)
+ * @method static Builder|Transaction whereStatus($value)
+ * @method static Builder|Transaction whereStatusDescription($value)
+ * @method static Builder|Transaction whereUpdatedAt($value)
+ * @method static Builder|Transaction whereUserId($value)
+ * @mixin Eloquent
  */
 class Transaction extends Model
 {
@@ -65,12 +70,12 @@ class Transaction extends Model
         return $this->morphTo('payable');
     }
 
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function paymentSystem(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function paymentSystem(): BelongsTo
     {
         return $this->belongsTo(Payment::class, 'payment_sys_id');
     }

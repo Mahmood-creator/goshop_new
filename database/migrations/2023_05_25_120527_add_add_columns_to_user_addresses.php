@@ -34,7 +34,6 @@ class AddAddColumnsToUserAddresses extends Migration
     public function down()
     {
         Schema::table('user_addresses', function (Blueprint $table) {
-            $table->dropColumn('name');
             $table->dropColumn('entrance');
             $table->dropColumn('floor');
             $table->dropColumn('apartment');

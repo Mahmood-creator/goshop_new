@@ -8,7 +8,9 @@ use App\Http\Requests\FilterParamsRequest;
 use App\Http\Resources\BlogResource;
 use App\Models\Blog;
 use App\Repositories\BlogRepository\BlogRepository;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Symfony\Component\HttpFoundation\Response;
 
 class BlogController extends RestBaseController
@@ -23,7 +25,7 @@ class BlogController extends RestBaseController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return AnonymousResourceCollection
      */
     public function paginate(FilterParamsRequest $request)
     {
@@ -37,7 +39,7 @@ class BlogController extends RestBaseController
     /**
      * Find Blog by UUID.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function show(string $uuid)
     {

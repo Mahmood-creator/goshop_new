@@ -2,35 +2,31 @@
 
 namespace App\Http\Controllers\API\v1\Dashboard\Admin;
 
-use App\Helpers\ResponseError;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\DeliveryResource;
-use App\Http\Resources\ExtraGroupResource;
+use Exception;
 use App\Models\ExtraGroup;
-use App\Models\Language;
-use App\Repositories\ExtraRepository\ExtraGroupRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
+use App\Helpers\ResponseError;
+use Illuminate\Http\JsonResponse;
+use App\Http\Resources\ExtraGroupResource;
 use Symfony\Component\HttpFoundation\Response;
+use App\Repositories\ExtraRepository\ExtraGroupRepository;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ExtraGroupController extends AdminBaseController
 {
-    private ExtraGroupRepository $groupRepository;
-    private ExtraGroup $model;
 
-    public function __construct(ExtraGroup $model, ExtraGroupRepository $groupRepository)
+    public function __construct(private ExtraGroup $model,private ExtraGroupRepository $groupRepository)
     {
         parent::__construct();
-        $this->model = $model;
-        $this->groupRepository = $groupRepository;
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @param Request $request
+     * @return AnonymousResourceCollection
      */
-    public function index(Request $request)
+    public function index(Request $request): AnonymousResourceCollection
     {
         $extras = $this->groupRepository->extraGroupList($request->active ?? null, $request->all());
         return ExtraGroupResource::collection($extras);
@@ -39,11 +35,11 @@ class ExtraGroupController extends AdminBaseController
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Exception
+     * @param Request $request
+     * @return JsonResponse
+     * @throws Exception
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $extra = $this->model->create($request->all());
         if ($extra && isset($request->title)) {
@@ -61,10 +57,10 @@ class ExtraGroupController extends AdminBaseController
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * @param int $id
+     * @return JsonResponse
      */
-    public function show($id)
+    public function show(int $id): JsonResponse
     {
         $extra = $this->groupRepository->extraGroupDetails($id);
         if ($extra) {
@@ -76,11 +72,11 @@ class ExtraGroupController extends AdminBaseController
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @param int $id
+     * @return JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id): JsonResponse
     {
         $extra = $this->model->find($id);
         if ($extra) {
@@ -102,10 +98,10 @@ class ExtraGroupController extends AdminBaseController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * @param int $id
+     * @return JsonResponse
      */
-    public function destroy($id)
+    public function destroy(int $id): JsonResponse
     {
         $group = $this->model->find($id);
         if ($group) {
@@ -122,10 +118,10 @@ class ExtraGroupController extends AdminBaseController
     /**
      * ExtraGroup type list.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function typesList() {
+    public function typesList(): JsonResponse
+    {
         return $this->successResponse('web.extra_groups_types', $this->model->getTypes());
     }
 
@@ -133,9 +129,9 @@ class ExtraGroupController extends AdminBaseController
      * Change Active Status of Model.
      *
      * @param int $id
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return JsonResponse|AnonymousResourceCollection
      */
-    public function setActive(int $id)
+    public function setActive(int $id): JsonResponse|AnonymousResourceCollection
     {
         $group = $this->groupRepository->extraGroupDetails($id);
         if ($group) {

@@ -36,7 +36,7 @@ class ExtraGroup extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['type', 'active'];
+    protected $fillable = ['type', 'active','created_by'];
     public $timestamps = false;
 
     const TYPES = [

@@ -4,10 +4,14 @@ namespace App\Models;
 
 use App\Traits\Payable;
 use App\Traits\SetCurrency;
+use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Models\ShopSubscription
@@ -19,30 +23,30 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
  * @property float|null $price
  * @property string|null $type
  * @property int $active
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property int|null $currency_id
- * @property-read \App\Models\Currency|null $currency
- * @property-read \App\Models\Shop $shop
- * @property-read \App\Models\Subscription|null $subscription
- * @property-read \App\Models\Transaction|null $transaction
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Transaction> $transactions
+ * @property-read Currency|null $currency
+ * @property-read Shop $shop
+ * @property-read Subscription|null $subscription
+ * @property-read Transaction|null $transaction
+ * @property-read Collection<int, Transaction> $transactions
  * @property-read int|null $transactions_count
- * @method static \Illuminate\Database\Eloquent\Builder|ShopSubscription actualSubscription()
- * @method static \Illuminate\Database\Eloquent\Builder|ShopSubscription newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ShopSubscription newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|ShopSubscription query()
- * @method static \Illuminate\Database\Eloquent\Builder|ShopSubscription whereActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ShopSubscription whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ShopSubscription whereCurrencyId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ShopSubscription whereExpiredAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ShopSubscription whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ShopSubscription wherePrice($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ShopSubscription whereShopId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ShopSubscription whereSubscriptionId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ShopSubscription whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ShopSubscription whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @method static Builder|ShopSubscription actualSubscription()
+ * @method static Builder|ShopSubscription newModelQuery()
+ * @method static Builder|ShopSubscription newQuery()
+ * @method static Builder|ShopSubscription query()
+ * @method static Builder|ShopSubscription whereActive($value)
+ * @method static Builder|ShopSubscription whereCreatedAt($value)
+ * @method static Builder|ShopSubscription whereCurrencyId($value)
+ * @method static Builder|ShopSubscription whereExpiredAt($value)
+ * @method static Builder|ShopSubscription whereId($value)
+ * @method static Builder|ShopSubscription wherePrice($value)
+ * @method static Builder|ShopSubscription whereShopId($value)
+ * @method static Builder|ShopSubscription whereSubscriptionId($value)
+ * @method static Builder|ShopSubscription whereType($value)
+ * @method static Builder|ShopSubscription whereUpdatedAt($value)
+ * @mixin Eloquent
  */
 class ShopSubscription extends Model
 {

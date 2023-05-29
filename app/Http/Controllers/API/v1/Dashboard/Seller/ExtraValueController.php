@@ -1,21 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\API\v1\Dashboard\Admin;
+namespace App\Http\Controllers\API\v1\Dashboard\Seller;
 
 use App\Helpers\ResponseError;
+use App\Http\Requests\Seller\ExtraValue\StoreRequest;
+use App\Http\Requests\Seller\ExtraValue\UpdateRequest;
 use App\Http\Resources\ExtraValueResource;
 use App\Models\ExtraValue;
-use App\Repositories\ExtraRepository\ExtraGroupRepository;
 use App\Repositories\ExtraRepository\ExtraValueRepository;
-use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Symfony\Component\HttpFoundation\Response;
 
-class ExtraValueController extends AdminBaseController
+class ExtraValueController extends SellerBaseController
 {
-
     /**
      * @param ExtraValue $model
      * @param ExtraValueRepository $valueRepository
@@ -45,25 +44,21 @@ class ExtraValueController extends AdminBaseController
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param StoreRequest $request
      * @return JsonResponse
-     * @throws Exception
      */
-    public function store(Request $request): JsonResponse
+    public function store(StoreRequest $request): JsonResponse
     {
-        try {
-            $group = (new ExtraGroupRepository())->extraGroupDetails($request->extra_group_id);
-            if ($group) {
-                $value = $group->extraValues()->create($request->all());
-                if (isset($request->images)) {
-                    $value->uploads($request->images);
-                }
-                return $this->successResponse(trans('web.record_has_been_successfully_created', [], \request()->lang), ExtraValueResource::make($value));
-            }
-            return $this->errorResponse(ResponseError::ERROR_404, trans('web.extra_group_not_found', [], \request()->lang), Response::HTTP_NOT_FOUND);
-        } catch (Exception $e) {
-            return $this->errorResponse(ResponseError::ERROR_400, $e->getMessage(), Response::HTTP_BAD_REQUEST);
+        $collection = $request->validated();
+
+        $collection['created_by'] = $this->shop->id;
+
+        $value = ExtraValue::create($collection);
+
+        if (isset($collection['images'])) {
+            $value->uploads($collection['images']);
         }
+        return $this->successResponse(trans('web.record_has_been_successfully_created', [], \request()->lang), ExtraValueResource::make($value));
     }
 
     /**
@@ -85,16 +80,17 @@ class ExtraValueController extends AdminBaseController
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
+     * @param UpdateRequest $request
      * @param int $id
      * @return JsonResponse
-     * @throws Exception
      */
-    public function update(Request $request, int $id): JsonResponse
+    public function update(UpdateRequest $request, int $id): JsonResponse
     {
         $value = $this->model->find($id);
+        $collection = $request->validated();
+        $collection['created_by'] = $this->shop->id;
         if ($value) {
-            $value->update($request->all());
+            $value->update($collection);
             return $this->successResponse(trans('web.record_has_been_successfully_updated', [], \request()->lang), ExtraValueResource::make($value));
         }
         return $this->errorResponse(ResponseError::ERROR_404, trans('errors.' . ResponseError::ERROR_404, [], \request()->lang), Response::HTTP_NOT_FOUND);
@@ -108,7 +104,7 @@ class ExtraValueController extends AdminBaseController
      */
     public function destroy(int $id): JsonResponse
     {
-        $value = $this->model->find($id);
+        $value = $this->model->where('created_by', '=', $this->shop->id)->find($id);
         if ($value) {
             if (count($value->stocks) > 0) {
                 return $this->errorResponse(ResponseError::ERROR_504, trans('errors.' . ResponseError::ERROR_504, [], \request()->lang), Response::HTTP_BAD_REQUEST);
@@ -137,5 +133,4 @@ class ExtraValueController extends AdminBaseController
             Response::HTTP_NOT_FOUND
         );
     }
-
 }
