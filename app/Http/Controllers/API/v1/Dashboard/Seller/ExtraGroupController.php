@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API\v1\Dashboard\Seller;
 
 use App\Helpers\ResponseError;
+use App\Http\Requests\Seller\ExtraGroup\StoreRequest;
+use App\Http\Requests\Seller\ExtraGroup\UpdateRequest;
 use App\Http\Resources\ExtraGroupResource;
 use App\Models\ExtraGroup;
 use App\Repositories\ExtraRepository\ExtraGroupRepository;
@@ -34,23 +36,24 @@ class ExtraGroupController extends SellerBaseController
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param StoreRequest $request
      * @return JsonResponse
-     * @throws Exception
      */
-    public function store(Request $request): JsonResponse
+    public function store(StoreRequest $request): JsonResponse
     {
-        $extra = $this->model->create($request->all());
-        if ($extra && isset($request->title)) {
-            foreach ($request->title as $index => $title) {
+        $collection = $request->validated();
+        $collection['created_by'] = $this->shop->id;
+        $extra = $this->model->create($collection);
+        if ($extra && isset($collection['title'])) {
+            foreach ($collection['title'] as $index => $title) {
                 $extra->translation()->create([
                     'locale' => $index,
                     'title' => $title,
                 ]);
             }
-            return $this->successResponse(trans('web.extras_list', [], \request()->lang), $extra);
+            return $this->successResponse(trans('web.extras_list', [], request()->lang), $extra);
         }
-        return $this->errorResponse(trans('web.extras_list', [], \request()->lang), $extra);
+        return $this->errorResponse(trans('web.extras_list', [], request()->lang), $extra);
     }
 
     /**
@@ -71,18 +74,21 @@ class ExtraGroupController extends SellerBaseController
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
+     * @param UpdateRequest $request
      * @param int $id
      * @return JsonResponse
      */
-    public function update(Request $request, int $id): JsonResponse
+    public function update(UpdateRequest $request, int $id): JsonResponse
     {
         $extra = $this->model->find($id);
+
         if ($extra) {
-            $extra->update($request->all());
-            if (isset($request->title)) {
+            $collection = $request->validated();
+            $collection['created_by'] = $this->shop->id;
+            $extra->update($collection);
+            if (isset($collection['title'])) {
                 $extra->translations()->delete();
-                foreach ($request->title as $index => $title) {
+                foreach ($collection['title'] as $index => $title) {
                     $extra->translation()->create([
                         'locale' => $index,
                         'title' => $title,
