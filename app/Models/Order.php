@@ -93,8 +93,8 @@ class Order extends Model
 
     const NEW = 'new';
     const READY = 'ready';
+    const ACCEPTED = 'accepted';
     const ON_A_WAY = 'on_a_way';
-    const PAID = 'paid';
     const DELIVERED = 'delivered';
     const COMPLETED = 'completed';
     const CANCELED = 'canceled';

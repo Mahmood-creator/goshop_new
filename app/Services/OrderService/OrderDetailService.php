@@ -93,6 +93,7 @@ class OrderDetailService extends CoreService
             'delivery_date' => $detail['delivery_date'] ?? null,
             'delivery_time' => $detail['delivery_time'] ?? null,
             'shop_location_id' => $detail['shop_location_id'] ?? null,
+            'point_delivery_id' => $detail['point_delivery_id'] ?? null,
         ];
     }
 

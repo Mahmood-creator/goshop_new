@@ -29,6 +29,7 @@ use Illuminate\Support\Carbon;
  * @property string $status
  * @property int|null $delivery_address_id
  * @property int|null $delivery_type_id
+ * @property int|null $point_delivery_id
  * @property float $delivery_fee
  * @property int|null $deliveryman
  * @property string|null $delivery_date

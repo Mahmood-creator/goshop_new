@@ -6,6 +6,7 @@ use App\Helpers\ResponseError;
 use App\Models\PointDelivery;
 use App\Services\CoreService;
 use App\Traits\SetTranslations;
+use Illuminate\Support\Str;
 
 
 class PointDeliveryService extends CoreService
@@ -24,6 +25,11 @@ class PointDeliveryService extends CoreService
      */
     public function create($collection): array
     {
+        $collection['location'] = [
+            'latitude' => $collection['location'] ? Str::of($collection['location'])->before(',') : null,
+            'longitude' => $collection['location'] ? Str::of($collection['location'])->after(',') : null,
+        ];
+
         $model = $this->model()->create($collection);
 
         if ($model) {
@@ -47,7 +53,10 @@ class PointDeliveryService extends CoreService
         $model = $this->model()->find($id);
 
         if ($model) {
-
+            $collection['location'] = [
+                'latitude' => $collection['location'] ? Str::of($collection['location'])->before(',') : null,
+                'longitude' => $collection['location'] ? Str::of($collection['location'])->after(',') : null,
+            ];
             $model->update($collection);
 
             $this->setTranslations($model,$collection);

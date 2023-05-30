@@ -163,6 +163,91 @@ class OrderRepository extends CoreRepository implements OrderRepoInterface
         return $this->orderQueryFormatter($dateFrom, $dateTo)->count();
     }
 
+    /**
+     * @param array $filter
+     * @return array
+     */
+    public function orderByStatusStatistics(array $filter = []): array
+    {
+        $delivered = Order::DELIVERED;
+        $canceled  = Order::CANCELED;
+        $new       = Order::NEW;
+        $accepted  = Order::ACCEPTED;
+        $ready     = Order::READY;
+        $onAWay    = Order::ON_A_WAY;
+        $date      = date('Y-m-d 00:00:01');
+
+        $result    = [
+            'count'                 => 0,
+            'total_price'           => 0,
+            'delivered'             => 0,
+            'cancel'                => 0,
+            'new'                   => 0,
+            'accepted'              => 0,
+            'ready'                 => 0,
+            'on_a_way'              => 0,
+            'today_count'           => 0,
+            'total_delivered_price' => 0,
+        ];
+
+//        $filter['date_from'] = date('Y-m-d H:i:s', strtotime('-1 minute'));
+
+        Order::filter($filter)
+            ->select(['id', 'price', 'status', 'created_at'])
+            ->chunkMap(function (Order $order) use (&$result, $date, $delivered, $canceled, $new, $accepted, $ready, $onAWay) {
+
+                $result['count'] += 1;
+                $result['total_price'] += $order->price;
+                if ($order->status === Order::DELIVERED) {
+                    $result['total_delivered_price'] += $order->price;
+                }
+
+                if ($order->created_at >= $date) {
+                    $result['today_count'] += 1;
+                }
+
+                switch ($order->status) {
+                    case $delivered:
+                        $result[$delivered] += 1;
+                        break;
+                    case $canceled:
+                        $result['cancel'] += 1;
+                        break;
+                    case $new:
+                        $result[$new] += 1;
+                        break;
+                    case $accepted:
+                        $result[$accepted] += 1;
+                        break;
+                    case $ready:
+                        $result[$ready] += 1;
+                        break;
+                    case $onAWay:
+                        $result[$onAWay] += 1;
+                        break;
+                }
+
+                return true;
+            });
+
+        $progress = data_get($result, 'new', 0) + data_get($result, 'accepted', 0) +
+            data_get($result, 'ready', 0) + data_get($result, 'on_a_way', 0);
+
+        return [
+            'progress_orders_count'     => $progress,
+            'delivered_orders_count'    => data_get($result, 'delivered'),
+            'total_delivered_price'     => data_get($result, 'total_delivered_price'),
+            'cancel_orders_count'       => data_get($result, 'cancel'),
+            'new_orders_count'          => data_get($result, 'new'),
+            'accepted_orders_count'     => data_get($result, 'accepted'),
+            'ready_orders_count'        => data_get($result, 'ready'),
+            'on_a_way_orders_count'     => data_get($result, 'on_a_way'),
+            'orders_count'              => data_get($result, 'count'),
+            'total_price'               => data_get($result, 'total_price'),
+            'today_count'               => data_get($result, 'today_count'),
+        ];
+    }
+
     public function orderReportChartCache()
     {
         [$dateFrom, $dateTo] = dateFromToFormatter();
