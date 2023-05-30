@@ -219,11 +219,15 @@ Route::group(['prefix' => 'v1'], function () {
         });
 
         // SELLER BLOCK
-        Route::group(['prefix' => 'seller', 'middleware' => ['sanctum.check', 'role:seller|moderator'], 'as' => 'seller.'], function () {
+        Route::group(['prefix' => 'seller', 'middleware' => ['check.shop', 'role:seller|moderator'], 'as' => 'seller.'], routes: function () {
 
             // Shop Location
             Route::apiResource('shop-locations', Seller\ShopLocationController::class);
             Route::delete('shop-locations/delete', [Seller\ShopLocationController::class, 'destroy']);
+
+            // Point Delivery
+            Route::apiResource('point-deliveries', Seller\PointDeliveryController::class);
+            Route::delete('point-deliveries/delete', [Seller\PointDeliveryController::class, 'destroy']);
 
             /* Dashboard */
             Route::get('statistics/count', [Seller\DashboardController::class, 'countStatistics']);
@@ -561,6 +565,10 @@ Route::group(['prefix' => 'v1'], function () {
 
             Route::get('regions',[Admin\RegionController::class,'index']);
             Route::put('regions/status-change/{id}', [Admin\RegionController::class, 'changeStatus']);
+
+            // Point Delivery
+            Route::apiResource('point-deliveries', Admin\PointDeliveryController::class);
+            Route::delete('point-deliveries/delete', [Admin\PointDeliveryController::class, 'destroy']);
 
         });
 

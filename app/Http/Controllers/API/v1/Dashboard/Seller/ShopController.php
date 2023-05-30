@@ -12,6 +12,7 @@ use App\Models\Shop;
 use App\Repositories\Interfaces\ShopRepoInterface;
 use App\Services\Interfaces\ShopServiceInterface;
 use App\Services\ShopServices\ShopActivityService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -30,115 +31,70 @@ class ShopController extends SellerBaseController
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse|
+     * @param Request $request
+     * @return JsonResponse|
      */
     public function shopCreate(Request $request)
     {
-        if (!$this->shop){
-            $result = $this->shopService->create($request);
-            if ($result['status']) {
-                auth('sanctum')->user()->invitations()->delete();
-                return $this->successResponse(__('web.record_successfully_created'), ShopResource::make($result['data']));
-            }
-            return $this->errorResponse(
-                $result['code'], $result['message'] ?? trans('errors.' . $result['code'], [], \request()->lang),
-                Response::HTTP_BAD_REQUEST
-            );
-        } else {
-            return $this->errorResponse(
-                ResponseError::ERROR_205, __('errors.' . ResponseError::ERROR_205, [], \request()->lang),
-                Response::HTTP_BAD_REQUEST
-            );
+        $result = $this->shopService->create($request);
+        if ($result['status']) {
+            auth('sanctum')->user()->invitations()->delete();
+            return $this->successResponse(__('web.record_successfully_created'), ShopResource::make($result['data']));
         }
+        return $this->errorResponse(
+            $result['code'], $result['message'] ?? trans('errors.' . $result['code'], [], \request()->lang),
+            Response::HTTP_BAD_REQUEST
+        );
     }
 
     /**
      * Display the specified resource.
      *
-     * @return ShopResource|\Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function shopShow()
     {
-        if ($this->shop) {
-            $shop = $this->shopRepository->show($this->shop->uuid);
-            if ($shop){
-                return $this->successResponse(__('errors.'.ResponseError::NO_ERROR), ShopResource::make($shop->load('translations', 'seller.wallet')));
-            }
-            return $this->errorResponse(
-                ResponseError::ERROR_404,  trans('errors.' . ResponseError::ERROR_404, [], request()->lang),
-                Response::HTTP_NOT_FOUND
-            );
-        } else {
-            return $this->errorResponse(
-                ResponseError::ERROR_204, __('errors.' . ResponseError::ERROR_204, [], \request()->lang ?? 'en'),
-                Response::HTTP_FORBIDDEN
-            );
+        $shop = $this->shopRepository->show($this->shop->uuid);
+        if ($shop) {
+            return $this->successResponse(__('errors.' . ResponseError::NO_ERROR), ShopResource::make($shop->load('translations', 'seller.wallet')));
         }
+        return $this->errorResponse(
+            ResponseError::ERROR_404, trans('errors.' . ResponseError::ERROR_404, [], request()->lang),
+            Response::HTTP_NOT_FOUND
+        );
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request $request
+     * @return JsonResponse
      */
     public function shopUpdate(Request $request)
     {
-        if ($this->shop) {
-            $result = $this->shopService->update($this->shop->uuid, $request);
-            if ($result['status']) {
-                return $this->successResponse(__('web.record_successfully_updated'), ShopResource::make($result['data']));
-            }
-            return $this->errorResponse(
-                $result['code'], $result['message'] ?? trans('errors.' . $result['code'], [], \request()->lang),
-                Response::HTTP_BAD_REQUEST
-            );
-        } else {
-            return $this->errorResponse(
-                ResponseError::ERROR_204, __('errors.' . ResponseError::ERROR_204, [], \request()->lang),
-                Response::HTTP_FORBIDDEN
-            );
+        $result = $this->shopService->update($this->shop->uuid, $request);
+        if ($result['status']) {
+            return $this->successResponse(__('web.record_successfully_updated'), ShopResource::make($result['data']));
         }
+        return $this->errorResponse(
+            $result['code'], $result['message'] ?? trans('errors.' . $result['code'], [], \request()->lang),
+            Response::HTTP_BAD_REQUEST
+        );
     }
 
     public function setVisibilityStatus()
     {
-        if ($this->shop) {
-            (new ShopActivityService())->changeVisibility($this->shop->uuid);
-            return $this->successResponse(__('web.record_successfully_updated'), ShopResource::make($this->shop));
-        } else {
-            return $this->errorResponse(
-                ResponseError::ERROR_204, __('errors.' . ResponseError::ERROR_204, [], \request()->lang),
-                Response::HTTP_FORBIDDEN
-            );
-        }
+        (new ShopActivityService())->changeVisibility($this->shop->uuid);
+        return $this->successResponse(__('web.record_successfully_updated'), ShopResource::make($this->shop));
     }
 
     public function setWorkingStatus()
     {
-        if ($this->shop) {
-            (new ShopActivityService())->changeOpenStatus($this->shop->uuid);
-            $shop = Shop::find($this->shop->id);
-            return $this->successResponse(__('web.record_successfully_updated'), ShopResource::make($shop));
-        } else {
-            return $this->errorResponse(
-                ResponseError::ERROR_204, __('errors.' . ResponseError::ERROR_204, [], \request()->lang),
-                Response::HTTP_FORBIDDEN
-            );
-        }
+        (new ShopActivityService())->changeOpenStatus($this->shop->uuid);
+        $shop = Shop::find($this->shop->id);
+        return $this->successResponse(__('web.record_successfully_updated'), ShopResource::make($shop));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 
     public function getWithSeller(FilterParamsRequest $filterParamsRequest)
     {

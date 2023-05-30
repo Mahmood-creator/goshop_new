@@ -11,7 +11,8 @@ use App\Models\OrderDetail;
 use App\Models\OrderProduct;
 use App\Models\Product;
 use App\Models\Stock;
-use App\Models\User;
+use App\Repositories\CoreRepository;
+use App\Repositories\Interfaces\ProductRepoInterface;
 use App\Traits\SetCurrency;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\JoinClause;
@@ -20,7 +21,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
-class ProductRepository extends \App\Repositories\CoreRepository implements \App\Repositories\Interfaces\ProductRepoInterface
+class ProductRepository extends CoreRepository implements ProductRepoInterface
 {
     use SetCurrency;
 
