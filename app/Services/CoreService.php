@@ -63,7 +63,7 @@ abstract class CoreService
         return ['status' => true, 'code' => ResponseError::NO_ERROR];
     }
 
-    public function delete(array $ids): array
+    public function destroy(array $ids): array
     {
         $items = $this->model->find($ids);
 
