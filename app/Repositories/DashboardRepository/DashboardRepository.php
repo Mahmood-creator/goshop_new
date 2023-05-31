@@ -63,13 +63,8 @@ class DashboardRepository extends \App\Repositories\CoreRepository
             })->whereIn('status', [
             Order::NEW,
             Order::READY,
-            Order::DECLARATION_IN_ADVANCE,
-            Order::EXTERNAL_WAREHOUSE,
-            Order::ON_THE_WAY,
-            Order::AT_CUSTOMS,
-            Order::INTERNAL_WAREHOUSE,
-            Order::HANDED_OVER,
-            Order::COURIER,
+            Order::ACCEPTED,
+            Order::ON_A_WAY,
         ])->count();
 
         // GET PRODUCTS OUT OF STOCK COUNT
