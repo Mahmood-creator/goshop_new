@@ -6,6 +6,7 @@ use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
@@ -37,7 +38,7 @@ class PointDelivery extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['shop_id','location','keep_days','working_time'];
+    protected $fillable = ['shop_id', 'location', 'keep_days', 'working_time'];
 
     protected $casts = [
         'location' => 'array',
@@ -52,6 +53,11 @@ class PointDelivery extends Model
 
     public function translation(): HasOne
     {
-        return $this->hasOne(PointDeliveryTranslation::class)->where('locale',app()->getLocale());
+        return $this->hasOne(PointDeliveryTranslation::class)->where('locale', app()->getLocale());
+    }
+
+    public function shop(): BelongsTo
+    {
+        return $this->belongsTo(Shop::class);
     }
 }
