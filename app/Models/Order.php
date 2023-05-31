@@ -28,6 +28,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property string|null $deleted_at
+ * @property string|null $name
+ * @property string|null $phone
  * @property float|null $usd_price
  * @property string|null $status
  * @property float|null $total_delivery_fee

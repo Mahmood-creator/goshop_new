@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Repositories\OrderRepository\OrderDetailRepository;
 use App\Services\OrderService\OrderDetailService;
 use App\Traits\Notification;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
@@ -42,7 +43,7 @@ class OrderDetailController extends AdminBaseController
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function show(int $id)
     {
@@ -60,10 +61,10 @@ class OrderDetailController extends AdminBaseController
      * Update Order Status details by OrderDetail ID.
      *
      * @param int $orderDetail
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @param FilterParamsRequest $request
+     * @return JsonResponse
      */
-    public function orderDetailStatusUpdate(int $orderDetail, FilterParamsRequest $request)
+    public function orderDetailStatusUpdate(int $orderDetail, FilterParamsRequest $request): JsonResponse
     {
         $result = (new OrderDetailService())->updateStatus($orderDetail, $request->status ?? null);
         if ($result['status']) {
@@ -87,9 +88,9 @@ class OrderDetailController extends AdminBaseController
      * Calculate products when cart updated.
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function calculateOrderProducts(Request $request)
+    public function calculateOrderProducts(Request $request): JsonResponse
     {
         $result = $this->detailRepository->orderProductsCalculate($request->all());
         return $this->successResponse(__('web.products_calculated'), $result);

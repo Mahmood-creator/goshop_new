@@ -570,6 +570,8 @@ Route::group(['prefix' => 'v1'], function () {
             Route::apiResource('point-deliveries', Admin\PointDeliveryController::class);
             Route::delete('point-deliveries/delete', [Admin\PointDeliveryController::class, 'destroy']);
 
+            Route::apiResource('referrals', Admin\ReferralController::class);
+            Route::get('referrals/transactions/paginate', [Admin\ReferralController::class, 'transactions']);
         });
 
     });

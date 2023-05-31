@@ -5,10 +5,12 @@ namespace App\Services;
 
 use App\Helpers\ResponseError;
 use App\Traits\ApiResponse;
+use App\Traits\Loggable;
+
 
 abstract class CoreService
 {
-    use ApiResponse;
+    use ApiResponse, Loggable;
     private $model;
 
     public function __construct()
@@ -59,5 +61,20 @@ abstract class CoreService
             }
         }
         return ['status' => true, 'code' => ResponseError::NO_ERROR];
+    }
+
+    public function delete(array $ids): array
+    {
+        $items = $this->model->find($ids);
+
+        if ($items->isNotEmpty()) {
+
+            foreach ($items as $item)
+                $item->delete();
+
+            return ['status' => true, 'code' => ResponseError::NO_ERROR];
+        }
+
+        return ['status' => false, 'code' => ResponseError::ERROR_404];
     }
 }

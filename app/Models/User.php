@@ -44,6 +44,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @property int $active
  * @property string|null $img
  * @property string|null $firebase_token
+ * @property string|null $my_referral
+ * @property string|null $referral
  * @property string|null $password
  * @property string|null $remember_token
  * @property Carbon|null $created_at

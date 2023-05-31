@@ -25,7 +25,7 @@ class PointDeliveryRepository extends CoreRepository
     public function paginate($array)
     {
         return $this->model()
-            ->with('translation')
+            ->with('translation','shop.translation')
             ->when(isset($array['shop_id']), function ($q) use ($array) {
                 $q->where('shop_id', $array['shop_id']);
             })
@@ -35,6 +35,6 @@ class PointDeliveryRepository extends CoreRepository
 
     public function show(int $id)
     {
-        return $this->model()->with('translation')->find($id);
+        return $this->model()->with('translation','translations','shop.translation')->find($id);
     }
 }

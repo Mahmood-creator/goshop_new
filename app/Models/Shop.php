@@ -142,7 +142,7 @@ class Shop extends Model
 
     public function translation(): HasOne
     {
-        return $this->hasOne(ShopTranslation::class);
+        return $this->hasOne(ShopTranslation::class)->where('locale',app()->getLocale());
     }
 
     public function deliveries(): HasMany

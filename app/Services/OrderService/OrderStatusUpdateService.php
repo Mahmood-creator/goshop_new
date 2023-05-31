@@ -3,6 +3,7 @@
 namespace App\Services\OrderService;
 
 use App\Helpers\ResponseError;
+use App\Jobs\PayReferral;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\OrderProduct;
@@ -36,6 +37,7 @@ class OrderStatusUpdateService extends CoreService
             if ($status == 'delivered') {
                 // SELLER TOP UP
                 $this->sellerWalletTopUp($detail);
+
 
                 // USER POINT TOP UP
                 $this->userCashbackTopUp($detail->order, $detail->order->user);

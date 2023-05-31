@@ -70,6 +70,8 @@ class OrderService extends CoreService implements OrderServiceInterface
             'status' => $collection->status ?? Order::NEW,
             'total_delivery_fee' => round($collection->total_delivery_fee / $collection->rate, 2) ?? null,
             'tax' => $collection->tax ?? null,
+            'name' => $collection->name ?? null,
+            'phone' => $collection->phone ?? null,
         ];
     }
 

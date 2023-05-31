@@ -15,15 +15,18 @@ class OrderResource extends JsonResource
      */
     public function toArray($request): array
     {
+        /** @var Order|JsonResource $this */
+
         return [
             'id' => (int) $this->id,
             'user_id' => (int) $this->user_id,
             'delivery_id' => (int) $this->delivery_id,
             'price' => (double) $this->price,
             'currency_price' => (double) $this->currency_price,
-            'usd_price' => (double) $this->usd_price,
             'rate' => (double) $this->rate,
             'status' => $this->status,
+            'name' => $this->name,
+            'phone' => $this->phone,
             'total_delivery_fee' => round($this->total_delivery_fee,2),
             'track_code' => $this->track_code,
             'declaration_id' => $this->declaration_id,

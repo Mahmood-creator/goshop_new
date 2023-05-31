@@ -48,6 +48,11 @@ class WalletHistory extends Model
     use HasFactory;
     protected $fillable = ['uuid', 'wallet_uuid', 'transaction_id', 'type', 'price', 'note', 'status', 'created_by'];
 
+    const PROCESSED = 'processed';
+    const PAID      = 'paid';
+    const REJECTED  = 'rejected';
+    const CANCELED  = 'canceled';
+
     const TYPES = [
         'processed',
         'paid',
