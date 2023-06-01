@@ -5,8 +5,6 @@ namespace App\Repositories\ProductRepository;
 use App\Models\OrderProduct;
 use App\Models\Product;
 use App\Repositories\CoreRepository;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class RestProductRepository extends CoreRepository
@@ -27,7 +25,7 @@ class RestProductRepository extends CoreRepository
 
     public function productsMostSold($perPage, $array = [])
     {
-        $mostSoldProducts = $this->model()->filter($array)->updatedDate($this->updatedDate)
+        return $this->model()->filter($array)->updatedDate($this->updatedDate)
             ->whereHas('translation', function ($q) {
                 $q->where('locale', $this->lang);
             })
@@ -51,20 +49,14 @@ class RestProductRepository extends CoreRepository
             ->whereActive(1)
             ->paginate($perPage);
 
-        if ($perPage > 7) {
-            return $mostSoldProducts->paginate($perPage);
-        }
-
-        return $mostSoldProducts->take(4)->get();
-
     }
 
     /**
      * @param $perPage
      * @param array $array
-     * @return array|Application|Request|string|null
+     * @return mixed
      */
-    public function productsDiscount($perPage, array $array = []): array|string|Request|Application|null
+    public function productsDiscount($perPage, array $array = []): mixed
     {
         $profitable = isset($array['profitable']) ? '=' : '>=';
 

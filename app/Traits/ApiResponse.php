@@ -14,7 +14,7 @@ trait ApiResponse
      *
      * @param string $message
      * @param mixed|null $data
-     * @return JsonResponse|AnonymousResourceCollection
+     * @return JsonResponse
      */
     public function successResponse(string $message = '', $data = null): JsonResponse
     {
