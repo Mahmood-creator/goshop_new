@@ -144,35 +144,6 @@ class OrderController extends SellerBaseController
         );
     }
 
-    public function allOrderStatusChange(Request $request, int $id): JsonResponse|AnonymousResourceCollection
-    {
-
-        $order = Order::find($id);
-
-        if ($order->status == Order::CANCELED) {
-            return $this->errorResponse(ResponseError::ERROR_254,
-                trans('errors.' . ResponseError::ERROR_254, [], \request()->lang ?? config('app.locale')),
-                Response::HTTP_BAD_REQUEST
-            );
-        }
-
-        if ($order->status == Order::READY) {
-            return $this->errorResponse(ResponseError::ERROR_252,
-                trans('errors.' . ResponseError::ERROR_252, [], \request()->lang ?? config('app.locale')),
-                Response::HTTP_BAD_REQUEST
-            );
-        }
-
-
-        foreach ($order->orderDetails as $detail) {
-            $this->orderDetailStatusUpdate($detail->id, $request);
-        }
-        $data = Order::with('orderDetails')->find($id);
-
-        return $this->successResponse(ResponseError::NO_ERROR, $data);
-
-    }
-
     /**
      * Update Order Status details by OrderDetail ID.
      *

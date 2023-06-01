@@ -118,33 +118,6 @@ class OrderController extends AdminBaseController
         );
     }
 
-    public function allOrderStatusChange(Request $request, int $id): JsonResponse|AnonymousResourceCollection
-    {
-
-        $order = Order::find($id);
-        if ($order->status == $request->status) {
-            return $this->errorResponse(ResponseError::ERROR_252,
-                trans('errors.' . ResponseError::ERROR_252, [], \request()->lang ?? config('app.locale')),
-                Response::HTTP_BAD_REQUEST
-            );
-        } elseif ($order->status == Order::CANCELED) {
-            return $this->errorResponse(ResponseError::ERROR_254,
-                trans('errors.' . ResponseError::ERROR_254, [], \request()->lang ?? config('app.locale')),
-                Response::HTTP_BAD_REQUEST
-            );
-        }
-
-        $order->update(['status' => $request->status]);
-
-
-        foreach ($order->orderDetails as $detail) {
-            $this->orderStatusChange($detail->id, $request);
-        }
-        $data = Order::with('orderDetails')->find($id);
-
-        return $this->successResponse(ResponseError::NO_ERROR, $data);
-
-    }
 
     /**
      * Update the specified resource in storage.

@@ -169,12 +169,12 @@ class OrderRepository extends CoreRepository implements OrderRepoInterface
      */
     public function orderByStatusStatistics(array $filter = []): array
     {
-        $delivered = Order::DELIVERED;
-        $canceled  = Order::CANCELED;
-        $new       = Order::NEW;
-        $accepted  = Order::ACCEPTED;
-        $ready     = Order::READY;
-        $onAWay    = Order::ON_A_WAY;
+        $delivered = OrderDetail::DELIVERED;
+        $canceled  = OrderDetail::CANCELED;
+        $new       = OrderDetail::NEW;
+        $accepted  = OrderDetail::ACCEPTED;
+        $ready     = OrderDetail::READY;
+        $onAWay    = OrderDetail::ON_A_WAY;
         $date      = date('Y-m-d 00:00:01');
 
         $result    = [
@@ -192,13 +192,13 @@ class OrderRepository extends CoreRepository implements OrderRepoInterface
 
 //        $filter['date_from'] = date('Y-m-d H:i:s', strtotime('-1 minute'));
 
-        Order::filter($filter)
+        OrderDetail::filter($filter)
             ->select(['id', 'price', 'status', 'created_at'])
-            ->chunkMap(function (Order $order) use (&$result, $date, $delivered, $canceled, $new, $accepted, $ready, $onAWay) {
+            ->chunkMap(function (OrderDetail $order) use (&$result, $date, $delivered, $canceled, $new, $accepted, $ready, $onAWay) {
 
                 $result['count'] += 1;
                 $result['total_price'] += $order->price;
-                if ($order->status === Order::DELIVERED) {
+                if ($order->status === OrderDetail::DELIVERED) {
                     $result['total_delivered_price'] += $order->price;
                 }
 

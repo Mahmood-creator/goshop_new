@@ -80,7 +80,13 @@ class OrderDetail extends Model
     use HasFactory, Payable, Notification, Reviewable;
     protected $guarded = [];
 
+    const NEW = 'new';
+    const READY = 'ready';
+    const ACCEPTED = 'accepted';
+    const ON_A_WAY = 'on_a_way';
     const DELIVERED = 'delivered';
+    const COMPLETED = 'completed';
+    const CANCELED = 'canceled';
 
     const STATUS = [
         'new',

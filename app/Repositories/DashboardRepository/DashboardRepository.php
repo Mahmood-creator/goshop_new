@@ -19,13 +19,6 @@ class DashboardRepository extends \App\Repositories\CoreRepository
 
     public function statisticCount($array = [])
     {
-        $query = $this->model()
-            ->with('orderDetails')
-            ->whereHas('orderDetails', function ($q) use($array) {
-                $q->when(isset($array['shop_id']), function ($shop) use ($array) {
-                    $shop->where('shop_id', $array['shop_id']);
-                });
-            });
         // GET ORDERS COUNT
         $orders = $this->model()
             ->with('orderDetails')
@@ -41,8 +34,8 @@ class DashboardRepository extends \App\Repositories\CoreRepository
             ->whereHas('orderDetails', function ($q) use($array) {
                 $q->when(isset($array['shop_id']), function ($shop) use ($array) {
                     $shop->where('shop_id', $array['shop_id']);
-                });
-            })->where('status', Order::DELIVERED)->count();
+                })->where('status',OrderDetail::DELIVERED);
+            })->count();
 
         // GET ORDERS WITH CANCELED STATUS
         $canceled = $this->model()
@@ -50,8 +43,8 @@ class DashboardRepository extends \App\Repositories\CoreRepository
             ->whereHas('orderDetails', function ($q) use($array) {
                 $q->when(isset($array['shop_id']), function ($shop) use ($array) {
                     $shop->where('shop_id', $array['shop_id']);
-                });
-            })->where('status', Order::CANCELED)->count();
+                })->where('status',OrderDetail::CANCELED);
+            })->count();
 
         // GET ORDERS WITH PROGRESS STATUS
         $progress = $this->model()
@@ -59,13 +52,13 @@ class DashboardRepository extends \App\Repositories\CoreRepository
             ->whereHas('orderDetails', function ($q) use($array) {
                 $q->when(isset($array['shop_id']), function ($shop) use ($array) {
                     $shop->where('shop_id', $array['shop_id']);
-                });
-            })->whereIn('status', [
-            Order::NEW,
-            Order::READY,
-            Order::ACCEPTED,
-            Order::ON_A_WAY,
-        ])->count();
+                })->whereIn('status', [
+                    OrderDetail::NEW,
+                    OrderDetail::READY,
+                    OrderDetail::ACCEPTED,
+                    OrderDetail::ON_A_WAY,
+                ]);
+            })->count();
 
         // GET PRODUCTS OUT OF STOCK COUNT
         $productsOutOfStock = Product::where('active', 1)

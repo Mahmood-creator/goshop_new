@@ -127,7 +127,7 @@ class OrderController extends UserBaseController
                 trans('errors.' . ResponseError::ERROR_252, [], \request()->lang ?? config('app.locale')),
                 Response::HTTP_BAD_REQUEST
             );
-        } elseif ($order->status == Order::CANCELED) {
+        } elseif ($order->status == OrderDetail::CANCELED) {
             return $this->errorResponse(ResponseError::ERROR_254,
                 trans('errors.' . ResponseError::ERROR_254, [], \request()->lang ?? config('app.locale')),
                 Response::HTTP_BAD_REQUEST

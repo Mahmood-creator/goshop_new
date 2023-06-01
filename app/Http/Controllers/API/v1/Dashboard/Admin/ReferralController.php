@@ -100,7 +100,7 @@ class ReferralController extends AdminBaseController
      */
     public function destroy(FilterParamsRequest $request): JsonResponse
     {
-        $this->service->delete($request->input('ids', []));
+        $this->service->destroy($request->input('ids', []));
 
         return $this->successResponse(__('web.record_has_been_successfully_delete'), []);
     }

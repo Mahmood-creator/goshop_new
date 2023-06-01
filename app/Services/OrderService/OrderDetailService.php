@@ -85,7 +85,7 @@ class OrderDetailService extends CoreService
             'price' => round(collect($detail['products'])->sum('total_price') / $this->rate, 2),
             'tax' => round($detail['tax'] / $this->rate, 2),
             'commission_fee' => round($detail['commission_fee'] / $this->rate, 2),
-            'status' => $detail['status'] ?? Order::NEW,
+            'status' => $detail['status'] ?? OrderDetail::NEW,
             'delivery_type' => $detail['delivery_type'] ?? null,
             'delivery_fee' => $detail['delivery_fee'] / $this->rate,
             'delivery_address_id' => $detail['delivery_address_id'] ?? null,

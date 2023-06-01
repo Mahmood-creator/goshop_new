@@ -38,8 +38,8 @@ class CategoryRepository extends CoreRepository implements CategoryRepoInterface
     public function mostSoldProductCategories(array $array)
     {
         $stockIds = OrderProduct::with('stock.countable:id')
-            ->whereHas('detail.order',function ($q){
-                $q->where('status',Order::DELIVERED);
+            ->whereHas('detail',function ($q){
+                $q->where('status',OrderDetail::DELIVERED);
             })
             ->select('stock_id',DB::raw('COUNT(quantity) AS `COUNT`'))
             ->groupBy('stock_id')
@@ -47,7 +47,7 @@ class CategoryRepository extends CoreRepository implements CategoryRepoInterface
             ->pluck('stock_id');
 
         return Category::with(['translation' => function ($q){
-            $q->where('locale','aze');
+            $q->where('locale',$this->lang);
         }])->whereHas('products.stocks',function ($q) use ($stockIds){
             $q->whereIn('id',$stockIds);
         })->select('id')->paginate($array['perPage'] ?? 15);

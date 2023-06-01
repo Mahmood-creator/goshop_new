@@ -26,7 +26,7 @@ class OrderStatusUpdateService extends CoreService
     {
         if ($detail->status == $status) {
             return ['status' => false, 'code' => ResponseError::ERROR_252];
-        } elseif ($detail->status == Order::CANCELED) {
+        } elseif ($detail->status == OrderDetail::CANCELED) {
             return ['status' => false, 'code' => ResponseError::ERROR_254];
         }
 
@@ -47,7 +47,7 @@ class OrderStatusUpdateService extends CoreService
                     $this->deliverymanWalletTopUp($detail);
                 }
             }
-            if ($status == Order::CANCELED) {
+            if ($status == OrderDetail::CANCELED) {
 
                 $user = $detail->order->user;
 

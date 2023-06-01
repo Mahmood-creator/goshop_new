@@ -6,6 +6,7 @@ use App\Helpers\ResponseError;
 use App\Http\Requests\FilterParamsRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
+use App\Models\OrderDetail;
 use App\Repositories\OrderRepository\OrderRepository;
 use App\Traits\Notification;
 use Illuminate\Http\JsonResponse;
@@ -100,19 +101,19 @@ class OrderController extends DeliverymanBaseController
      */
     public function statusChange(Request $request, int $id): JsonResponse
     {
-        $order = Order::find($id);
+        $order = OrderDetail::find($id);
 
         if ($order->status == $request->status) {
             return $this->errorResponse(ResponseError::ERROR_252,
                 trans('errors.' . ResponseError::ERROR_252, [], \request()->lang ?? config('app.locale')),
                 Response::HTTP_BAD_REQUEST
             );
-        } elseif ($order->status == Order::CANCELED) {
+        } elseif ($order->status == OrderDetail::CANCELED) {
             return $this->errorResponse(ResponseError::ERROR_254,
                 trans('errors.' . ResponseError::ERROR_254, [], \request()->lang ?? config('app.locale')),
                 Response::HTTP_BAD_REQUEST
             );
-        }elseif (!in_array($request->status,[Order::DELIVERED,Order::CANCELED])){
+        }elseif (!in_array($request->status,[OrderDetail::DELIVERED,OrderDetail::CANCELED])){
             return $this->errorResponse(ResponseError::ERROR_253,
                 trans('errors.' . ResponseError::ERROR_253, [], \request()->lang ?? config('app.locale')),
                 Response::HTTP_BAD_REQUEST

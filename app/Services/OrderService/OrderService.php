@@ -67,7 +67,6 @@ class OrderService extends CoreService implements OrderServiceInterface
             'currency_id' => $collection->currency_id ?? Currency::whereDefault(1)->pluck('id')->first(),
             'rate' => $collection->rate,
             'note' => $collection->note ?? null,
-            'status' => $collection->status ?? Order::NEW,
             'total_delivery_fee' => round($collection->total_delivery_fee / $collection->rate, 2) ?? null,
             'tax' => $collection->tax ?? null,
             'name' => $collection->name ?? null,

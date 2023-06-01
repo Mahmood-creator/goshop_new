@@ -42,7 +42,7 @@ class ProductResource extends JsonResource
             'rating_avg' => $this->reviews_avg_rating,
             'reviews_count' => $this->when($this->reviews_count, $this->reviews_count),
             'rating_percent' => $this->reviews_count ? $this->ratingPercent() : [],
-            'review' => $this->reviewAble(),
+//            'review' => $this->reviewAble(),
 
             // Relations
             'translation' => TranslationResource::make($this->whenLoaded('translation')),
@@ -76,25 +76,25 @@ class ProductResource extends JsonResource
         });
     }
 
-    protected function reviewAble(): bool
-    {
-        if (auth('sanctum')->user() && request('review')) {
-            $stockIds = Stock::where('countable_id',$this->id)->pluck('id');
-            $orderProduct = Order::with([
-                'orderDetails',
-                'orderDetails.orderStocks'])
-                ->whereHas('orderDetails.orderStocks', function ($query) use ($stockIds) {
-                    $query->whereIn('stock_id', $stockIds);
-                })
-                ->where('status',Order::DELIVERED)
-                ->where('user_id', auth('sanctum')->user()->id)
-                ->first();
-            if ($orderProduct){
-                return true;
-            }
-            return false;
-        }
-        return false;
-    }
+//    protected function reviewAble(): bool
+//    {
+//        if (auth('sanctum')->user() && request('review')) {
+//            $stockIds = Stock::where('countable_id',$this->id)->pluck('id');
+//            $orderProduct = Order::with([
+//                'orderDetails',
+//                'orderDetails.orderStocks'])
+//                ->whereHas('orderDetails.orderStocks', function ($query) use ($stockIds) {
+//                    $query->whereIn('stock_id', $stockIds);
+//                })
+//                ->where('status',Order::DELIVERED)
+//                ->where('user_id', auth('sanctum')->user()->id)
+//                ->first();
+//            if ($orderProduct){
+//                return true;
+//            }
+//            return false;
+//        }
+//        return false;
+//    }
 
 }

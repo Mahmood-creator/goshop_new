@@ -93,8 +93,6 @@ class Order extends Model
     protected $guarded = [];
 
 
-    const NEW = 'new';
-    const READY = 'ready';
     const ACCEPTED = 'accepted';
     const ON_A_WAY = 'on_a_way';
     const DELIVERED = 'delivered';
