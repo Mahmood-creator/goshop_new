@@ -7,6 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\FilterParamsRequest;
 use App\Http\Resources\PointResource;
 use App\Models\Point;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Symfony\Component\HttpFoundation\Response;
 
 class PointController extends AdminBaseController
@@ -14,7 +17,7 @@ class PointController extends AdminBaseController
     private Point $model;
 
     /**
-     * @param $model
+     * @param Point $model
      */
     public function __construct(Point $model)
     {
@@ -25,9 +28,10 @@ class PointController extends AdminBaseController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @param FilterParamsRequest $request
+     * @return AnonymousResourceCollection
      */
-    public function paginate(FilterParamsRequest $request)
+    public function paginate(FilterParamsRequest $request): AnonymousResourceCollection
     {
         $points = $this->model
             ->orderBy($request->column ?? 'id', $request->sort ?? 'desc')
@@ -41,9 +45,9 @@ class PointController extends AdminBaseController
      * Store a newly created resource in storage.
      *
      * @param FilterParamsRequest $request
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return JsonResponse|AnonymousResourceCollection
      */
-    public function store(FilterParamsRequest $request)
+    public function store(FilterParamsRequest $request): JsonResponse|AnonymousResourceCollection
     {
         $point = $this->model->create([
             'type' => $request->type,
@@ -64,9 +68,9 @@ class PointController extends AdminBaseController
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection|\Illuminate\Http\Response
+     * @return AnonymousResourceCollection|JsonResponse
      */
-    public function show(int $id)
+    public function show(int $id): JsonResponse|AnonymousResourceCollection
     {
         $point = $this->model->find($id);
         if ($point) {
@@ -81,11 +85,11 @@ class PointController extends AdminBaseController
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection|\Illuminate\Http\Response
+     * @param  Request  $request
+     * @param int $id
+     * @return AnonymousResourceCollection|JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id)
     {
         $point = $this->model->find($id);
         if ($point) {
@@ -107,9 +111,9 @@ class PointController extends AdminBaseController
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection|\Illuminate\Http\Response
+     * @return AnonymousResourceCollection|JsonResponse
      */
-    public function destroy(int $id)
+    public function destroy(int $id): JsonResponse|AnonymousResourceCollection
     {
         $point = $this->model->find($id);
         if ($point) {
@@ -127,9 +131,9 @@ class PointController extends AdminBaseController
      * Change Active Status of Model.
      *
      * @param int $id
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return JsonResponse|AnonymousResourceCollection
      */
-    public function setActive(int $id)
+    public function setActive(int $id): JsonResponse|AnonymousResourceCollection
     {
         $point = $this->model->find($id);
         if ($point) {

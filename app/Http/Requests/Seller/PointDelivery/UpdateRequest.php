@@ -27,7 +27,7 @@ class UpdateRequest extends FormRequest
             'shop_id' => 'required|integer|exists:shops,id',
             'location' => 'required|string',
             'keep_days' => 'required|numeric',
-            'working_time' => 'required|array',
+            'working_time' => 'required|string',
             'title' => 'required|array'
         ];
     }
