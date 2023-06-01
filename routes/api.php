@@ -206,6 +206,9 @@ Route::group(['prefix' => 'v1'], function () {
             /* Add review to delivery man */
             Route::post('deliveryman/review/{id}', [User\DeliveryManController::class, 'addReviewToDeliveryMan']);
 
+            Route::get('point-deliveries', [User\PointDeliveryController::class, 'index']);
+            Route::get('point-deliveries/{id}', [User\PointDeliveryController::class, 'show']);
+
         });
 
         // DELIVERYMAN BLOCK
