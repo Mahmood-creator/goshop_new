@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Seller\PointDelivery;
+namespace App\Http\Requests\User\PointDelivery;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -17,12 +17,15 @@ class IndexRequest extends FormRequest
     }
 
     /**
-     * @return array<string, array{perPage: string}>
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
      */
-    public function rules(): array
+    public function rules()
     {
         return [
-            'perPage' => 'required|integer'
+            'perPage' => 'required|integer',
+            'shop_id' => 'required|integer|exists:shops,id'
         ];
     }
 }

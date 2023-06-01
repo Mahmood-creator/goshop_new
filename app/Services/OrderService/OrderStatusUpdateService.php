@@ -38,6 +38,7 @@ class OrderStatusUpdateService extends CoreService
                 // SELLER TOP UP
                 $this->sellerWalletTopUp($detail);
 
+                PayReferral::dispatchAfterResponse($detail->order->user, 'increment');
 
                 // USER POINT TOP UP
                 $this->userCashbackTopUp($detail->order, $detail->order->user);
