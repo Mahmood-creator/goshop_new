@@ -16,7 +16,7 @@ class UserRepository extends CoreRepository implements UserRepoInterface
 
     public function userById(int $id)
     {
-        return $this->model()->with('wallet','invite.shop', 'shop', 'addresses.country.delivery', 'point')->find($id);
+        return $this->model()->with('wallet','invite.shop', 'shop', 'addresses.country', 'point')->find($id);
     }
 
     public function userByUUID(string $uuid)
