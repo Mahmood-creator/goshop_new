@@ -10,7 +10,6 @@ use App\Models\User;
 use App\Models\WalletHistory;
 use App\Services\WalletHistoryService\WalletHistoryService;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -46,9 +45,7 @@ class PayReferral implements ShouldQueue
         $priceFrom = $referral->price_from;
         $priceTo   = $referral->price_to;
 
-        if (!empty($this->user?->referral) &&
-            $this->user->orders?->where('status', Order::DELIVERED)?->count() === 1
-        ) {
+        if (!empty($this->user?->referral)) {
             $owner = User::where('my_referral', $this->user->referral)->first();
 
             if ($owner->my_referral !== $owner->referral || $this->user->my_referral !== $this->user->referral) {

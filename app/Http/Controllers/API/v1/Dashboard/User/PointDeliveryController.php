@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API\v1\Dashboard\User;
 
 use App\Helpers\ResponseError;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Seller\PointDelivery\IndexRequest;
+use App\Http\Requests\User\PointDelivery\IndexRequest;
 use App\Http\Resources\PointDeliveryResource;
 use App\Repositories\PointDeliveryRepository\PointDeliveryRepository;
 use App\Services\PointDeliveryService\PointDeliveryService;

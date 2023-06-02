@@ -4,11 +4,15 @@ namespace App\Http\Controllers\API\v1\Rest;
 
 use App\Helpers\ResponseError;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ReferralResource;
 use App\Models\Payment;
+use App\Models\Referral;
 use App\Models\Settings;
 use App\Models\Translation;
 use App\Traits\ApiResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
@@ -47,5 +51,27 @@ use ApiResponse;
                 'Composer Version' => exec('composer -V'),
             ]);
         });
+    }
+
+    public function referral(): JsonResponse|AnonymousResourceCollection
+    {
+        $active = Settings::adminSettings()->where('key', 'referral_active')->first();
+
+        if (!data_get($active, 'value')) {
+            return $this->onErrorResponse(['code' => ResponseError::ERROR_404]);
+        }
+
+        $referral = Referral::with([
+            'translation',
+            'translations',
+            'galleries',
+        ])->where([
+            ['expired_at', '>=', now()],
+        ])->first();
+        if (empty($referral)) {
+            return $this->onErrorResponse(['code' => ResponseError::ERROR_404]);
+        }
+
+        return $this->successResponse(__('web.list_of_settings'), ReferralResource::make($referral));
     }
 }

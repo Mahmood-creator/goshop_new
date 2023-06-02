@@ -54,6 +54,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('translations/paginate', [Rest\SettingController::class, 'translationsPaginate']);
         Route::get('settings', [Rest\SettingController::class, 'settingsInfo']);
         Route::get('system/information', [Rest\SettingController::class, 'systemInformation']);
+        Route::get('referral', [Rest\SettingController::class, 'referral']);
 
         /* Languages */
         Route::get('languages/default', [Rest\LanguageController::class, 'default']);

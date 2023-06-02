@@ -8,6 +8,7 @@ use App\Services\AuthService\AuthByEmail;
 use App\Services\AuthService\AuthByMobilePhone;
 use App\Traits\ApiResponse;
 use Illuminate\Auth\Events\Verified;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class VerifyAuthController extends Controller
@@ -19,13 +20,13 @@ class VerifyAuthController extends Controller
 //        return (new AuthByEmail())->confirmOPTCode($request->all());
 //    }
 
-    public function verifyPhone(Request $request)
+    public function verifyPhone(Request $request): JsonResponse
     {
         return (new AuthByMobilePhone())->confirmOPTCode($request->all());
     }
 
 
-    public function verifyEmail(Request $request): \Illuminate\Http\JsonResponse
+    public function verifyEmail(Request $request): JsonResponse
     {
         $user = User::find($request->route('id'));
 
@@ -43,5 +44,7 @@ class VerifyAuthController extends Controller
             'email' => $user->email,
         ]);
     }
+
+
 
 }
