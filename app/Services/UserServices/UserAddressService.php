@@ -25,8 +25,8 @@ class UserAddressService extends \App\Services\CoreService
             'latitude' => $collection['location'] ? Str::of($collection['location'])->before(',') : null,
             'longitude' => $collection['location'] ? Str::of($collection['location'])->after(',') : null,
         ];
-        $address = $this->model()->create($collection);
 
+        $address = $this->model()->create($collection);
 
         $this->setDefault($address->id, $address->default);
 
@@ -49,7 +49,7 @@ class UserAddressService extends \App\Services\CoreService
     }
 
     /* Have to change */
-    public function destroy(int $id)
+    public function delete(int $id)
     {
         $model = $this->model()->find($id);
 

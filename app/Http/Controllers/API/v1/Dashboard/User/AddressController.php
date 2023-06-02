@@ -113,7 +113,7 @@ class AddressController extends UserBaseController
      */
     public function destroy(int $id): JsonResponse|AnonymousResourceCollection
     {
-        $result = $this->addressService->destroy($id);
+        $result = $this->addressService->delete($id);
         if ($result['status']) {
             return $this->successResponse(__('web.record_has_been_successfully_deleted'), []);
         }

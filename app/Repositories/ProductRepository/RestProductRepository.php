@@ -4,6 +4,7 @@ namespace App\Repositories\ProductRepository;
 
 use App\Models\OrderProduct;
 use App\Models\Product;
+use App\Models\UserAddress;
 use App\Repositories\CoreRepository;
 use Illuminate\Support\Facades\DB;
 
@@ -23,8 +24,10 @@ class RestProductRepository extends CoreRepository
         return Product::class;
     }
 
-    public function productsMostSold($perPage, $array = [])
+    public function productsMostSold(array $array)
     {
+        $userAddress = UserAddress::find($array['user_address_id']);
+
         return $this->model()->filter($array)->updatedDate($this->updatedDate)
             ->whereHas('translation', function ($q) {
                 $q->where('locale', $this->lang);
@@ -47,18 +50,27 @@ class RestProductRepository extends CoreRepository
             ->whereHas('category')
             ->limit(10)
             ->whereActive(1)
-            ->paginate($perPage);
-
+            ->whereHas('shop.shopLocations', function ($q) use ($userAddress) {
+                if ($userAddress->city_id) {
+                    $q->where('city_id', $userAddress->city_id);
+                } elseif ($userAddress->region_id) {
+                    $q->where('region_id', $userAddress->region_id);
+                } else {
+                    $q->where('country_id', $userAddress->country_id);
+                }
+            })
+            ->paginate($array['perPage']);
     }
 
     /**
-     * @param $perPage
      * @param array $array
      * @return mixed
      */
-    public function productsDiscount($perPage, array $array = []): mixed
+    public function productsDiscount(array $array): mixed
     {
         $profitable = isset($array['profitable']) ? '=' : '>=';
+
+        $userAddress = UserAddress::find($array['user_address_id']);
 
         return $this->model()->filter($array)->updatedDate($this->updatedDate)
             ->whereHas('discount', function ($item) use ($profitable) {
@@ -75,7 +87,8 @@ class RestProductRepository extends CoreRepository
             ->withAvg('reviews', 'rating')
             ->whereHas('category')
             ->with([
-                'stocks' => fn($q) => $q->where('quantity', '>', 0)->where('price', '>', 0), 'stocks.stockExtras.group.translation' => fn($q) => $q->where('locale', $this->lang),
+                'stocks' => fn($q) => $q->where('quantity', '>', 0)->where('price', '>', 0),
+                'stocks.stockExtras.group.translation' => fn($q) => $q->where('locale', $this->lang),
                 'translation' => fn($q) => $q->where('locale', $this->lang)
                     ->select('id', 'product_id', 'locale', 'title'),
                 'category' => fn($q) => $q->select('id', 'uuid'),
@@ -86,8 +99,17 @@ class RestProductRepository extends CoreRepository
             ->whereHas('shop', function ($item) {
                 $item->whereNull('deleted_at')->where('status', 'approved');
             })
+            ->whereHas('shop.shopLocations', function ($q) use ($userAddress) {
+                if ($userAddress->city_id) {
+                    $q->where('city_id', $userAddress->city_id);
+                } elseif ($userAddress->region_id) {
+                    $q->where('region_id', $userAddress->region_id);
+                } else {
+                    $q->where('country_id', $userAddress->country_id);
+                }
+            })
             ->whereActive(1)
-            ->paginate($perPage);
+            ->paginate($array['perPage']);
     }
 
     public function getByBrandId($perPage, int $brandId)

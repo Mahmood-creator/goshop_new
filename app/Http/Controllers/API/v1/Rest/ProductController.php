@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API\v1\Rest;
 use App\Helpers\ResponseError;
 use App\Http\Requests\Filter\FilterRequest;
 use App\Http\Requests\FilterParamsRequest;
+use App\Http\Requests\User\Product\MostSoldProductRequest;
+use App\Http\Requests\User\Product\ProductDiscountRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\OrderProduct;
 use App\Models\Point;
@@ -112,9 +114,10 @@ class ProductController extends RestBaseController
         return ProductResource::collection($products);
     }
 
-    public function mostSoldProducts(FilterParamsRequest $request): AnonymousResourceCollection
+    public function mostSoldProducts(MostSoldProductRequest $request): AnonymousResourceCollection
     {
-        $products = $this->restProductRepository->productsMostSold($request->perPage ?? 4, $request->all());
+        $collection = $request->validated();
+        $products = $this->restProductRepository->productsMostSold($collection);
         return ProductResource::collection($products);
     }
 
@@ -137,9 +140,10 @@ class ProductController extends RestBaseController
         );
     }
 
-    public function discountProducts(Request $request): AnonymousResourceCollection
+    public function discountProducts(ProductDiscountRequest $request): AnonymousResourceCollection
     {
-        $products = $this->restProductRepository->productsDiscount($request->perPage ?? 15, $request->all());
+        $collection = $request->validated();
+        $products = $this->restProductRepository->productsDiscount($collection);
         return ProductResource::collection($products);
     }
 

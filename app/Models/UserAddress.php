@@ -65,14 +65,30 @@ use Illuminate\Support\Carbon;
 class UserAddress extends Model
 {
     use HasFactory, SoftDeletes;
+
+    const COUNTRY = 'country';
+    const REGION = 'region';
+    const CITY = 'city';
+
     protected $guarded = [];
     protected $casts = [
         'location' => 'array'
     ];
 
-    protected $fillable = ['user_id','title','location','default','active',
-        'country_id','apartment',
-        'note','name','region_id','city_id','floor','apartment'
+    protected $fillable = [
+        'user_id',
+        'title',
+        'location',
+        'default',
+        'active',
+        'country_id',
+        'apartment',
+        'note',
+        'name',
+        'region_id',
+        'city_id',
+        'floor',
+        'apartment',
     ];
 
     public function user(): BelongsTo
