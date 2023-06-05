@@ -27,7 +27,7 @@ class ProductDiscountRequest extends FormRequest
             'perPage' => 'required|integer',
             'lang' => 'required|string',
             'currency_id' => 'required|integer|exists:currencies,id',
-            'user_address_id' => 'required|integer|exists:user_addresses,id'
+            'user_address_id' => 'nullable|integer|exists:user_addresses,id'
         ];
     }
 }

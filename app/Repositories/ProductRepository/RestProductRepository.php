@@ -26,8 +26,13 @@ class RestProductRepository extends CoreRepository
 
     public function productsMostSold(array $array)
     {
+        $userAddress = [];
+
         $userAddress = UserAddress::find($array['user_address_id']);
 
+        if (isset($array['user_address_id'])){
+            $userAddress = UserAddress::find($array['user_address_id']);
+        }
         return $this->model()->filter($array)->updatedDate($this->updatedDate)
             ->whereHas('translation', function ($q) {
                 $q->where('locale', $this->lang);
@@ -50,14 +55,16 @@ class RestProductRepository extends CoreRepository
             ->whereHas('category')
             ->limit(10)
             ->whereActive(1)
-            ->whereHas('shop.shopLocations', function ($q) use ($userAddress) {
-                if ($userAddress->city_id) {
-                    $q->where('city_id', $userAddress->city_id);
-                } elseif ($userAddress->region_id) {
-                    $q->where('region_id', $userAddress->region_id);
-                } else {
-                    $q->where('country_id', $userAddress->country_id);
-                }
+            ->when(isset($userAddress),function ($q) use ($userAddress){
+                $q->whereHas('shop.shopLocations', function ($q) use ($userAddress) {
+                    if ($userAddress->city_id) {
+                        $q->where('city_id', $userAddress->city_id);
+                    } elseif ($userAddress->region_id) {
+                        $q->where('region_id', $userAddress->region_id);
+                    } else {
+                        $q->where('country_id', $userAddress->country_id);
+                    }
+                });
             })
             ->paginate($array['perPage']);
     }
@@ -69,8 +76,10 @@ class RestProductRepository extends CoreRepository
     public function productsDiscount(array $array): mixed
     {
         $profitable = isset($array['profitable']) ? '=' : '>=';
-
-        $userAddress = UserAddress::find($array['user_address_id']);
+        $userAddress = [];
+        if (isset($array['user_address_id'])){
+            $userAddress = UserAddress::find($array['user_address_id']);
+        }
 
         return $this->model()->filter($array)->updatedDate($this->updatedDate)
             ->whereHas('discount', function ($item) use ($profitable) {
@@ -99,14 +108,16 @@ class RestProductRepository extends CoreRepository
             ->whereHas('shop', function ($item) {
                 $item->whereNull('deleted_at')->where('status', 'approved');
             })
-            ->whereHas('shop.shopLocations', function ($q) use ($userAddress) {
-                if ($userAddress->city_id) {
-                    $q->where('city_id', $userAddress->city_id);
-                } elseif ($userAddress->region_id) {
-                    $q->where('region_id', $userAddress->region_id);
-                } else {
-                    $q->where('country_id', $userAddress->country_id);
-                }
+            ->when(isset($userAddress),function ($q) use ($userAddress){
+                $q->whereHas('shop.shopLocations', function ($q) use ($userAddress) {
+                    if ($userAddress->city_id) {
+                        $q->where('city_id', $userAddress->city_id);
+                    } elseif ($userAddress->region_id) {
+                        $q->where('region_id', $userAddress->region_id);
+                    } else {
+                        $q->where('country_id', $userAddress->country_id);
+                    }
+                });
             })
             ->whereActive(1)
             ->paginate($array['perPage']);

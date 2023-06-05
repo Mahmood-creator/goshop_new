@@ -181,7 +181,7 @@ class ProductController extends RestBaseController
         return ProductResource::collection($products);
     }
 
-    public function buyWithProduct(int $id)
+    public function buyWithProduct(int $id): AnonymousResourceCollection
     {
         $products = $this->restProductRepository->buyWithProduct($id);
         return ProductResource::collection($products);
