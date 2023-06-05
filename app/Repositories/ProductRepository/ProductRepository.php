@@ -11,6 +11,7 @@ use App\Models\OrderDetail;
 use App\Models\OrderProduct;
 use App\Models\Product;
 use App\Models\Stock;
+use App\Models\UserAddress;
 use App\Repositories\CoreRepository;
 use App\Repositories\Interfaces\ProductRepoInterface;
 use App\Traits\SetCurrency;
@@ -128,11 +129,11 @@ class ProductRepository extends CoreRepository implements ProductRepoInterface
             ->when(isset($active), function ($q) use ($active) {
                 $q->where('active', $active);
             })
-            ->when(isset($array['sortByAsc']),function ($q){
-                $q->orderBy('id','asc');
+            ->when(isset($array['sortByAsc']), function ($q) {
+                $q->orderBy('id', 'asc');
             })
-            ->when(isset($array['sortByDesc']),function ($q){
-                $q->orderBy('id','desc');
+            ->when(isset($array['sortByDesc']), function ($q) {
+                $q->orderBy('id', 'desc');
             })
             ->paginate($perPage);
     }
@@ -220,6 +221,8 @@ class ProductRepository extends CoreRepository implements ProductRepoInterface
     {
         $categoryIds = [];
 
+        $userAddress = UserAddress::find($array['user_address_id']);
+
         if (isset($array['categoryIds'])) {
             $categoryIds = Category::with('children')
                 ->whereIn('id', $array['categoryIds'])
@@ -257,7 +260,7 @@ class ProductRepository extends CoreRepository implements ProductRepoInterface
                 'unit:id',
                 'unit.translation' => fn($q) => $q->where('locale', $this->lang)->select('id', 'unit_id', 'locale', 'title'),
             ])
-            ->whereHas('stocks',function ($q){
+            ->whereHas('stocks', function ($q) {
                 $q->where('quantity', '>', 0)->where('price', '>', 0);
             })
             ->when(isset($array['extrasIds']), function ($q) use ($array) {
@@ -267,7 +270,16 @@ class ProductRepository extends CoreRepository implements ProductRepoInterface
             })
             ->whereHas('shop', function ($item) {
                 $item->where('status', 'approved');
-            })->when(isset($categoryIds) && !empty($categoryIds), function ($q) use ($categoryIds) {
+            })->whereHas('shop.shopLocations', function ($q) use ($userAddress) {
+                if ($userAddress->city_id) {
+                    $q->where('city_id', $userAddress->city_id);
+                } elseif ($userAddress->region_id) {
+                    $q->where('region_id', $userAddress->region_id);
+                } else {
+                    $q->where('country_id', $userAddress->country_id);
+                }
+            })
+            ->when(isset($categoryIds) && !empty($categoryIds), function ($q) use ($categoryIds) {
                 $q->whereIn('category_id', $categoryIds);
             })->when(isset($array['brandIds']), function ($q) use ($array) {
                 $q->whereIn('brand_id', $array['brandIds']);
@@ -330,9 +342,9 @@ class ProductRepository extends CoreRepository implements ProductRepoInterface
             ExportJob::dispatchAfterResponse("export/$name.xlsx", $data, ProductsReportExport::class);
 
             return [
-                'path'      => 'public/export',
+                'path' => 'public/export',
                 'file_name' => "export/$name.xlsx",
-                'link'      => URL::to("storage/export/$name.xlsx"),
+                'link' => URL::to("storage/export/$name.xlsx"),
             ];
         }
 
@@ -374,7 +386,7 @@ class ProductRepository extends CoreRepository implements ProductRepoInterface
                     ->whereBetween('orders.created_at', [$dateFrom, $dateTo])
                     ->selectRaw('IFNULL(COUNT(orders.id), 0)'),
 
-                'net_sales'    => OrderDetail::where('status', OrderDetail::DELIVERED)
+                'net_sales' => OrderDetail::where('status', OrderDetail::DELIVERED)
                     ->whereHas('products.stock', function ($stock) {
                         $stock->where('countable_type', Product::class)
                             ->whereHas('countable', function ($product) {
@@ -391,7 +403,7 @@ class ProductRepository extends CoreRepository implements ProductRepoInterface
                     })
                     ->whereHas('order', fn($q) => $q->whereBetween('created_at', [$dateFrom, $dateTo]))
                     ->netSalesSum(),
-                'items_sold'   => OrderProduct::whereHas('stock', function ($stock) {
+                'items_sold' => OrderProduct::whereHas('stock', function ($stock) {
                     $stock->where('countable_type', Product::class)
                         ->whereColumn('countable_id', 'products.id')
                         ->whereHas('countable', function ($product) {
@@ -519,10 +531,10 @@ class ProductRepository extends CoreRepository implements ProductRepoInterface
 
     public function reportChart($dateFrom, $dateTo)
     {
-        $itemsSold   = moneyFormatter($this->itemsSoldQuery($dateFrom, $dateTo)->sum('quantity'));
-        $netSales    = moneyFormatter($this->netSalesQuery($dateFrom, $dateTo)->netSalesSum()->value('net_sales_sum'));
+        $itemsSold = moneyFormatter($this->itemsSoldQuery($dateFrom, $dateTo)->sum('quantity'));
+        $netSales = moneyFormatter($this->netSalesQuery($dateFrom, $dateTo)->netSalesSum()->value('net_sales_sum'));
         $ordersCount = moneyFormatter($this->ordersCountQuery($dateFrom, $dateTo)->count());
-        $chart       = $this->getChartData($dateFrom, $dateTo);
+        $chart = $this->getChartData($dateFrom, $dateTo);
 
         $defaultCurrency = defaultCurrency();
 
@@ -570,17 +582,17 @@ class ProductRepository extends CoreRepository implements ProductRepoInterface
 
     public function reportCompare($dateFrom, $dateTo): array
     {
-        $itemsSold       = moneyFormatter($this->itemsSoldQuery($dateFrom, $dateTo, request('ids'))->sum('quantity'));
-        $netSales        = moneyFormatter($this->netSalesQuery($dateFrom, $dateTo, request('ids'))
+        $itemsSold = moneyFormatter($this->itemsSoldQuery($dateFrom, $dateTo, request('ids'))->sum('quantity'));
+        $netSales = moneyFormatter($this->netSalesQuery($dateFrom, $dateTo, request('ids'))
             ->netSalesSum()
             ->value('net_sales_sum'));
-        $ordersCount     = moneyFormatter($this->ordersCountQuery($dateFrom, $dateTo, request('ids'))->count());
+        $ordersCount = moneyFormatter($this->ordersCountQuery($dateFrom, $dateTo, request('ids'))->count());
         $defaultCurrency = defaultCurrency();
-        $charts          = [];
+        $charts = [];
         foreach (request('ids') as $id) {
             $charts[] = [
                 'translation' => $this->getProductById($id),
-                'chart'       => $this->getChartData($dateFrom, $dateTo, $id),
+                'chart' => $this->getChartData($dateFrom, $dateTo, $id),
             ];
         }
 
@@ -722,7 +734,7 @@ class ProductRepository extends CoreRepository implements ProductRepoInterface
                         });
                 })->whereBetween('created_at', [$dateFrom, $dateTo])
                     ->selectRaw('IFNULL(COUNT(id), 0)'),
-                'net_sales'    => Order::whereHas('orderDetails', function ($detail) use ($product) {
+                'net_sales' => Order::whereHas('orderDetails', function ($detail) use ($product) {
                     $detail->where('status', OrderDetail::DELIVERED)
                         ->whereHas('products', function ($orderProducts) use ($product) {
                             $orderProducts
@@ -734,7 +746,7 @@ class ProductRepository extends CoreRepository implements ProductRepoInterface
                         });
                 })->whereBetween('created_at', [$dateFrom, $dateTo])
                     ->selectRaw('IFNULL( TRUNCATE( CAST( SUM(price) as decimal(7,2)) ,2) ,0)'),
-                'items_sold'   => OrderProduct::whereHas('detail', function ($detail) use (
+                'items_sold' => OrderProduct::whereHas('detail', function ($detail) use (
                     $dateFrom,
                     $dateTo
                 ) {

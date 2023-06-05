@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\v1\Rest;
 use App\Helpers\ResponseError;
 use App\Http\Resources\CategoryResource;
 use App\Repositories\Interfaces\CategoryRepoInterface;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,7 +52,7 @@ class CategoryController extends RestBaseController
      * Display the specified resource.
      *
      * @param string $uuid
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function show(string $uuid)
     {
@@ -69,7 +70,7 @@ class CategoryController extends RestBaseController
      * Search Model by tag name.
      *
      * @param Request $request
-     * @return AnonymousResourceCollection
+     * @return JsonResponse
      */
     public function categoriesSearch(Request $request)
     {

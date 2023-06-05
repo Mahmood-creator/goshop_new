@@ -41,7 +41,8 @@ class FilterRequest extends FormRequest
             'shopIds.*.' => 'integer|exists:shops,id',
             'range' => 'array',
             'range.*.' => 'integer|numeric',
-            'perPage' => 'nullable|integer'
+            'perPage' => 'nullable|integer',
+            'user_address_id' => 'required|integer|exists:user_addresses,id'
         ];
     }
 
