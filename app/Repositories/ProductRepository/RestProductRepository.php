@@ -28,11 +28,10 @@ class RestProductRepository extends CoreRepository
     {
         $userAddress = [];
 
-        $userAddress = UserAddress::find($array['user_address_id']);
-
         if (isset($array['user_address_id'])){
             $userAddress = UserAddress::find($array['user_address_id']);
         }
+
         return $this->model()->filter($array)->updatedDate($this->updatedDate)
             ->whereHas('translation', function ($q) {
                 $q->where('locale', $this->lang);
@@ -76,7 +75,9 @@ class RestProductRepository extends CoreRepository
     public function productsDiscount(array $array): mixed
     {
         $profitable = isset($array['profitable']) ? '=' : '>=';
+
         $userAddress = [];
+
         if (isset($array['user_address_id'])){
             $userAddress = UserAddress::find($array['user_address_id']);
         }
