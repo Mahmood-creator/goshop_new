@@ -35,9 +35,9 @@ class AddressController extends UserBaseController
      * @param FilterParamsRequest $request
      * @return AnonymousResourceCollection
      */
-    public function index(FilterParamsRequest $request)
+    public function index(FilterParamsRequest $request): AnonymousResourceCollection
     {
-        $address = $this->model->where('user_id', auth('sanctum')->id())->paginate($request->perPage ?? 15);
+        $address = $this->model->with(['city','region','country'])->where('user_id', auth('sanctum')->id())->paginate($request->perPage ?? 15);
         return UserAddressResource::collection($address);
     }
 
@@ -72,7 +72,7 @@ class AddressController extends UserBaseController
      */
     public function show(int $id): JsonResponse
     {
-        $address = $this->model->where(['user_id' => auth('sanctum')->id(), 'id' => $id])->first();
+        $address = $this->model->with('country','region','city')->where(['user_id' => auth('sanctum')->id(), 'id' => $id])->first();
         if ($address) {
             return $this->successResponse(__('web.address_found'), UserAddressResource::make($address));
         }
