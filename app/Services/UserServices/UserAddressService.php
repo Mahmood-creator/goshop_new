@@ -54,10 +54,7 @@ class UserAddressService extends \App\Services\CoreService
         $model = $this->model()->find($id);
 
         if ($model) {
-            $addressExists = $model->orders()->whereIn('status', [
-                Order::NEW,
-                Order::READY,
-            ])->exists();
+            $addressExists = $model->orders()->exists();
 
             if ($addressExists) {
                 return ['status' => false, 'code' => ResponseError::ERROR_433];
