@@ -77,8 +77,8 @@ class CategoryObserver
     }
 
     private function projectStatus(){
-        if (!cache()->has('project.status') || cache('project.status')->active != 1){
-            return (new ProjectService())->activationError();
-        }
+//        if (!cache()->has('project.status') || cache('project.status')->active != 1){
+//            return (new ProjectService())->activationError();
+//        }
     }
 }

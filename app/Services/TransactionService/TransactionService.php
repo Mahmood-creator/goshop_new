@@ -48,9 +48,9 @@ class TransactionService extends \App\Services\CoreService
                 return $payment;
             }
 
-            if (!Cache::has('project.status') || Cache::get('project.status')->active != 1) {
-                return ['status' => false, 'code' => ResponseError::ERROR_403];
-            }
+//            if (!Cache::has('project.status') || Cache::get('project.status')->active != 1) {
+//                return ['status' => false, 'code' => ResponseError::ERROR_403];
+//            }
             return ['status' => true, 'code' => ResponseError::NO_ERROR, 'data' => $order->load('transaction')];
         } else {
             return ['status' => false, 'code' => ResponseError::ERROR_404, 'data' => []];

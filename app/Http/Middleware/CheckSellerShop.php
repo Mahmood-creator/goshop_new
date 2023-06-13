@@ -25,9 +25,9 @@ class CheckSellerShop
      */
     public function handle(Request $request, Closure $next): JsonResponse
     {
-        if (!cache()->has('project.status') || cache('project.status')->active != 1){
-            return $this->errorResponse('ERROR_403',  trans('errors.' . ResponseError::ERROR_403, [], request()->lang ?? 'en'), Response::HTTP_UNAUTHORIZED);
-        }
+//        if (!cache()->has('project.status') || cache('project.status')->active != 1){
+//            return $this->errorResponse('ERROR_403',  trans('errors.' . ResponseError::ERROR_403, [], request()->lang ?? 'en'), Response::HTTP_UNAUTHORIZED);
+//        }
 
 
         if (auth('sanctum')->check()) {
