@@ -220,6 +220,10 @@ Route::group(['prefix' => 'v1'], function () {
 
             Route::get('statistics/count', [Deliveryman\DashboardController::class, 'countStatistics']);
 
+            Route::post('settings', [Deliveryman\DeliveryManSettingController::class, 'store']);
+            Route::post('settings/location', [Deliveryman\DeliveryManSettingController::class, 'updateLocation']);
+            Route::post('settings/online', [Deliveryman\DeliveryManSettingController::class, 'online']);
+            Route::get('settings', [Deliveryman\DeliveryManSettingController::class, 'show']);
         });
 
         // SELLER BLOCK
@@ -576,6 +580,14 @@ Route::group(['prefix' => 'v1'], function () {
 
             Route::apiResource('referrals', Admin\ReferralController::class);
             Route::get('referrals/transactions/paginate', [Admin\ReferralController::class, 'transactions']);
+
+            Route::get('deliveryman-settings/paginate', [Admin\DeliveryManSettingController::class, 'paginate']);
+            Route::delete('deliveryman-settings/delete', [Admin\DeliveryManSettingController::class, 'destroy']);
+
+            Route::apiResource('deliveryman-settings', Admin\DeliveryManSettingController::class)
+                ->except('index', 'destroy');
+
+
         });
 
     });
