@@ -47,7 +47,7 @@ class OrderDetailController extends AdminBaseController
      */
     public function show(int $id)
     {
-        $orderDetail = $this->detailRepository->orderDetailById($id);
+        $orderDetail = $this->detailRepository->getById($id);
         if ($orderDetail) {
             return $this->successResponse(__('web.language_found'), OrderDetailResource::make($orderDetail));
         }

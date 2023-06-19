@@ -3,11 +3,16 @@
 namespace App\Http\Controllers\API\v1\Dashboard\Deliveryman;
 
 use App\Helpers\ResponseError;
+use App\Http\Requests\DeliveryMan\Order\ReportRequest;
 use App\Http\Requests\FilterParamsRequest;
+use App\Http\Resources\OrderDetailResource;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\User;
+use App\Repositories\OrderRepository\OrderDetailRepository;
 use App\Repositories\OrderRepository\OrderRepository;
+use App\Services\OrderService\OrderDetailService;
 use App\Traits\Notification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -17,74 +22,39 @@ use Symfony\Component\HttpFoundation\Response;
 class OrderController extends DeliverymanBaseController
 {
     use Notification;
-    private OrderRepository $orderRepository;
     private Order $model;
 
-    public function __construct(OrderRepository $orderRepository, Order $model)
+    public function __construct(private OrderDetailRepository $orderRepository, Order $model,OrderDetailService $service)
     {
         parent::__construct();
-        $this->orderRepository = $orderRepository;
         $this->model = $model;
+        $this->service = $service;
         $this->lang = \request('lang') ?? 'aze';
     }
 
     public function paginate(Request $request): AnonymousResourceCollection
     {
-        $orders = $this->model
-            ->with([
-                'orderDetails' => fn($q) => $q->where('deliveryman', auth('sanctum')->id()),
-                'user',
-                'transaction.paymentSystem.translation' => fn($q) => $q->actualTranslation($request->lang ?? 'en'),
-                'orderDetails.orderStocks.stock.discount',
-                'orderDetails.deliveryAddress',
-                'orderDetails.shop.translation' => fn($q) => $q->actualTranslation($request->lang ?? 'en'),
-                'orderDetails.orderStocks.stock' => function ($q) {
-                    $q->select('id', 'countable_id', 'countable_type');
-                },
-                'currency' => function ($q) {
-                    $q->select('id', 'title', 'symbol');
-                }])
-            ->whereIn('status',[Order::HANDED_OVER,Order::COURIER])
-            ->filter($request->all())
-            ->where('deliveryman_id', auth('sanctum')->id())
-            ->orderBy('id','desc')
-            ->paginate($request->perPage ?? 15);
+        /** @var User $user */
+        $user = auth('sanctum')->user();
+        $filter = $request->all();
+        $filter['deliveryman'] = auth('sanctum')->id();
 
-        return OrderResource::collection($orders);
+        unset($filter['isset-deliveryman']);
+
+        if (data_get($filter, 'empty-deliveryman')) {
+            $filter['shop_ids'] = $user->invitations->pluck('shop_id')->toArray();
+            unset($filter['deliveryman']);
+        }
+        $orderDetails = $this->orderRepository->paginate(array: $filter);
+
+        return OrderDetailResource::collection($orderDetails);
     }
 
     public function show(int $id): JsonResponse|AnonymousResourceCollection
     {
-        $order = $this->model
-            ->with([
-                'user', 'review', 'point',
-                'currency' => function ($q) {
-                    $q->select('id', 'title', 'symbol');
-                },
-                'orderDetails.deliveryType.translation' => fn($q) => $q->actualTranslation($this->lang),
-                'orderDetails.deliveryAddress',
-                'orderDetails.deliveryMan',
-                'coupon',
-                'userAddress',
-                'delivery.translation' => fn($q) => $q->actualTranslation($this->lang),
-                'orderDetails.shop.translation' => fn($q) => $q->actualTranslation($this->lang),
-                'transaction.paymentSystem' => function ($q) {
-                    $q->select('id', 'tag', 'active');
-                },
-                'transaction.paymentSystem.translation' => function ($q) {
-                    $q->select('id', 'locale', 'payment_id', 'title')->actualTranslation($this->lang);
-                },
-                'orderDetails.orderStocks.stock.stockExtras.group.translation' => function ($q) {
-                    $q->select('id', 'extra_group_id', 'locale', 'title')->actualTranslation($this->lang);
-                },
-                'orderDetails.orderStocks.stock.countable.translation' => function ($q) {
-                    $q->select('id', 'product_id', 'locale', 'title')->actualTranslation($this->lang);
-                },])
-            ->whereIn('status',[Order::HANDED_OVER,Order::COURIER])
-            ->where('deliveryman_id',auth('sanctum')->id())
-            ->find($id);
-        if ($order){
-            return $this->successResponse(__('web.order_found'), OrderResource::make($order));
+        $orderDetail = $this->orderRepository->getById($id);
+        if ($orderDetail){
+            return $this->successResponse(__('web.order_found'), OrderDetailResource::make($orderDetail));
         }
         return $this->errorResponse(
             ResponseError::ERROR_404,  trans('errors.' . ResponseError::ERROR_404, [], request()->lang),
@@ -126,5 +96,34 @@ class OrderController extends DeliverymanBaseController
 
         return $this->successResponse(ResponseError::NO_ERROR, $data);
 
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param int|null $id
+     * @return JsonResponse
+     */
+    public function orderDeliverymanUpdate(?int $id): JsonResponse
+    {
+        $result = $this->service->attachDeliveryMan($id);
+
+        if (!data_get($result, 'status')) {
+            return $this->onErrorResponse($result);
+        }
+
+        return $this->successResponse(__('web.delivery_man_setting_found'), OrderDetailResource::make(data_get($result, 'data'))
+        );
+    }
+
+    public function report(ReportRequest $request): JsonResponse
+    {
+        $validated = $request->validated();
+        $validated['deliveryman'] = auth('sanctum')->id();
+
+        return $this->successResponse(
+            __('web.report_found'),
+            $this->orderRepository->deliveryManReport($validated)
+        );
     }
 }

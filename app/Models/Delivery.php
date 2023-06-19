@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 
 /**
@@ -51,6 +54,11 @@ class Delivery extends Model
       'times' => 'array'
     ];
 
+    const TYPE_PICKUP   = 'pickup';
+    const TYPE_FREE     = 'free';
+    const TYPE_STANDARD = 'standard';
+    const TYPE_EXPRESS  = 'express';
+
     const TYPES = [
         'pickup',
         'free',
@@ -58,11 +66,13 @@ class Delivery extends Model
         'express',
     ];
 
-    public function translations() {
+    public function translations(): HasMany
+    {
         return $this->hasMany(DeliveryTranslation::class);
     }
 
-    public function translation() {
+    public function translation(): HasOne
+    {
         return $this->hasOne(DeliveryTranslation::class);
     }
 
@@ -75,13 +85,9 @@ class Delivery extends Model
         return round($value * $currency->rate, 2);
     }
 
-    public function countries()
+    public function countries(): BelongsToMany
     {
         return $this->belongsToMany(Country::class,CountryDelivery::class)->withPivot('price');
     }
 
-    public function scopeFilter()
-    {
-
-    }
 }

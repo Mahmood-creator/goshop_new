@@ -213,10 +213,11 @@ Route::group(['prefix' => 'v1'], function () {
         });
 
         // DELIVERYMAN BLOCK
-        Route::group(['prefix' => 'deliveryman', 'middleware' => ['sanctum.check', 'role:deliveryman'], 'as' => 'deliveryman.'], function () {
+        Route::group(['prefix' => 'deliveryman', 'middleware' => ['sanctum.check', 'role:deliveryman'], 'as' => 'deliveryman.'], routes: function () {
             Route::get('orders/paginate', [Deliveryman\OrderController::class, 'paginate']);
             Route::get('orders/{id}', [Deliveryman\OrderController::class, 'show']);
             Route::post('order/details/{id}/status/update', [Deliveryman\OrderController::class, 'statusChange']);
+            Route::post('order/{id}/attach/me', [Deliveryman\OrderController::class, 'orderDeliverymanUpdate']);
 
             Route::get('statistics/count', [Deliveryman\DashboardController::class, 'countStatistics']);
 
@@ -224,6 +225,9 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('settings/location', [Deliveryman\DeliveryManSettingController::class, 'updateLocation']);
             Route::post('settings/online', [Deliveryman\DeliveryManSettingController::class, 'online']);
             Route::get('settings', [Deliveryman\DeliveryManSettingController::class, 'show']);
+
+            /* Report Orders */
+            Route::get('order/report', [Deliveryman\OrderController::class, 'report']);
         });
 
         // SELLER BLOCK
@@ -363,7 +367,7 @@ Route::group(['prefix' => 'v1'], function () {
         });
 
         // ADMIN BLOCK
-        Route::group(['prefix' => 'admin', 'middleware' => ['sanctum.check', 'role:admin|manager'], 'as' => 'admin.'], function () {
+        Route::group(['prefix' => 'admin', 'middleware' => ['sanctum.check', 'role:admin|manager'], 'as' => 'admin.'], routes:  function () {
 
             // Shop Location
             Route::apiResource('shops/shop-locations', Admin\ShopLocationController::class);

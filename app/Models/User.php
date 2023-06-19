@@ -62,6 +62,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read int|null $galleries_count
  * @property-read mixed $role
  * @property-read Collection<int, Invitation> $invitations
+ * @property-read DeliveryManSetting|null $deliveryManSetting
  * @property-read int|null $invitations_count
  * @property-read Invitation|null $invite
  * @property-read Collection<int, Banner> $likes
@@ -134,7 +135,6 @@ class User extends Authenticatable
     use SoftDeletes;
     use Reviewable;
 
-
     /**
      * The attributes that are mass assignable.
      *
@@ -163,7 +163,6 @@ class User extends Authenticatable
         'settings',
     ];
 
-
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -183,7 +182,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'phone_verified_at' => 'datetime',
         'birthday' => 'date',
-        'settingssettings' => 'array',
+        'settings' => 'array',
     ];
 
     public function isOnline(): bool
@@ -200,7 +199,7 @@ class User extends Authenticatable
         return $this->hasOne(Shop::class);
     }
 
-    public function invite()
+    public function invite(): HasOne
     {
         return $this->hasOne(Invitation::class);
     }
@@ -262,6 +261,12 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Banner::class, Like::class);
     }
+
+    public function deliveryManSetting(): HasOne
+    {
+        return $this->hasOne(DeliveryManSetting::class, 'user_id');
+    }
+
 
 
 }

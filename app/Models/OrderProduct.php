@@ -66,9 +66,9 @@ class OrderProduct extends Model
 
     public function getOriginPriceAttribute($value): float
     {
-        $rate = Currency::where('id',$this->detail->order->currency_id)->first()->rate;
+        $rate = Currency::where('id',$this->detail?->order?->currency_id)->first()?->rate;
 
-        if (auth('sanctum')->check() && request()->is('api/v1/dashboard/user/*')){
+        if (auth('sanctum')->check() && request()->is('api/v1/dashboard/user/*') && $rate){
             return round($value * $rate, 2);
         } else {
             return $value;
@@ -77,9 +77,9 @@ class OrderProduct extends Model
 
     public function getTaxAttribute($value): float
     {
-        $rate = Currency::where('id',$this->detail->order->currency_id)->first()->rate;
+        $rate = Currency::where('id',$this->detail?->order?->currency_id)->first()?->rate;
 
-        if (auth('sanctum')->check() && request()->is('api/v1/dashboard/user/*')){
+        if (auth('sanctum')->check() && request()->is('api/v1/dashboard/user/*') && $rate){
             return round($value * $rate, 2);
         } else {
             return $value;
@@ -88,9 +88,9 @@ class OrderProduct extends Model
 
     public function getDiscountAttribute($value): float
     {
-        $rate = Currency::where('id',$this->detail->order->currency_id)->first()->rate;
+        $rate = Currency::where('id',$this->detail?->order?->currency_id)->first()?->rate;
 
-        if (auth('sanctum')->check() && request()->is('api/v1/dashboard/user/*')){
+        if (auth('sanctum')->check() && request()->is('api/v1/dashboard/user/*') && $rate){
             return round($value * $rate, 2);
         } else {
             return $value;
@@ -99,9 +99,9 @@ class OrderProduct extends Model
 
     public function getTotalPriceAttribute($value): float
     {
-        $rate = Currency::where('id',$this->detail->order->currency_id)->first()->rate;
+        $rate = Currency::where('id',$this->detail?->order?->currency_id)->first()?->rate;
 
-        if (auth('sanctum')->check() && request()->is('api/v1/dashboard/user/*')){
+        if (auth('sanctum')->check() && request()->is('api/v1/dashboard/user/*') && $rate){
             return round($value * $rate, 2);
         } else {
             return $value;

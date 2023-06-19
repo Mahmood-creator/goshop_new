@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Delivery;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class DeliveryResource extends JsonResource
@@ -9,11 +11,13 @@ class DeliveryResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
+     * @param  Request  $request
+     * @return array
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
+        /** @var Delivery|JsonResource $this */
+
         return [
             'id' => (int) $this->id,
             'shop_id' => (int) $this->shop_id,

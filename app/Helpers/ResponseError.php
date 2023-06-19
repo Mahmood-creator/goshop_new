@@ -28,6 +28,11 @@ class ResponseError
     public const ERROR_206 = 'ERROR_206'; // 'User already has Shop'
     public const ERROR_207 = 'ERROR_207'; // 'Can't update Shop Seller'
     public const ERROR_208 = 'ERROR_208'; // 'Subscription already active'
+    public const ERROR_210 = 'ERROR_210'; // 'Delivery already attached'
+    public const ERROR_211 = 'ERROR_211'; // 'invalid deliveryman or token not found'
+    public const ERROR_212 = 'ERROR_212'; // 'Not your shop. Check your other account'
+    public const ERROR_213 = 'ERROR_213'; // 'Your order amount is full'
+
 
     public const ERROR_249 = 'ERROR_249'; // 'Invalid coupon'
     public const ERROR_250 = 'ERROR_250'; // 'Coupon expired'

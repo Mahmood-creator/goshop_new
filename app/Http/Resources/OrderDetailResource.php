@@ -2,7 +2,8 @@
 
 namespace App\Http\Resources;
 
-use App\Models\ProductTranslation;
+use App\Models\OrderDetail;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class OrderDetailResource extends JsonResource
@@ -10,11 +11,13 @@ class OrderDetailResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
+     * @param  Request  $request
+     * @return array
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
+        /** @var OrderDetail|JsonResource $this */
+
         return [
             'id' => (int) $this->id,
             'shop_id' => (int) $this->shop_id,
@@ -33,6 +36,7 @@ class OrderDetailResource extends JsonResource
             'delivery_type' => DeliveryResource::make($this->whenLoaded('deliveryType')),
             'transaction' => TransactionResource::make($this->whenLoaded('transaction')),
             'shop' => ShopResource::make($this->whenLoaded('shop')),
+            'order' => OrderResource::make($this->whenLoaded('order')),
         ];
     }
 }

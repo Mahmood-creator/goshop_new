@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Carbon;
 
 /**
@@ -78,6 +77,7 @@ use Illuminate\Support\Carbon;
 class OrderDetail extends Model
 {
     use HasFactory, Payable, Notification, Reviewable;
+
     protected $guarded = [];
 
     const NEW = 'new';
@@ -118,14 +118,9 @@ class OrderDetail extends Model
         return $this->belongsTo(User::class, 'deliveryman');
     }
 
-    public function deliveryAddress(): BelongsTo
-    {
-        return $this->belongsTo(UserAddress::class, 'delivery_address_id');
-    }
-
     public function deliveryType(): BelongsTo
     {
-        return $this->belongsTo(Delivery::class, 'delivery_type_id');
+        return $this->belongsTo(Delivery::class, 'delivery_type', 'id');
     }
 
     public function shop(): BelongsTo
@@ -133,25 +128,23 @@ class OrderDetail extends Model
         return $this->belongsTo(Shop::class)->withTrashed();
     }
 
-
-
-    public function getPriceAttribute($value)
+    public function getPriceAttribute($value): float
     {
-        $rate = Currency::where('id',$this->order->currency_id)->first()->rate;
+        $rate = Currency::where('id', $this->order?->currency_id)->first()?->rate;
 
-        if (request()->is('api/v1/dashboard/user/*')){
+        if (request()->is('api/v1/dashboard/user/*') && $rate) {
             return round($value * $rate, 2);
         } else {
             return $value;
         }
     }
 
-    public function getTaxAttribute($value)
+    public function getTaxAttribute($value): float
     {
-        $rate = Currency::where('id',$this->order->currency_id)->first()->rate;
+        $rate = Currency::where('id', $this->order?->currency_id)->first()?->rate;
 
-        if (request()->is('api/v1/dashboard/user/*')){
-            return round($value * $this->order->rate, 2);
+        if (request()->is('api/v1/dashboard/user/*') && $rate) {
+            return round($value * $rate, 2);
         } else {
             return $value;
         }
@@ -176,9 +169,8 @@ class OrderDetail extends Model
 
     public function scopeFilter($query, $array)
     {
-        $query
-            ->when(isset($array['status']), function ($q) use ($array) {
-                $q->where('status', $array['status']);
-            });
+        $query->when(isset($array['status']), function ($q) use ($array) {
+            $q->where('status', $array['status']);
+        });
     }
 }

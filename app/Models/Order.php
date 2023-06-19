@@ -92,13 +92,6 @@ class Order extends Model
 
     protected $guarded = [];
 
-
-    const ACCEPTED = 'accepted';
-    const ON_A_WAY = 'on_a_way';
-    const DELIVERED = 'delivered';
-    const COMPLETED = 'completed';
-    const CANCELED = 'canceled';
-
     public function currency(): BelongsTo
     {
         return $this->belongsTo(Currency::class);
@@ -129,20 +122,22 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function review() {
+    public function review(): MorphOne
+    {
         return $this->morphOne(Review::class, 'reviewable');
     }
 
-    public function point() {
+    public function point(): HasOne
+    {
         return $this->hasOne(PointHistory::class, 'order_id');
     }
 
-    public function userAddress()
+    public function userAddress(): BelongsTo
     {
         return $this->belongsTo(UserAddress::class);
     }
 
-    public function delivery()
+    public function delivery(): BelongsTo
     {
         return $this->belongsTo(Delivery::class);
     }
@@ -157,7 +152,7 @@ class Order extends Model
         return $this->belongsTo(User::class, 'deliveryman_id');
     }
 
-    public function getPriceAttribute($value)
+    public function getPriceAttribute($value): float
     {
         $rate = Currency::where('id',$this->currency_id)->first()->rate;
         if (request()->is('api/v1/dashboard/user/*')){

@@ -3,11 +3,14 @@
 namespace App\Services\OrderService;
 
 use App\Helpers\ResponseError;
+use App\Models\Delivery;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Shop;
 use App\Models\ShopLocation;
+use App\Models\User;
 use App\Services\CoreService;
+use Throwable;
 
 class OrderDetailService extends CoreService
 {
@@ -77,6 +80,67 @@ class OrderDetailService extends CoreService
         }
         return ['status' => false, 'code' => ResponseError::ERROR_404];
     }
+
+    /**
+     * @param int|null $id
+     * @return array
+     */
+    public function attachDeliveryMan(?int $id): array
+    {
+        /** @var Order $order */
+        /** @var User $user */
+        try {
+            $user = auth('sanctum')->user();
+            $orderDetail = OrderDetail::with('user')->find($id);
+
+            if (empty($orderDetail) || ($orderDetail?->deliveryType?->type == Delivery::TYPE_PICKUP)) {
+                return [
+                    'status' => false,
+                    'code' => ResponseError::ERROR_404,
+                    'message' => 'Invalid deliveryman or token not found'
+                ];
+            }
+
+            if (!empty($orderDetail->deliveryman)) {
+                return [
+                    'status' => false,
+                    'code' => ResponseError::ERROR_210,
+                    'message' => 'Delivery already attached'
+                ];
+            }
+
+            if (!$user?->invitations?->where('shop_id', $orderDetail->shop_id)?->first()?->id) {
+                return [
+                    'status' => false,
+                    'code' => ResponseError::ERROR_212,
+                    'message' => 'Not your shop. Check your other account'
+                ];
+            }
+
+            $orderCount = OrderDetail::where('deliveryman', $user->id)->whereIn('status', '!=', [
+                OrderDetail::DELIVERED,
+                OrderDetail::COMPLETED,
+                OrderDetail::CANCELED,
+            ])->count();
+
+            if ($user?->deliveryManSetting?->order_quantity > $orderCount) {
+                return [
+                    'status' => false,
+                    'code' => ResponseError::ERROR_213,
+                    'message' => 'Your order amount is full'
+                ];
+            }
+
+            $orderDetail->update([
+                'deliveryman' => auth('sanctum')->id(),
+            ]);
+
+            return ['status' => true, 'message' => ResponseError::NO_ERROR, 'data' => $orderDetail];
+        } catch (Throwable) {
+            return ['status' => false, 'code' => ResponseError::ERROR_501, 'message' => ResponseError::ERROR_501];
+        }
+    }
+
 
     private function setDetailParams($detail): array
     {
