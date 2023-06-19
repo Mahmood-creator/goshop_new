@@ -148,7 +148,7 @@ class OrderDetailRepository extends CoreRepository
             default => '%Y-%m-%d',
         };
 
-        $chart = DB::table('orders')
+        $chart = DB::table('order_details')
             ->where('deliveryman', data_get($filter, 'deliveryman'))
             ->where('created_at', '>=', $dateFrom)
             ->where('created_at', '<=', $dateTo)
