@@ -94,7 +94,9 @@ class UserController extends AdminBaseController
      */
     public function update(Request $request, string $uuid): JsonResponse|AnonymousResourceCollection
     {
-        $result = $this->userService->update($uuid, $request);
+        $user = User::where('uuid',$uuid)->first();
+        
+        $result = $this->userService->update($user, $request);
         if ($result['status']){
             return $this->successResponse(__('web.user_updated'), UserResource::make($result['data']));
         }
